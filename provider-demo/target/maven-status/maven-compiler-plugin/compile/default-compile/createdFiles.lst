@@ -1,0 +1,4 @@
+com\github\tongji\microservice\providerdemo\ProviderDemoApplication.class
+com\github\tongji\microservice\providerdemo\EchoResponse.class
+com\github\tongji\microservice\providerdemo\ConfigController.class
+com\github\tongji\microservice\providerdemo\EchoController.class

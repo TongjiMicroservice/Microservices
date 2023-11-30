@@ -1,0 +1,5 @@
+com\github\tongji\microservice\consumerdemo\EchoResponse.class
+com\github\tongji\microservice\consumerdemo\EchoService.class
+com\github\tongji\microservice\consumerdemo\ConfigController.class
+com\github\tongji\microservice\consumerdemo\ServiceProviderDemoClient.class
+com\github\tongji\microservice\consumerdemo\ConsumerDemoApplication.class

@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: service-consumer-demo
+
+  cloud:
+    nacos:
+      config:
+        file-extension: yaml
+        server-addr: ${NACOS-SERVER-ADDR:localhost:8848}
