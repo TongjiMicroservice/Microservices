@@ -20,7 +20,7 @@ spec:
             - name: NACOS-SERVER-ADDR
               value: mse-5a242a20-nacos-ans.mse.aliyuncs.com:8848
           image: >-
-            registry-vpc.cn-hangzhou.aliyuncs.com/tongji-microservice/microservices:comsumer-demo
+            registry-vpc.cn-hangzhou.aliyuncs.com/tongji-microservice/microservices:consumer-demo
           imagePullPolicy: Always
           name: service-consumer-demo
           ports:
