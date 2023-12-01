@@ -24,7 +24,7 @@ public class EchoService {
         ResponseEntity<EchoResponse> result = serviceProviderDemoClient.echo(string);
         var respBody= result.getBody();
         if (respBody != null) {
-            return respBody.serviceName()+":"+respBody.echoString()+"\ngit提交集成部署测试3";
+            return respBody.serviceName()+":"+respBody.echoString()+"\ngit提交集成部署测试4";
         }else {
             return "error";
         }
