@@ -1,9 +1,0 @@
-spring:
-  application:
-    name: service-provider-demo
-
-  cloud:
-    nacos:
-      config:
-        file-extension: yaml
-        server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
