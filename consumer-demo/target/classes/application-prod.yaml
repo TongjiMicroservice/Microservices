@@ -1,4 +1,4 @@
 spring:
   application:
     name: service-consumer-demo
-  cloud.nacos.discovery.server-addr: ${NACOS-SERVER-ADDR:localhost:8848}
+  cloud.nacos.discovery.server-addr: ${NACOS_SERVER_ADDR:localhost:8848}

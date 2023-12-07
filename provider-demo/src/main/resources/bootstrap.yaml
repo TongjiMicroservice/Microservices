@@ -6,4 +6,4 @@ spring:
     nacos:
       config:
         file-extension: yaml
-        server-addr: ${NACOS-SERVER-ADDR:localhost:8848}
+        server-addr: ${NACOS_SERVER_ADDR:localhost:8848}

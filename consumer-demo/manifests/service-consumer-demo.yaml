@@ -17,7 +17,7 @@ spec:
               value: /usr/lib/jvm/java-1.8-openjdk/jre
             - name: dubbo.registry.address
               value: nacos://nacos-server:8848
-            - name: NACOS-SERVER-ADDR
+            - name: NACOS_SERVER_ADDR
               value: mse-5a242a20-nacos-ans.mse.aliyuncs.com:8848
           image: >-
             registry-vpc.cn-hangzhou.aliyuncs.com/tongji-microservice/microservices:consumer-demo
