@@ -11,4 +11,4 @@ dubbo:
     name: dubbo
     port: 20885
 server:
-  port: 80
+  port: 8090

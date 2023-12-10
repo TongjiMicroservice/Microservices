@@ -74,7 +74,7 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.tongji.microservice.teamsphere.TeamsphereMemberApplication</mainClass>
-                    <skip>true</skip>
+                    <skip>false</skip>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
