@@ -1,4 +1,4 @@
-package com.tongji.microservice.teamsphere;
+package com.tongji.microservice.teamsphere.gatewayservice;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

@@ -1,4 +1,4 @@
-package com.tongji.microservice.teamsphere.impl;
+package com.tongji.microservice.teamsphere.memberservice.impl;
 
 import com.tongji.microservice.teamsphere.dubbo.api.MemberService;
 import org.apache.dubbo.config.annotation.DubboReference;

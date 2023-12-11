@@ -1,4 +1,4 @@
-package com.tongji.microservice.teamsphere;
+package com.tongji.microservice.teamsphere.meetingservice;
 
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;
@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @EnableDubbo
-public class TeamsphereTaskApplication {
+public class TeamsphereMeetingApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TeamsphereTaskApplication.class, args);
+        SpringApplication.run(TeamsphereMeetingApplication.class, args);
     }
 
 }

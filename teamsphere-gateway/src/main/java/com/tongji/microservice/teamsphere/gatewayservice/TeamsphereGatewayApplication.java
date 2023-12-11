@@ -1,4 +1,4 @@
-package com.tongji.microservice.teamsphere;
+package com.tongji.microservice.teamsphere.gatewayservice;
 
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;

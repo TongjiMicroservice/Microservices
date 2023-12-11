@@ -73,7 +73,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.tongji.microservice.teamsphere.TeamsphereMeetingApplication</mainClass>
+                    <mainClass>com.tongji.microservice.teamsphere.meetingservice.TeamsphereMeetingApplication</mainClass>
                     <skip>false</skip>
                     <excludes>
                         <exclude>

@@ -1,10 +1,9 @@
-package com.tongji.microservice.teamsphere.impl;
+package com.tongji.microservice.teamsphere.userservice.impl;
 
 import com.tongji.microservice.teamsphere.dubbo.api.MemberService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.stereotype.Service;
 
 @DubboService
 public class UserServiceImpl implements UserService {
