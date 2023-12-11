@@ -12,3 +12,7 @@ dubbo:
     port: 20885
 server:
   port: 8090
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
