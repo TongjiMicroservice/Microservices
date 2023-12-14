@@ -1,5 +1,15 @@
 package com.tongji.microservice.teamsphere.dubbo.api;
 
+import com.tongji.microservice.teamsphere.entities.chatservice.Message;
+
+import java.util.List;
+
 public interface ChatService {
-    String helloChatService();
+    void createDiscussionGroup(String projectId, String groupName, List<String> memberIds);
+    void sendMessageToGroup(String groupId, String senderId, String message);
+    List<Message> getGroupMessages(String groupId);
+    void addMemberToGroup(String groupId, String memberId);
+    void removeMemberFromGroup(String groupId, String memberId);
+
+    //test
 }

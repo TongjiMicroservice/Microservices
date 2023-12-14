@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.LoginResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.RegisterResponse;
-import com.tongji.microservice.teamsphere.dto.userservice.UserData;
 import com.tongji.microservice.teamsphere.dubbo.api.MemberService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import com.tongji.microservice.teamsphere.userservice.entities.User;
@@ -20,6 +19,32 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+
+    @Override
+    public String createUser(String username, String password) {
+        var user=new User(username,password);
+        var flag=userMapper.insert(user);
+        if(flag==0){
+            return "创建失败";
+        }
+        else{
+            return "创建成功";
+        }
+    }
+
+    @Override
+    public void updateUserDetails(String userId, String newUsername, String newEmail){
+
+    };
+
+    @Override
+    public User getUserDetails(String userId){
+    };
+
+    @Override
+    public void deleteUser(String userId){
+    };
 
 
     @Override
