@@ -11,13 +11,19 @@ import lombok.NoArgsConstructor;
 public class User {
     @TableField("id")
     public int id;
-    @TableField("name")
+    @TableField("username")
     public String username;
     @TableField("password")
     public String password;
+    @TableField("email")
+    public String email;
+    @TableField("avatar")
+    public String avatar;
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        this.email = "";
+        this.avatar= "";
     }
 }

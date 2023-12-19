@@ -5,6 +5,7 @@ import com.tongji.microservice.teamsphere.dto.userservice.RegisterResponse;
 import com.tongji.microservice.teamsphere.entities.userservice.User;
 
 public interface UserService {
+
     LoginResponse login(String username, String password);
     RegisterResponse register(String username, String password);
 

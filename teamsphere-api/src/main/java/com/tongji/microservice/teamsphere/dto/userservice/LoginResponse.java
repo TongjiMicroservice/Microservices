@@ -12,12 +12,13 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class LoginResponse extends APIResponse implements Serializable {
+    private int userid;
+    private String token;
 
-    private UserData data;
-
-    public LoginResponse(APIResponse apiResponse, int id, String username) {
+    public LoginResponse(APIResponse apiResponse, int userid, String token) {
         super(apiResponse.getCode(), apiResponse.getMessage());
-        this.data = new UserData(id, username);
+        this.userid = userid;
+        this.token = token;
     }
 }
 

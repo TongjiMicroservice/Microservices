@@ -8,6 +8,7 @@ import com.tongji.microservice.teamsphere.dubbo.api.MemberService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import com.tongji.microservice.teamsphere.userservice.entities.User;
 import com.tongji.microservice.teamsphere.userservice.mapper.UserMapper;
+import com.tongji.microservice.teamsphere.userservice.util.Jwt;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,11 +54,12 @@ public class UserServiceImpl implements UserService {
         queryWrapper.eq("name", username);
         User user = userMapper.selectOne(queryWrapper);
         if (user == null) {
-            return new LoginResponse(new APIResponse(400, "用户不存在"), -1, null);
+            return new LoginResponse(new APIResponse(400, "用户不存在"),0 , null);
         } else if (!user.password.equals(password)) {
-            return new LoginResponse(new APIResponse(401, "密码错误"), -1, null);
+            return new LoginResponse(new APIResponse(401, "密码错误"), 0 , null);
         } else {
-            return new LoginResponse(new APIResponse(200, "登录成功"), user.id, user.username);
+            String token = Jwt.generateToken(user.id,1000);
+            return new LoginResponse(new APIResponse(200, "登录成功"), user.id, token);
         }
     }
 
