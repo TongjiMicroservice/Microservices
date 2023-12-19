@@ -14,7 +14,6 @@ public interface UserService {
     //test
     String callMemberService();
 
-    String createUser(String username, String email);
     void updateUserDetails(String userId, String newUsername, String newEmail);
     User getUserDetails(String userId);
     void deleteUser(String userId);

@@ -6,7 +6,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ScheduleService {
-    void addEventToUserSchedule(String userId, LocalDateTime startTime, LocalDateTime endTime, String description);
-    void removeEventFromUserSchedule(String userId, String eventId);
-    List<Event> getUserSchedule(String userId);
+    void createEvent(String userId, LocalDateTime startTime, LocalDateTime endTime, String description);
+    void removeEvent(String userId, String eventId);
+    List<Event> getEvents(String userId);
+
+    void getEventInfo();
+
+    void updateEventInfo();
 }

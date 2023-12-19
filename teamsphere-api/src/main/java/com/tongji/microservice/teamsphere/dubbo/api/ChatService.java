@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ChatService {
     void createDiscussionGroup(String projectId, String groupName, List<String> memberIds);
-    void sendMessageToGroup(String groupId, String senderId, String message);
-    List<Message> getGroupMessages(String groupId);
     void addMemberToGroup(String groupId, String memberId);
+
+    void updateDiscussionGroup();
     void removeMemberFromGroup(String groupId, String memberId);
 
     //test
