@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@TableName("user")
+@TableName("User")
 @NoArgsConstructor
 public class User {
     @TableField("id")
