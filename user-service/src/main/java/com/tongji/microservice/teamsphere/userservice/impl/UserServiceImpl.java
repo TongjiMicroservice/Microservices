@@ -3,7 +3,9 @@ package com.tongji.microservice.teamsphere.userservice.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.LoginResponse;
+import com.tongji.microservice.teamsphere.dto.userservice.UserRequest;
 import com.tongji.microservice.teamsphere.dto.userservice.RegisterResponse;
+import com.tongji.microservice.teamsphere.dto.userservice.UserResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.MemberService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import com.tongji.microservice.teamsphere.userservice.entities.User;
@@ -21,37 +23,27 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
-
     @Override
-    public String createUser(String username, String password) {
-        var user=new User(username,password);
-        var flag=userMapper.insert(user);
-        if(flag==0){
-            return "创建失败";
-        }
-        else{
-            return "创建成功";
-        }
-    }
+    public APIResponse updateUserDetails(UserRequest request){
 
-    @Override
-    public void updateUserDetails(String userId, String newUsername, String newEmail){
-
+        return null;
     };
 
     @Override
-    public User getUserDetails(String userId){
+    public UserResponse getUserDetails(int userId){
+        return null;
     };
 
     @Override
-    public void deleteUser(String userId){
+    public APIResponse deleteUser(int userId){
+        return null;
     };
 
 
     @Override
     public LoginResponse login(String username, String password) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", username);
+        queryWrapper.eq("username", username);
         User user = userMapper.selectOne(queryWrapper);
         if (user == null) {
             return new LoginResponse(new APIResponse(400, "用户不存在"),0 , null);
@@ -64,24 +56,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RegisterResponse register(String username, String password) {
-        var user=new User(username, password);
+    public RegisterResponse register(UserRequest request) {
+
+        var user=new User(request.getUsername(), request.getPassword(), request.getEmail(), request.getAvatar());
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", request.getUsername());
+        if(userMapper.selectOne(queryWrapper)!=null){
+            return new RegisterResponse(new APIResponse(400,"注册失败:用户名已存在"),-1,null);
+        }
         var flag=userMapper.insert(user);
         if(flag==0){
-            return new RegisterResponse(new APIResponse(400,"注册失败"),-1,null);
+            return new RegisterResponse(new APIResponse(400,"注册失败:数据库访问失败"),-1,null);
         }
         else{
+            //访问数据库生成id
+            user=userMapper.selectOne(queryWrapper);
+            if(user==null){
+                return new RegisterResponse(new APIResponse(400,"注册失败:数据库查询失败"),-1,null);
+            }
+            String token = Jwt.generateToken(user.id,1000);
             return new RegisterResponse(new APIResponse(200,"注册成功"),user.id,user.username);
         }
     }
 
-    @Override
-    public String helloUserService() {
-        return "Hello UserService!";
-    }
-
-    @Override
-    public String callMemberService() {
-        return memberService.helloMemberService();
-    }
 }
