@@ -1,11 +1,10 @@
 package com.tongji.microservice.teamsphere.userservice.impl;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import com.tongji.microservice.teamsphere.dto.userservice.LoginResponse;
-import com.tongji.microservice.teamsphere.dto.userservice.UserRequest;
-import com.tongji.microservice.teamsphere.dto.userservice.RegisterResponse;
-import com.tongji.microservice.teamsphere.dto.userservice.UserResponse;
+import com.tongji.microservice.teamsphere.dto.userservice.*;
 import com.tongji.microservice.teamsphere.dubbo.api.MemberService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import com.tongji.microservice.teamsphere.userservice.entities.User;
@@ -50,7 +49,7 @@ public class UserServiceImpl implements UserService {
         } else if (!user.password.equals(password)) {
             return new LoginResponse(new APIResponse(401, "密码错误"), 0 , null);
         } else {
-            String token = Jwt.generateToken(user.id,1000);
+            String token = Jwt.generateToken(user.id,24*3600);
             return new LoginResponse(new APIResponse(200, "登录成功"), user.id, token);
         }
     }
@@ -79,4 +78,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public AuthorizeResponse authorize(String token) {
+        DecodedJWT x;
+        try {
+            x = Jwt.getVerifier().verify(token);
+        }catch (JWTVerificationException e){
+            return new AuthorizeResponse(APIResponse.failure(400,"鉴权失败"),0);
+        }
+        return new AuthorizeResponse(APIResponse.success(),x.getClaim("userid").asInt());
+    }
 }

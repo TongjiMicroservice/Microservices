@@ -1,5 +1,7 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
+import com.tongji.microservice.teamsphere.dto.APIResponse;
+import com.tongji.microservice.teamsphere.dto.userservice.AuthorizeResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.LoginResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.UserRequest;
 import com.tongji.microservice.teamsphere.dto.userservice.RegisterResponse;
@@ -46,4 +48,14 @@ public class UserController {
         return userService.register(request);
     }
 
+    @GetMapping("/user/authorize")
+    @Operation(summary = "用户鉴权接口", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = RegisterResponse.class))),
+            @ApiResponse(responseCode = "400", description = "鉴权失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = RegisterResponse.class))),
+    })
+    public AuthorizeResponse authorize(String token) {
+        return userService.authorize(token);
+    }
 }
