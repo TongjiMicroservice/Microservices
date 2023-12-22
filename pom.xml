@@ -23,7 +23,7 @@
         <module>meeting-service</module>
         <module>chat-service</module>
         <module>schedule-service</module>
-        <module>member-service</module>
+        <module>project-service</module>
         <module>task-service</module>
     </modules>
 
