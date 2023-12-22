@@ -19,7 +19,7 @@ import java.util.*;
 
 @Service
 public class SocketIOService {
-    private static final Map<String, UUID> map=new HashMap<>();
+    private static final Map<Integer, UUID> map= new HashMap<>();
     //用于连接用户数据库来获取用户信息
     @DubboReference(check = false)
     private UserService userService;
@@ -42,11 +42,17 @@ public class SocketIOService {
         // 在和用户握手建立连接时，就进行token校验，获取客户端的 userId
 //        String userId = client.getHandshakeData().getSingleUrlParam("userId");
         String token =  client.getHandshakeData().getSingleUrlParam("token");
+        //无token参数，直接断开连接
+        if(token==null){
+            client.disconnect();
+            return;
+        }
+        //调用鉴权接口
         var res = userService.authorize(token);
         //token通过校验
         if(res.getUserid()>0){
             //将int转为String
-            String userid = String.valueOf(res.getUserid());
+            int userid = res.getUserid();
             if(!map.containsKey(userid)){
                 map.put(userid, client.getSessionId());
             }
@@ -55,21 +61,28 @@ public class SocketIOService {
         else{
             System.out.println("token校验失败"+res.getMessage());
             client.disconnect();
+            return;
         }
 
         System.out.println("Client connected: " + client.getSessionId());
     });
 
+        /**
+         * 断开连接
+         */
     server.addDisconnectListener(client -> {
+        if(map.containsValue(client.getSessionId())){
+            map.remove(map.get(client.getSessionId()));
+        }
         System.out.println("Client disconnected: " + client.getSessionId());
     });
     server.addEventListener("updateReadStatus", MessageObject.class, (client, data, ackRequest)-> {
-        String userid=data.getReceiverId();
+        int userid=data.getReceiverId();
         if(!map.containsKey(userid)){
             map.put(userid, client.getSessionId());
         }
-        String sender = data.getSenderId();
-        String receiver = data.getReceiverId();
+        int sender = data.getSenderId();
+        int receiver = data.getReceiverId();
         MongoCollection<Document> collection = MongoDB.getDatabase().getCollection("chat");
         Bson filter = Filters.and(
                 Filters.eq("sender", sender),
@@ -123,8 +136,8 @@ public class SocketIOService {
 
 
     server.addEventListener("fetchChatHistory", MessageObject.class, (client, data, ackRequest) -> {
-        String sender = data.getSenderId();
-        String receiver = data.getReceiverId();
+        int sender = data.getSenderId();
+        int receiver = data.getReceiverId();
             // 从 MongoDB 中获取聊天记录
                MongoCollection<Document> collection = MongoDB.getDatabase().getCollection("chat");
 //                List<Document> chatHistory = collection.find(

@@ -5,8 +5,8 @@ import org.bson.Document;
 
 @Data
 public class MessageObject {
-    private String senderId;
-    private String receiverId;
+    private int senderId;
+    private int receiverId;
     private String message;
     private String timestamp; // 新增时间戳字段
     private boolean isRead; // 新增 isRead 字段
