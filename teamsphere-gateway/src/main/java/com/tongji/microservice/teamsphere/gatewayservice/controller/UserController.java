@@ -1,10 +1,7 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import com.tongji.microservice.teamsphere.dto.userservice.AuthorizeResponse;
-import com.tongji.microservice.teamsphere.dto.userservice.LoginResponse;
-import com.tongji.microservice.teamsphere.dto.userservice.UserRequest;
-import com.tongji.microservice.teamsphere.dto.userservice.RegisterResponse;
+import com.tongji.microservice.teamsphere.dto.userservice.*;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,11 +48,22 @@ public class UserController {
     @GetMapping("/user/authorize")
     @Operation(summary = "用户鉴权接口", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = RegisterResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = AuthorizeResponse.class))),
             @ApiResponse(responseCode = "400", description = "鉴权失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = RegisterResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthorizeResponse.class))),
     })
     public AuthorizeResponse authorize(String token) {
         return userService.authorize(token);
+    }
+
+    @GetMapping("user/info")
+    @Operation(summary = "用户鉴权接口", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "400", description = "鉴权失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+    })
+    public UserResponse getUserDetails(int userId) {
+        return userService.getUserDetails(userId);
     }
 }

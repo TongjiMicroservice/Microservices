@@ -88,4 +88,7 @@ public class UserServiceImpl implements UserService {
         }
         return new AuthorizeResponse(APIResponse.success(),x.getClaim("userid").asInt());
     }
+
+    @Override
+    public UserResponse 
 }
