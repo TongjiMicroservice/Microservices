@@ -5,7 +5,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.*;
-import com.tongji.microservice.teamsphere.dubbo.api.MemberService;
+import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import com.tongji.microservice.teamsphere.userservice.entities.User;
 import com.tongji.microservice.teamsphere.userservice.mapper.UserMapper;
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @DubboService
 public class UserServiceImpl implements UserService {
     @DubboReference(check = false)
-    private MemberService memberService;
+    private ProjectService memberService;
 
     @Autowired
     private UserMapper userMapper;
