@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class UserQueryRequest {
+public class UserQueryRequest implements Serializable {
     private int userid;
     private String username,email;
 }
