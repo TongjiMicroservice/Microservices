@@ -16,8 +16,8 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/project")
-@Tag(name= "UserController", description = "项目微服务接口")
+@RequestMapping("/api")
+@Tag(name= "ProjectController", description = "项目微服务接口")
 public class ProjectController {
     @DubboReference(check = false)
     private UserService userService;

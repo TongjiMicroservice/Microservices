@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.*;
-//import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
+import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import com.tongji.microservice.teamsphere.entities.userservice.UserData;
 import com.tongji.microservice.teamsphere.userservice.entities.User;
@@ -24,7 +24,7 @@ import static com.tongji.microservice.teamsphere.dto.APIResponse.*;
 @DubboService
 public class UserServiceImpl implements UserService {
     @DubboReference(check = false)
-//    private ProjectService memberService;
+    private ProjectService memberService;
 
     @Autowired
     private UserMapper userMapper;

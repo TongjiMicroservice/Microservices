@@ -12,7 +12,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api")
 @Tag(name= "UserController", description = "用户微服务接口")
 public class UserController {
     @DubboReference(check = false)
