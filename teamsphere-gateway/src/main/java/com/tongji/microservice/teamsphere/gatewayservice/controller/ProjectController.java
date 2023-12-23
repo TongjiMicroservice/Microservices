@@ -24,7 +24,7 @@ public class ProjectController {
     @DubboReference(check = false)
     private ProjectService projectService;
     @PostMapping("/project")
-    @Operation(summary = "创建项目接口", responses = {
+    @Operation(summary = "创建项目", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
@@ -34,7 +34,7 @@ public class ProjectController {
         return projectService.creatProject(token,projectData);
     }
     @PostMapping("/project/member")
-    @Operation(summary = "创建项目接口", responses = {
+    @Operation(summary = "添加项目成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
@@ -45,7 +45,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/project")
-    @Operation(summary = "创建项目接口", responses = {
+    @Operation(summary = "更新项目信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
@@ -55,7 +55,7 @@ public class ProjectController {
         return projectService.updateProjectInfo(token,projectId,projectData);
     }
     @DeleteMapping("/project/member")
-    @Operation(summary = "创建项目接口", responses = {
+    @Operation(summary = "删除项目成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
@@ -65,7 +65,7 @@ public class ProjectController {
         return projectService.removeProjectMember(token,projectId,userId);
     }
     @PatchMapping("/project/member/privilege")
-    @Operation(summary = "创建项目接口", responses = {
+    @Operation(summary = "变更成员权限", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
@@ -75,7 +75,7 @@ public class ProjectController {
         return projectService.updateProjectMemberPrivilege(token,projectId,userId,privilege);
     }
     @GetMapping("/project/member")
-    @Operation(summary = "创建项目接口", responses = {
+    @Operation(summary = "获取项目成员清单", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
@@ -85,7 +85,7 @@ public class ProjectController {
         return projectService.getProjectMembers(token,projectId);
     }
     @GetMapping("/project")
-    @Operation(summary = "创建项目接口", responses = {
+    @Operation(summary = "获取项目信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
@@ -95,7 +95,7 @@ public class ProjectController {
         return projectService.getProjectInfo(token,projectId);
     }
     @DeleteMapping("/project")
-    @Operation(summary = "创建项目接口", responses = {
+    @Operation(summary = "删除项目", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",

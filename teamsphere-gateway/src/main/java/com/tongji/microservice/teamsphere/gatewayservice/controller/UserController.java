@@ -18,8 +18,8 @@ public class UserController {
     @DubboReference(check = false)
     private UserService userService;
 
-    @PostMapping("/user/login")
-    @Operation(summary = "用户登录接口", responses = {
+    @GetMapping("/user/login")
+    @Operation(summary = "用户登录", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
             @ApiResponse(responseCode = "400", description = "用户不存在",
@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/user/register")
-    @Operation(summary = "用户注册接口", responses = {
+    @Operation(summary = "用户注册", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = RegisterResponse.class))),
             @ApiResponse(responseCode = "400", description = "注册失败",
@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/user/authorize")
-    @Operation(summary = "用户鉴权接口", responses = {
+    @Operation(summary = "用户鉴权", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = AuthorizeResponse.class))),
             @ApiResponse(responseCode = "400", description = "鉴权失败",
@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("user/info")
-    @Operation(summary = "获取用户详细信息接口", responses = {
+    @Operation(summary = "获取用户详细信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @GetMapping("user")
-    @Operation(summary = "查询用户接口", responses = {
+    @Operation(summary = "查询用户", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = QueryResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
@@ -75,8 +75,8 @@ public class UserController {
         return userService.queryUser(token, request);
     }
 
-    @PostMapping("user")
-    @Operation(summary = "更新用户信息接口", responses = {
+    @PatchMapping("user")
+    @Operation(summary = "更新用户信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = QueryResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
@@ -87,7 +87,7 @@ public class UserController {
     }
 
     @DeleteMapping("user")
-    @Operation(summary = "删除用户接口", responses = {
+    @Operation(summary = "删除用户", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = QueryResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
