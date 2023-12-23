@@ -114,6 +114,7 @@ public class UserServiceImpl implements UserService {
         var user=new User(request.getUsername(), request.getPassword(), request.getEmail(), request.getAvatar());
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", request.getUsername());
+        System.out.printf("username:%s",request.getUsername());
         if(userMapper.selectOne(queryWrapper)!=null){
             return new RegisterResponse(fail("用户名已存在"));
         }
