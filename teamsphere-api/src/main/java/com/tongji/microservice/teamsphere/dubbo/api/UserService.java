@@ -10,10 +10,10 @@ public interface UserService {
 
     AuthorizeResponse authorize(String token);
 
-    APIResponse updateUserInfo(RegisterRequest request);
+    APIResponse updateUserInfo(String token, RegisterRequest request);
     UserResponse getUserInfo(int userId);
 
-    QueryResponse queryUser(UserQueryRequest request);
-    APIResponse deleteUser(int userId);
+    QueryResponse queryUser(String token, UserQueryRequest request);
+    APIResponse deleteUser(String token, int userId);
 }
 

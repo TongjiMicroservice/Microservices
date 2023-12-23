@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public APIResponse updateUserInfo(RegisterRequest request){
+    public APIResponse updateUserInfo(String token, RegisterRequest request){
 
         return null;
     };
@@ -34,14 +34,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public QueryResponse queryUser(UserQueryRequest request) {
+    public QueryResponse queryUser(String token, UserQueryRequest request) {
         return null;
     }
 
     ;
 
     @Override
-    public APIResponse deleteUser(int userId){
+    public APIResponse deleteUser(String token, int userId){
         return null;
     };
 

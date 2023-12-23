@@ -1,5 +1,6 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
+import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.*;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,10 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -66,16 +64,36 @@ public class UserController {
         return userService.getUserInfo(userId);
     }
 
-    @GetMapping("user/query")
+    @GetMapping("user")
     @Operation(summary = "查询用户接口", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = QueryResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = QueryResponse.class))),
     })
-    public QueryResponse queryUser(UserQueryRequest request) {
-        return userService.queryUser(request);
+    public QueryResponse queryUser(String token, UserQueryRequest request) {
+        return userService.queryUser(token, request);
     }
 
+    @PostMapping("user")
+    @Operation(summary = "更新用户信息接口", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = QueryResponse.class))),
+            @ApiResponse(responseCode = "400", description = "访问失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = QueryResponse.class))),
+    })
+    APIResponse updateUserInfo(String token, RegisterRequest request){
+        return userService.updateUserInfo(token, request);
+    }
 
+    @DeleteMapping("user")
+    @Operation(summary = "删除用户接口", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = QueryResponse.class))),
+            @ApiResponse(responseCode = "400", description = "访问失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = QueryResponse.class))),
+    })
+    APIResponse deleteUser(String token, int userId){
+        return userService.deleteUser(token, userId);
+    }
 }
