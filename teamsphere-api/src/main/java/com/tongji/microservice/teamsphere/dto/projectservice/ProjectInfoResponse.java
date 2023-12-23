@@ -13,10 +13,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ProjectInfoResponse extends APIResponse implements Serializable {
+    private int projectId;
     private ProjectData data;
 
     public ProjectInfoResponse(APIResponse apiResponse) {
         super(apiResponse.getCode(), apiResponse.getMessage());
+        this.projectId=0;
         this.data = null;
     }
 }
