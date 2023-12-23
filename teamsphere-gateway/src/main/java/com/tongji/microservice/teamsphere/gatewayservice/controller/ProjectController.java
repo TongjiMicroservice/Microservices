@@ -40,8 +40,8 @@ public class ProjectController {
             @ApiResponse(responseCode = "400", description = "失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
     })
-    APIResponse addProjectMember(String token, int projectId, int memberId){
-        return projectService.addProjectMember(token,projectId,memberId);
+    APIResponse addProjectMember(String token, int projectId, int userId){
+        return projectService.addProjectMember(token,projectId,userId);
     }
 
     @PatchMapping("/project")
@@ -61,8 +61,8 @@ public class ProjectController {
             @ApiResponse(responseCode = "400", description = "失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
     })
-    APIResponse removeProjectMember(String token, int projectId, int memberId){
-        return projectService.removeProjectMember(token,projectId,memberId);
+    APIResponse removeProjectMember(String token, int projectId, int userId){
+        return projectService.removeProjectMember(token,projectId,userId);
     }
     @PatchMapping("/project/member/privilege")
     @Operation(summary = "创建项目接口", responses = {
@@ -71,8 +71,8 @@ public class ProjectController {
             @ApiResponse(responseCode = "400", description = "失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
     })
-    APIResponse updateProjectMemberPrivilege(String token, int projectId, int memberId, int privilege){
-        return projectService.updateProjectMemberPrivilege(token,projectId,memberId,privilege);
+    APIResponse updateProjectMemberPrivilege(String token, int projectId, int userId, int privilege){
+        return projectService.updateProjectMemberPrivilege(token,projectId,userId,privilege);
     }
     @GetMapping("/project/member")
     @Operation(summary = "创建项目接口", responses = {

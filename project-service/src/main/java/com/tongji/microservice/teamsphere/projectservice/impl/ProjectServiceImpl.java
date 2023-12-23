@@ -1,46 +1,128 @@
 package com.tongji.microservice.teamsphere.projectservice.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.MembersResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.ProjectInfoResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
+import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import com.tongji.microservice.teamsphere.entities.projectservice.ProjectData;
+import com.tongji.microservice.teamsphere.projectservice.entities.Project;
+import com.tongji.microservice.teamsphere.projectservice.entities.ProjectMember;
+import com.tongji.microservice.teamsphere.projectservice.mapper.ProjectMapper;
+import com.tongji.microservice.teamsphere.projectservice.mapper.ProjectMemberMapper;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static com.tongji.microservice.teamsphere.dto.APIResponse.*;
 
 @DubboService
 public class ProjectServiceImpl implements ProjectService {
+    @DubboReference(check = false)
+    private UserService userService;
+    @Autowired
+    private ProjectMapper projectMapper;
+    @Autowired
+    private ProjectMemberMapper memberMapper;
     @Override
     public APIResponse creatProject(String token, ProjectData projectData) {
-        return null;
+        int userId = userService.authorize(token).getUserid();
+        if(userId <= 0)
+            return fakeToken();
+        Project project = new Project(projectData);
+        var flag = projectMapper.insert(project);
+        if(flag == 0){
+            return fail("创建项目失败");
+        }
+        return success();
     }
 
     @Override
-    public APIResponse addProjectMember(String token, int projectId, int memberId) {
-        return null;
+    public APIResponse addProjectMember(String token, int projectId, int userId) {
+        int adminId = userService.authorize(token).getUserid();
+        if(adminId <= 0){
+            return fakeToken();
+        }
+        int privilege = memberMapper.getPrivilege(adminId, projectId);
+        if(privilege <= 1){
+            return fail("没有权限");
+        }
+        var flat = memberMapper.insert(new ProjectMember(projectId,adminId,1));
+        System.out.printf("返回值为%d",flat);
+        if(flat == 0){
+            return fail("添加成员失败");
+        }
+        return success();
     }
 
     @Override
     public APIResponse updateProjectInfo(String token, int projectId, ProjectData projectData) {
-        return null;
+        int adminId = userService.authorize(token).getUserid();
+        if(adminId <= 0)
+            return fakeToken();
+        int privilege = memberMapper.getPrivilege(adminId, projectId);
+        if(privilege <= 1)
+            return fail("没有权限");
+        Project project = new Project(projectData);
+        var flag = projectMapper.insert(project);
+        if(flag == 0){
+            return fail("编辑项目失败");
+        }
+        return success();
     }
 
     @Override
-    public APIResponse removeProjectMember(String token, int projectId, int memberId) {
-        return null;
+    public APIResponse removeProjectMember(String token, int projectId, int userId) {
+        int adminId = userService.authorize(token).getUserid();
+        if(adminId <= 0)
+            return fakeToken();
+        int privilege = memberMapper.getPrivilege(adminId, projectId);
+        if(privilege <= 1)
+            return fail("没有权限");
+        UpdateWrapper<ProjectMember> wrapper = new UpdateWrapper<>();
+        wrapper.eq("project_id",projectId);
+        wrapper.eq("user_id",userId);
+        var flat = memberMapper.delete(wrapper);
+        System.out.printf("返回值为%d",flat);
+        if(flat == 0){
+            return fail("移除成员失败");
+        }
+        return success();
     }
 
     @Override
-    public APIResponse updateProjectMemberPrivilege(String token, int projectId, int memberId, int privilege) {
-        return null;
+    public APIResponse updateProjectMemberPrivilege(String token, int projectId, int userId, int privilege) {
+        int adminId = userService.authorize(token).getUserid();
+        if(adminId <= 0)
+            return fakeToken();
+        int adminPrivilege = memberMapper.getPrivilege(adminId, projectId);
+        if(adminPrivilege <= 1)
+            return fail("没有权限");
+        UpdateWrapper<ProjectMember> wrapper = new UpdateWrapper<>();
+        wrapper.eq("project_id",projectId);
+        wrapper.eq("user_id",userId);
+        wrapper.set("privilege",privilege);
+        var flat = memberMapper.update(wrapper);
+        System.out.printf("返回值为%d",flat);
+        if(flat == 0){
+            return fail("变更权限失败");
+        }
+        return success();
     }
 
     @Override
     public MembersResponse getProjectMembers(String token, int projectId) {
+
         return null;
     }
 
     @Override
     public ProjectInfoResponse getProjectInfo(String token, int projectId) {
+        int userId = userService.authorize(token).getUserid();
+        if(userId <= 0)
+            return new ProjectInfoResponse(fakeToken());
+
         return null;
     }
 

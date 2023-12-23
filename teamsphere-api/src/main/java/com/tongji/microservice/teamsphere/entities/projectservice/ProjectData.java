@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectData {
-    private int projectId;
-    private int projectScale;
-    private String projectName;
-    private String projectDescription;
-    private String projectLeader;
+    private int id;
+    private int scale;
+    private String name;
+    private String description;
+    private int leader;
 
 
 }

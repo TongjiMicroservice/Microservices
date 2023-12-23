@@ -1,6 +1,8 @@
 package com.tongji.microservice.teamsphere.dto.projectservice;
 
 import com.tongji.microservice.teamsphere.dto.APIResponse;
+import com.tongji.microservice.teamsphere.entities.projectservice.ProjectData;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -8,18 +10,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ProjectInfoResponse extends APIResponse implements Serializable {
-    private int projectId;
-    private String projectName;
-    private String projectDescription;
-    private LocalDateTime projectCreateTime;
+    private ProjectData data;
 
-    public ProjectInfoResponse(APIResponse apiResponse, int projectId, String projectName, String projectDescription, LocalDateTime projectCreateTime) {
+    public ProjectInfoResponse(APIResponse apiResponse) {
         super(apiResponse.getCode(), apiResponse.getMessage());
-        this.projectId = projectId;
-        this.projectName = projectName;
-        this.projectDescription = projectDescription;
-        this.projectCreateTime = projectCreateTime;
+        this.data = null;
     }
 }
