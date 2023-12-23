@@ -27,7 +27,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private ProjectMemberMapper memberMapper;
     @Override
-    public APIResponse creatProject(String token, ProjectData projectData) {
+    public APIResponse creatProject(String token, ProjectData projectData)  {
         int userId = userService.authorize(token).getUserid();
         if(userId <= 0)
             return fakeToken();
@@ -52,11 +52,12 @@ public class ProjectServiceImpl implements ProjectService {
         if(adminId <= 0){
             return fakeToken();
         }
+        System.out.printf("projectId = %d,userId = %d\n",projectId,adminId);
         int privilege = memberMapper.getPrivilege(adminId, projectId);
         if(privilege <= 1){
             return fail("没有权限");
         }
-        var flat = memberMapper.insert(new ProjectMember(projectId,adminId,1));
+        var flat = memberMapper.insert(new ProjectMember(projectId,userId,1));
         System.out.printf("返回值为%d",flat);
         if(flat == 0){
             return fail("添加成员失败");
@@ -72,10 +73,14 @@ public class ProjectServiceImpl implements ProjectService {
         int privilege = memberMapper.getPrivilege(adminId, projectId);
         if(privilege <= 1)
             return fail("没有权限");
-        Project project = new Project(projectData);
-        var flag = projectMapper.insert(project);
+        UpdateWrapper<Project> wrapper = new UpdateWrapper<Project>().eq("id",projectId);
+        wrapper.set("name",projectData.getName());
+        wrapper.set("description",projectData.getDescription());
+        wrapper.set("scale",projectData.getScale());
+        wrapper.set("leader",projectData.getLeader());
+        var flag = projectMapper.update(wrapper);
         if(flag == 0){
-            return fail("编辑项目失败");
+                return fail("编辑项目失败");
         }
         return success();
     }
