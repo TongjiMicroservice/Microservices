@@ -6,8 +6,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.*;
-import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
+//import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
+import com.tongji.microservice.teamsphere.entities.userservice.UserData;
 import com.tongji.microservice.teamsphere.userservice.entities.User;
 import com.tongji.microservice.teamsphere.userservice.mapper.UserMapper;
 import com.tongji.microservice.teamsphere.userservice.util.Jwt;
@@ -23,7 +24,7 @@ import static com.tongji.microservice.teamsphere.dto.APIResponse.*;
 @DubboService
 public class UserServiceImpl implements UserService {
     @DubboReference(check = false)
-    private ProjectService memberService;
+//    private ProjectService memberService;
 
     @Autowired
     private UserMapper userMapper;
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
         updateWrapper.set("avatar", request.getAvatar());
         userMapper.update(updateWrapper);
         return success();
-    };
+    }
 
     @Override
     public UserResponse getUserInfo(int userId){
@@ -89,7 +90,7 @@ public class UserServiceImpl implements UserService {
             return fail("用户不存在");
         userMapper.delete(queryWrapper);
         return success();
-    };
+    }
 
 
     @Override

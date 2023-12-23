@@ -1,8 +1,7 @@
 package com.tongji.microservice.teamsphere.dto.userservice;
 
-import com.alibaba.nacos.common.utils.Pair;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import lombok.AllArgsConstructor;
+import com.tongji.microservice.teamsphere.entities.userservice.UserData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

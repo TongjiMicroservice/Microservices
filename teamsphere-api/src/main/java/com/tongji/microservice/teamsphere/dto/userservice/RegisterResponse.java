@@ -1,11 +1,9 @@
 package com.tongji.microservice.teamsphere.dto.userservice;
 
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import lombok.AllArgsConstructor;
+import com.tongji.microservice.teamsphere.entities.userservice.UserData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
 
 import java.io.Serializable;
 
