@@ -6,12 +6,14 @@ import com.tongji.microservice.teamsphere.dto.userservice.*;
 public interface UserService {
 
     LoginResponse login(String username, String password);
-    RegisterResponse register(UserRequest request);
+    RegisterResponse register(RegisterRequest request);
 
     AuthorizeResponse authorize(String token);
 
-    APIResponse updateUserDetails(UserRequest request);
-    UserResponse getUserDetails(int userId);
+    APIResponse updateUserInfo(RegisterRequest request);
+    UserResponse getUserInfo(int userId);
+
+    QueryResponse queryUser(UserQueryRequest request);
     APIResponse deleteUser(int userId);
 }
 

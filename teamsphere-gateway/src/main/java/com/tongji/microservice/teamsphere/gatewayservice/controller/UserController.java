@@ -1,6 +1,5 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
-import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.*;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,7 +40,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "注册失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = RegisterResponse.class))),
     })
-    public RegisterResponse register(UserRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
         return userService.register(request);
     }
 
@@ -57,13 +56,26 @@ public class UserController {
     }
 
     @GetMapping("user/info")
-    @Operation(summary = "用户鉴权接口", responses = {
+    @Operation(summary = "获取用户详细信息接口", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
-            @ApiResponse(responseCode = "400", description = "鉴权失败",
+            @ApiResponse(responseCode = "400", description = "访问失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
     })
     public UserResponse getUserDetails(int userId) {
-        return userService.getUserDetails(userId);
+        return userService.getUserInfo(userId);
     }
+
+    @GetMapping("user/query")
+    @Operation(summary = "查询用户接口", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = QueryResponse.class))),
+            @ApiResponse(responseCode = "400", description = "访问失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = QueryResponse.class))),
+    })
+    public QueryResponse queryUser(UserQueryRequest request) {
+        return userService.queryUser(request);
+    }
+
+
 }

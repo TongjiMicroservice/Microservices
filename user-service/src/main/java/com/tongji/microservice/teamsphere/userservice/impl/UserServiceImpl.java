@@ -23,15 +23,22 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public APIResponse updateUserDetails(UserRequest request){
+    public APIResponse updateUserInfo(RegisterRequest request){
 
         return null;
     };
 
     @Override
-    public UserResponse getUserDetails(int userId){
+    public UserResponse getUserInfo(int userId){
         return null;
-    };
+    }
+
+    @Override
+    public QueryResponse queryUser(UserQueryRequest request) {
+        return null;
+    }
+
+    ;
 
     @Override
     public APIResponse deleteUser(int userId){
@@ -55,7 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RegisterResponse register(UserRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
 
         var user=new User(request.getUsername(), request.getPassword(), request.getEmail(), request.getAvatar());
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -88,7 +95,4 @@ public class UserServiceImpl implements UserService {
         }
         return new AuthorizeResponse(APIResponse.success(),x.getClaim("userid").asInt());
     }
-
-    @Override
-    public UserResponse 
 }
