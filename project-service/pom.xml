@@ -59,6 +59,11 @@
             <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
             <version>3.5.4.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>3.0.10</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -78,7 +83,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.tongji.microservice.teamsphere.projectservice.TeamsphereProjectApplication</mainClass>
+                    <mainClass>com.tongji.microservice.teamsphere.TeamsphereProjectApplication</mainClass>
                     <skip>false</skip>
                     <excludes>
                         <exclude>

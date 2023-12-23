@@ -6,21 +6,21 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RegisterResponse extends APIResponse implements Serializable {
-    private UserData data;
-    private String token;
-    public RegisterResponse(APIResponse apiResponse, int id, String username, String token) {
+//@AllArgsConstructor
+public class QueryResponse extends APIResponse implements Serializable {
+    private List<UserData> data;
+    public QueryResponse(APIResponse apiResponse, List<UserData> data) {
+        // 调用父类的构造函数来设置状态码和消息
         super(apiResponse.getCode(), apiResponse.getMessage());
-        this.data = new UserData(id, username);
-        this.token = token;
+        this.data = data;
     }
-    public RegisterResponse(APIResponse apiResponse){
+
+    public QueryResponse(APIResponse apiResponse) {
         super(apiResponse.getCode(), apiResponse.getMessage());
         this.data = null;
-        this.token = null;
     }
 }
-

@@ -4,9 +4,9 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class UserRequest implements Serializable {
+public class RegisterRequest implements Serializable {
     private String username,password,email,avatar;
-    public UserRequest(String username, String password, String email, String avatar) {
+    public RegisterRequest(String username, String password, String email, String avatar) {
         this.username = username;
         this.password = password;
         this.email = email;
