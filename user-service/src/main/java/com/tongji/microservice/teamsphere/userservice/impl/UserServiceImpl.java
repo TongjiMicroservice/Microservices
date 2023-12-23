@@ -1,6 +1,5 @@
 package com.tongji.microservice.teamsphere.userservice.impl;
 
-import com.alibaba.nacos.common.utils.Pair;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -128,7 +127,7 @@ public class UserServiceImpl implements UserService {
                 return new RegisterResponse(fail("数据库查询失败"));
             }
             String token = Jwt.generateToken(user.id,1000);
-            return new RegisterResponse(success(),user.id,user.username);
+            return new RegisterResponse(success(),user.id,user.username,token);
         }
     }
 
