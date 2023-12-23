@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Select;
 
 public interface UserMapper extends BaseMapper<User> {
     @Select("select max(id) from user")
-    int getMaxId();
+    int getMaxId()  ;
 
 }
 

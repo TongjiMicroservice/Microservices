@@ -63,10 +63,7 @@ public class ProjectServiceImpl implements ProjectService {
         var ret = memberMapper.selectOne(wrapper);
         if(ret!= null)
             return fail("成员已存在");
-        UpdateWrapper<ProjectMember> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("project_id",projectId);
-        updateWrapper.eq("user_id",userId);
-        var flat = memberMapper.update(new ProjectMember(projectId,userId,1),updateWrapper);
+        int flat = memberMapper.insert(new ProjectMember(projectId,userId,1));
         System.out.printf("返回值为%d",flat);
         if(flat == 0){
             return fail("添加成员失败");
@@ -141,15 +138,43 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectInfoResponse getProjectInfo(String token, int projectId) {
-        int userId = userService.authorize(token).getUserid();
-        if(userId <= 0)
+        int adminId = userService.authorize(token).getUserid();
+        if(adminId <= 0){
             return new ProjectInfoResponse(fakeToken());
-
-        return null;
+        }
+        System.out.printf("projectId = %d,userId = %d\n",projectId,adminId);
+        int privilege = memberMapper.getPrivilege(adminId, projectId);
+        if(privilege <= 1){
+            return new ProjectInfoResponse(fail("没有权限"));
+        }
+        QueryWrapper<Project> wrapper = new QueryWrapper<Project>();
+        wrapper.eq("id",projectId);
+        var project = projectMapper.selectOne(wrapper);
+        if(project == null)
+            return new ProjectInfoResponse(fail("项目不存在"));
+        return new ProjectInfoResponse(success(),project.getId(),
+                new ProjectData(project.getScale(),project.getName(),project.getDescription(),project.getLeader()));
     }
 
     @Override
     public APIResponse deleteProject(String token, int projectId) {
-        return null;
+        int adminId = userService.authorize(token).getUserid();
+        if(adminId <= 0){
+            return fakeToken();
+        }
+        QueryWrapper<Project> wrapper = new QueryWrapper<Project>();
+        wrapper.eq("project_id",projectId);
+        var project = projectMapper.selectOne(wrapper);
+        if(project == null)
+            return fail("项目不存在");
+        System.out.printf("projectId = %d,userId = %d\n",projectId,adminId);
+        int privilege = memberMapper.getPrivilege(adminId, projectId);
+        if(privilege <= 1){
+            return fail("没有权限");
+        }
+        int flat = projectMapper.deleteById(projectId);
+        if(flat <= 0)
+            return fail("删除失败");
+        return success();
     }
 }

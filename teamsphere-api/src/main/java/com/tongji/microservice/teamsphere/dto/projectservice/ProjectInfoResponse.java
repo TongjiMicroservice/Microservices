@@ -21,4 +21,10 @@ public class ProjectInfoResponse extends APIResponse implements Serializable {
         this.projectId=0;
         this.data = null;
     }
+
+    public ProjectInfoResponse(APIResponse success, int id, ProjectData projectData) {
+        super(success.getCode(), success.getMessage());
+        this.projectId = id;
+        this.data = projectData;
+    }
 }
