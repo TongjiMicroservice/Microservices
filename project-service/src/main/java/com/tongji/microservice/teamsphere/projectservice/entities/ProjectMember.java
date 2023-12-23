@@ -1,11 +1,13 @@
 package com.tongji.microservice.teamsphere.projectservice.entities;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@TableName("ProjectMember")
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectMember {

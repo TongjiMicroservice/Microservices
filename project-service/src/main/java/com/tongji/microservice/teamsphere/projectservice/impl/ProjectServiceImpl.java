@@ -1,5 +1,6 @@
 package com.tongji.microservice.teamsphere.projectservice.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.MembersResponse;
@@ -31,10 +32,17 @@ public class ProjectServiceImpl implements ProjectService {
         if(userId <= 0)
             return fakeToken();
         Project project = new Project(projectData);
+        //创建项目
         var flag = projectMapper.insert(project);
         if(flag == 0){
             return fail("创建项目失败");
         }
+        QueryWrapper<Project> wrapper = new QueryWrapper<>();
+        wrapper.eq("name",project.getName());
+        project.setId(projectMapper.selectOne(wrapper).getId());
+        //添加超级管理员
+        //System.out.printf("flag = %d插入%d\n", flag,project.getLeader());
+        memberMapper.insert(new ProjectMember(project.getId(),project.getLeader(), 3));
         return success();
     }
 
