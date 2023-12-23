@@ -18,5 +18,9 @@ public class RegisterResponse extends APIResponse implements Serializable {
         super(apiResponse.getCode(), apiResponse.getMessage());
         this.data = new UserData(id, username);
     }
+    public RegisterResponse(APIResponse apiResponse){
+        super(apiResponse.getCode(), apiResponse.getMessage());
+        this.data = null;
+    }
 }
 

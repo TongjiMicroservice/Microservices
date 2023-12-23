@@ -15,4 +15,9 @@ public class AuthorizeResponse extends APIResponse implements Serializable {
         super(apiResponse.getCode(), apiResponse.getMessage());
         this.userid = userid;
     }
+
+    public AuthorizeResponse(APIResponse apiResponse) {
+        super(apiResponse.getCode(), apiResponse.getMessage());
+        this.userid = 0;
+    }
 }
