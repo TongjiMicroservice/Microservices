@@ -57,7 +57,16 @@ public class ProjectServiceImpl implements ProjectService {
         if(privilege <= 1){
             return fail("没有权限");
         }
-        var flat = memberMapper.insert(new ProjectMember(projectId,userId,1));
+        QueryWrapper<ProjectMember> wrapper = new QueryWrapper<>();
+        wrapper.eq("project_id",projectId);
+        wrapper.eq("user_id",userId);
+        var ret = memberMapper.selectOne(wrapper);
+        if(ret!= null)
+            return fail("成员已存在");
+        UpdateWrapper<ProjectMember> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("project_id",projectId);
+        updateWrapper.eq("user_id",userId);
+        var flat = memberMapper.update(new ProjectMember(projectId,userId,1),updateWrapper);
         System.out.printf("返回值为%d",flat);
         if(flat == 0){
             return fail("添加成员失败");
