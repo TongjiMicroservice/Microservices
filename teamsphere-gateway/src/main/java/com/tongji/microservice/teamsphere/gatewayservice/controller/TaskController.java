@@ -54,7 +54,7 @@ public class TaskController {
         return taskService.addTaskMember(token, taskId, memberId);
     }
     @DeleteMapping("task/member")
-    @Operation(summary = "创建任务", responses = {
+    @Operation(summary = "删除任务成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
@@ -74,7 +74,7 @@ public class TaskController {
     APIResponse scoreTaskMember(String token, int taskId, int memberId, int score){
         return taskService.scoreTaskMember(token, taskId, memberId, score);
     }
-    @PatchMapping("task/member")
+    @PutMapping("task/member")
     @Operation(summary = "上传任务文件资料", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),

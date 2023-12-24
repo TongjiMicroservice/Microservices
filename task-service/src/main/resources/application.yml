@@ -12,3 +12,9 @@ dubbo:
     port: 20884
 server:
   port: 8081
+spring:
+  datasource:
+    url: jdbc:mariadb://123.60.177.179:3306/task_service
+    username: remote0
+    password: ${mariadb}
+    driver-class-name: org.mariadb.jdbc.Driver
