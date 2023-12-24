@@ -2,6 +2,8 @@ package com.tongji.microservice.teamsphere.taskservice.entities;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.tongji.microservice.teamsphere.entities.taskservice.TaskData;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @TableName("Task")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Task {
     @TableField("id")
     private int id;
@@ -26,4 +29,13 @@ public class Task {
     @TableField("leader")
     private int leader;
 
+    public Task(TaskData taskData) {
+        this.projectId = taskData.getProjectId();
+        this.name = taskData.getName();
+        this.description = taskData.getDescription();
+        this.id = taskData.getTaskId();
+        this.deadline = taskData.getDeadline();
+        this.status = taskData.getStatus();
+        this.leader = taskData.getLeader();
+    }
 }

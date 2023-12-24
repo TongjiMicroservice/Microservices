@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.MemberData;
 import com.tongji.microservice.teamsphere.dto.projectservice.MembersResponse;
+import com.tongji.microservice.teamsphere.dto.projectservice.PrivilegeResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.ProjectInfoResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
@@ -188,5 +189,14 @@ public class ProjectServiceImpl implements ProjectService {
         if(flat <= 0)
             return fail("删除失败");
         return success();
+    }
+
+    @Override
+    public PrivilegeResponse getProjectMemberPrivilege(String token, int projectId, int userId) {
+        try{
+            return new PrivilegeResponse(memberMapper.getPrivilege(userId, projectId));
+        }catch (Exception e){
+            return new PrivilegeResponse(fail("获取失败"));
+        }
     }
 }

@@ -1,11 +1,13 @@
 package com.tongji.microservice.teamsphere.entities.taskservice;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class TaskMember {
+@AllArgsConstructor
+public class TaskMemberData {
     private int id;
     private int taskId;
     private int score;
