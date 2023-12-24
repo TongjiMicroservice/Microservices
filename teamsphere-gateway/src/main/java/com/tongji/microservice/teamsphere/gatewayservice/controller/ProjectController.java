@@ -2,6 +2,7 @@ package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.MembersResponse;
+import com.tongji.microservice.teamsphere.dto.projectservice.PrivilegeResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.ProjectInfoResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.LoginResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
@@ -103,5 +104,16 @@ public class ProjectController {
     })
     APIResponse deleteProject(String token, int projectId){
         return projectService.deleteProject(token,projectId);
+    }
+
+    @GetMapping("/project/privilege")
+    @Operation(summary = "获取项目任务", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "400", description = "失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+    })
+    PrivilegeResponse getProjectMemberPrivilege(String token, int projectId, int userId){
+        return projectService.getProjectMemberPrivilege(token,projectId,userId);
     }
 }

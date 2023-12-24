@@ -11,6 +11,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class MemberData implements Serializable {
     private int userId;
-    private String name;
+    private int projectId;
     private int privilege;
 }
