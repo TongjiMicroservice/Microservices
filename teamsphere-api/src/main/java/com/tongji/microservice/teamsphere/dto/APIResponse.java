@@ -13,6 +13,11 @@ public class APIResponse implements Serializable {
     private int code;
     private String message;
 
+    public APIResponse(APIResponse success) {
+        this.code = success.code;
+        this.message = success.message;
+    }
+
     public static APIResponse success() {
         return new APIResponse(200, "success");
     }
