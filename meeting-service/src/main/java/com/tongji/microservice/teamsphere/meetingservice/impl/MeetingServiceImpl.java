@@ -2,6 +2,7 @@ package com.tongji.microservice.teamsphere.meetingservice.impl;
 
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.meetingservice.MeetingResponse;
+import com.tongji.microservice.teamsphere.dto.meetingservice.MeetingListResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.MeetingService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import com.tongji.microservice.teamsphere.meetingservice.mapper.MeetingMapper;
@@ -11,34 +12,86 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.tongji.microservice.teamsphere.meetingservice.client.*;
+import com.tongji.microservice.teamsphere.meetingservice.entities.Meeting;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 @DubboService
 public class MeetingServiceImpl implements MeetingService {
-
-
     @Autowired
     private MeetingMapper meetingMapper;
 
     @Autowired
-    private MeetingParticipantsMapper meetingParticipantsMapper;
+    private MeetingParticipantsMapper participantsMapper;
 
     @Override
-    public APIResponse cancelMeeting(String meetingId){
-        return new APIResponse();
+    public APIResponse cancelMeeting(String meetingId) {
+        FeishuAPIClient client = new FeishuAPIClient();
+        QueryWrapper<Meeting> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", meetingId);
+        Meeting meeting = meetingMapper.selectOne(queryWrapper);
+        if (meeting == null) {
+            return new APIResponse(400, "会议不存在");
+        } else {
+            boolean isDatabaseSuccess = meetingMapper.deleteMeetingById(meeting.getBookId()) > 0; // 成功删除数据库中的数据
+            boolean isFeishunSuccess = client.CancelMeeting(meeting.getBookId());
+            if (isDatabaseSuccess && isFeishunSuccess)
+                return new APIResponse(200, "会议取消成功");
+            else {
+                if (!isDatabaseSuccess && isFeishunSuccess)
+                    return new APIResponse(401, "会议未能从数据库中删除");
+                else if (isDatabaseSuccess && !isFeishunSuccess)
+                    return new APIResponse(402, "会议未能从飞书中删除");
+                else
+                    return new APIResponse(403, "会议未能从数据库和飞书中删除");
+            }
+        }
     };
 
     @Override
-    public APIResponse createMeeting(String projectId, String title, String description, LocalDateTime startTime, int duration){
-        return new APIResponse();
+    public MeetingResponse createMeeting(String projectId, String title, String description, LocalDateTime starTime,
+                                         LocalDateTime deadline) {
+        FeishuAPIClient client = new FeishuAPIClient();
+        MeetingBackData meetingBackData = client.BookMeeting(deadline);
+        if (meetingBackData.status == false) {
+            return new MeetingResponse(new APIResponse(400, "预约会议失败"), null);
+        } else {
+            Meeting meeting = new Meeting(meetingBackData.id, projectId, title, description, starTime, deadline,
+                    meetingBackData.url, meetingBackData.bookId);
+            boolean isDatabaseSuccess = meetingMapper.insertMeeting(meeting) > 0;
+            if (isDatabaseSuccess)
+                return new MeetingResponse(new APIResponse(200, "预约会议成功"), meetingBackData.url);
+            else
+                return new MeetingResponse(new APIResponse(201, "预约会议成功,但录入数据库失败"), meetingBackData.url);
+        }
     };
 
     @Override
-    public MeetingResponse getMeetingsForProject(String projectId){
-        return null;
+    public MeetingListResponse getMeetingsForProject(String projectId) {
+        List<Meeting> meetings = meetingMapper.selectMeetingsByProjectId(projectId);
+        if (meetings == null) {
+            return new MeetingListResponse(new APIResponse(400, "获取项目会议信息失败"), null);
+        } else if (meetings.isEmpty()) {
+            return new MeetingListResponse(new APIResponse(201, "项目会议数量为0"), meetings);
+        } else {
+            return new MeetingListResponse(new APIResponse(200, "获取项目会议信息成功"), meetings);
+        }
     };
 
     @Override
-    public MeetingResponse getMeetingsForUser(String userId){
-        return null;
+    public MeetingListResponse getMeetingsForUser(String userId) {
+        List<String> meetingIds = participantsMapper.selectMeetingIdsByParticipantId(userId);
+        if (meetingIds == null) {
+            return new MeetingListResponse(new APIResponse(400, "获取个人会议信息失败"), null);
+        } else {
+            List<Meeting> meetings = participantsMapper.selectMeetingsByMeetingIds(meetingIds);
+            if (meetings == null) {
+                return new MeetingListResponse(new APIResponse(400, "获取个人会议信息失败"), null);
+            } else {
+                return new MeetingListResponse(new APIResponse(200, "获取个人会议信息成功"), meetings);
+            }
+        }
     };
 }

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @TableName("meeting")
 public class Meeting {
     @TableField("id")
-    public int id;
+    public String id;
 
     @TableField("project_id")
     public String projectId;
@@ -33,4 +33,15 @@ public class Meeting {
     @TableField("url")
     public String url;
 
+    public Meeting(String id, String projectId, String title, String description, LocalDateTime starTime,
+                   LocalDateTime endTime, String meetingUrl, String bookId) {
+        this.id = id;
+        this.projectId = projectId;
+        this.title = title;
+        this.description = description;
+        this.startTime = starTime;
+        this.endTime = endTime;
+        this.url = meetingUrl;
+        this.bookId = bookId;
+    }
 }

@@ -13,4 +13,11 @@ public class MeetingParticipants{
     public int participantId;
     @TableField("role")
     public String role;
+
+    public MeetingParticipants(int id, String meetingId, int participantId, String role) {
+        this.id = id;
+        this.meetingId = meetingId;
+        this.participantId = participantId;
+        this.role = role;
+    }
 }
