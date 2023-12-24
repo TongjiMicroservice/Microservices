@@ -20,4 +20,14 @@ public class APIResponse implements Serializable {
     public static APIResponse failure(int code, String message) {
         return new APIResponse(code, message);
     }
+    public static APIResponse fail(String msg) {
+        return new APIResponse(400, msg);
+    }
+    public static APIResponse fakeToken() {
+        return new APIResponse(403, "无效身份");
+    }
+    public static APIResponse unauthorized() {
+        return new APIResponse(401, "无权操作");
+    }
+
 }

@@ -10,6 +10,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberData implements Serializable {
-    private int memberId;
-    private String role;
+    private int userId;
+    private String name;
+    private int privilege;
 }

@@ -20,5 +20,10 @@ public class LoginResponse extends APIResponse implements Serializable {
         this.userid = userid;
         this.token = token;
     }
+    public LoginResponse(APIResponse apiResponse){
+        super(apiResponse.getCode(), apiResponse.getMessage());
+        this.userid=0;
+        this.token="";
+    }
 }
 
