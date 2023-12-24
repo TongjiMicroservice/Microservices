@@ -1,4 +1,4 @@
-package com.tongji.microservice.teamsphere.taskservice;
+package com.tongji.microservice.teamsphere;
 
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;
