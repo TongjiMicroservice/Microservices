@@ -1,6 +1,5 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
-
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.taskservice.TaskMemberResponse;
 import com.tongji.microservice.teamsphere.dto.taskservice.ProjectTaskResponse;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class TaskController {
     @DubboReference(check = false)
     private TaskService taskService;
-    @PostMapping("task")
+    @PostMapping("/task")
     @Operation(summary = "创建任务", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
@@ -30,9 +29,10 @@ public class TaskController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
     })
     APIResponse createTask(String token, int projectId, TaskData taskData){
+        System.out.printf("调用方法成功");
         return taskService.createTask(token, projectId, taskData);
     }
-    @DeleteMapping("task")
+    @DeleteMapping("/task")
     @Operation(summary = "删除任务", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
@@ -43,7 +43,7 @@ public class TaskController {
         return taskService.deleteTask(token, taskId);
     }
 
-    @PostMapping("task/member")
+    @PostMapping("/task/member")
     @Operation(summary = "添加任务成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
@@ -53,7 +53,7 @@ public class TaskController {
     APIResponse addTaskMember(String token, int taskId, int memberId){
         return taskService.addTaskMember(token, taskId, memberId);
     }
-    @DeleteMapping("task/member")
+    @DeleteMapping("/task/member")
     @Operation(summary = "删除任务成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
@@ -64,7 +64,7 @@ public class TaskController {
         return taskService.deleteTaskMember(token, taskId, memberId);
     }
 
-    @PatchMapping("task/member")
+    @PatchMapping("/task/member")
     @Operation(summary = "为成员评分", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
@@ -74,7 +74,7 @@ public class TaskController {
     APIResponse scoreTaskMember(String token, int taskId, int memberId, int score){
         return taskService.scoreTaskMember(token, taskId, memberId, score);
     }
-    @PutMapping("task/member")
+    @PutMapping("/task/member")
     @Operation(summary = "上传任务文件资料", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
@@ -84,7 +84,7 @@ public class TaskController {
     APIResponse uploadTaskFile(String token, int taskId, int memberId, String fileURL){
         return taskService.uploadTaskFile(token, taskId, memberId, fileURL);
     }
-    @PatchMapping("task")
+    @PatchMapping("/task")
     @Operation(summary = "修改任务信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
@@ -95,7 +95,7 @@ public class TaskController {
         return taskService.updateTaskInfo(token, taskId, taskData);
     }
 
-    @GetMapping("task")
+    @GetMapping("/task")
     @Operation(summary = "获取任务信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
@@ -105,7 +105,7 @@ public class TaskController {
     TaskResponse getTaskInfo(String token, int taskId){
         return taskService.getTaskInfo(token, taskId);
     }
-    @GetMapping("task/member")
+    @GetMapping("/task/member")
     @Operation(summary = "获取任务成员清单", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
@@ -115,7 +115,7 @@ public class TaskController {
     TaskMemberResponse getTaskMember(String token, int taskId){
         return taskService.getTaskMember(token, taskId);
     }
-    @GetMapping("project/task")
+    @GetMapping("/task/list")
     @Operation(summary = "获取项目任务清单", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
