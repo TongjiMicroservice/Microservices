@@ -14,6 +14,7 @@ import com.tongji.microservice.teamsphere.taskservice.entities.Task;
 import com.tongji.microservice.teamsphere.taskservice.mapper.TaskMapper;
 import com.tongji.microservice.teamsphere.taskservice.mapper.TaskMemberMapper;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static com.tongji.microservice.teamsphere.dto.APIResponse.*;
 
+@DubboService
 public class TaskServiceImpl implements TaskService {
 
     @DubboReference(check = false)
