@@ -26,4 +26,11 @@ public class Meeting {
 
     @TableField("duration")
     public int duration;
+
+    @TableField("book_id")
+    public String bookId;
+
+    @TableField("url")
+    public String url;
+
 }
