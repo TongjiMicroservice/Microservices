@@ -3,6 +3,7 @@ package com.tongji.microservice.teamsphere.projectservice.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
+import com.tongji.microservice.teamsphere.dto.projectservice.MemberData;
 import com.tongji.microservice.teamsphere.dto.projectservice.MembersResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.ProjectInfoResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
@@ -15,6 +16,9 @@ import com.tongji.microservice.teamsphere.projectservice.mapper.ProjectMemberMap
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.tongji.microservice.teamsphere.dto.APIResponse.*;
 
@@ -132,8 +136,16 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public MembersResponse getProjectMembers(String token, int projectId) {
-
-        return null;
+        int adminId = userService.authorize(token).getUserid();
+        if(adminId <= 0){
+            return new MembersResponse(fakeToken());
+        }
+        var members = memberMapper.getMembers(projectId);
+        List<MemberData> memberData = new ArrayList<>();
+        for(var member : members){
+            memberData.add(new MemberData(member.getUserId(),member.getProjectId(),member.getPrivilege()));
+        }
+        return new MembersResponse(success() , memberData);
     }
 
     @Override

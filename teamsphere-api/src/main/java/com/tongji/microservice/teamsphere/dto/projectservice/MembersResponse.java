@@ -16,4 +16,9 @@ public class MembersResponse extends APIResponse implements Serializable {
          super(apiResponse.getCode(), apiResponse.getMessage());
          this.members = members;
     }
+
+    public MembersResponse(APIResponse apiResponse) {
+         super(apiResponse.getCode(), apiResponse.getMessage());
+         this.members = null;
+    }
 }
