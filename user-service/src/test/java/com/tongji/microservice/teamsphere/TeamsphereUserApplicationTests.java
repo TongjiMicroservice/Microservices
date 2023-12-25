@@ -3,7 +3,7 @@ package com.tongji.microservice.teamsphere;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = TeamsphereUserApplication.class)
 class TeamsphereUserApplicationTests {
 
     @Test

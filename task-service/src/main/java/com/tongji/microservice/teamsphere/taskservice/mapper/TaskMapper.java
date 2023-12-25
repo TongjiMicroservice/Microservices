@@ -9,12 +9,15 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 public interface TaskMapper extends BaseMapper<Task> {
-    @Select("SELECT project_id FROM task WHERE task_id = #{taskId}")
+    @Select("SELECT project_id FROM Task WHERE task_id = #{taskId}")
     int getProjectId(@Param("taskId")int taskId);
 
-    @Delete("DELETE FROM task WHERE task_id = #{taskId}")
+    @Delete("DELETE FROM Task WHERE task_id = #{taskId}")
     int deleteTaskById(@Param("taskId")int taskId);
 
-    @Select("SELECT * FROM task WHERE project_id = #{projectId}")
+    @Select("SELECT * FROM Task WHERE project_id = #{projectId}")
     List<Task> selectTaskByProjectId(@Param("projectId") int projectId);
+
+    @Select("SELECT id FROM Task WHERE project_id = #{projectId} AND name = #{name}")
+    int getTaskId(@Param("projectId") int projectId, @Param("name") String name);
 }

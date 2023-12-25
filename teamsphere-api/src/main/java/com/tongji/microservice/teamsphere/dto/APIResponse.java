@@ -22,9 +22,6 @@ public class APIResponse implements Serializable {
         return new APIResponse(200, "success");
     }
 
-    public static APIResponse failure(int code, String message) {
-        return new APIResponse(code, message);
-    }
     public static APIResponse fail(String msg) {
         return new APIResponse(400, msg);
     }
