@@ -15,4 +15,10 @@ public class EventIdResponse extends APIResponse implements Serializable {
         super(apiResponse.getCode(), apiResponse.getMessage());
         this.scheduleId = scheduleId;
     }
+
+    // 错误的生成导致没有scheduleId,scheduleId 被设置为-1
+    public EventIdResponse(APIResponse apiResponse){
+        super(apiResponse.getCode(),apiResponse.getMessage());
+        scheduleId = -1;
+    }
 }
