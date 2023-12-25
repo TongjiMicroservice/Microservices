@@ -1,11 +1,14 @@
 package com.tongji.microservice.teamsphere.dto.taskservice;
 
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import com.tongji.microservice.teamsphere.entities.taskservice.TaskData;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.List;
 
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class ProjectTaskResponse extends APIResponse implements Serializable {
     private List<TaskData> taskData;
 

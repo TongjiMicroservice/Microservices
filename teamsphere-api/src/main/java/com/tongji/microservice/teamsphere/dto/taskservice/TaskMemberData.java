@@ -1,4 +1,4 @@
-package com.tongji.microservice.teamsphere.entities.taskservice;
+package com.tongji.microservice.teamsphere.dto.taskservice;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

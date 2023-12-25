@@ -1,7 +1,6 @@
 package com.tongji.microservice.teamsphere.dto.userservice;
 
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import com.tongji.microservice.teamsphere.entities.userservice.UserData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

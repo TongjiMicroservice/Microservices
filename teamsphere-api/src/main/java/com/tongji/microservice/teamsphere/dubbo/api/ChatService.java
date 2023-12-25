@@ -1,6 +1,5 @@
 package com.tongji.microservice.teamsphere.dubbo.api;
 
-import com.tongji.microservice.teamsphere.entities.chatservice.Message;
 
 import java.util.List;
 

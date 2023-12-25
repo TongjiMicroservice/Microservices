@@ -1,7 +1,6 @@
-package com.tongji.microservice.teamsphere.dto.userservice;
+package com.tongji.microservice.teamsphere.dto.taskservice;
 
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,17 +9,20 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class LoginResponse extends APIResponse implements Serializable {
-    private int userid;
+public class CreateTaskResponse extends APIResponse implements Serializable {
+    private int taskId;
 
-    public LoginResponse(APIResponse apiResponse, int userid) {
+    public CreateTaskResponse(APIResponse apiResponse, int taskId) {
         super(apiResponse.getCode(), apiResponse.getMessage());
-        this.userid = userid;
+        this.taskId = taskId;
     }
-    public LoginResponse(APIResponse apiResponse){
+
+    public CreateTaskResponse(APIResponse apiResponse){
         super(apiResponse.getCode(), apiResponse.getMessage());
-        this.userid=0;
+        this.taskId=0;
     }
+
 }
-
