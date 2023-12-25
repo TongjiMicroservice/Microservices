@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.Duration;
 
 @Data
 @TableName("meeting")
@@ -40,7 +41,7 @@ public class Meeting {
         this.title = title;
         this.description = description;
         this.startTime = starTime;
-        this.endTime = endTime;
+        this.duration = (int)Duration.between(starTime, endTime).getSeconds();
         this.url = meetingUrl;
         this.bookId = bookId;
     }

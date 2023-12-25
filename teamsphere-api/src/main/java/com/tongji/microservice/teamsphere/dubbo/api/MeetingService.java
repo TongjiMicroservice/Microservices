@@ -9,6 +9,6 @@ import java.time.LocalDateTime;
 public interface MeetingService {
     APIResponse cancelMeeting(String meetingId);
     MeetingListResponse getMeetingsForProject(String projectId);
-    MeetingListResponse getMeetingsForUser(String userId);
+    MeetingListResponse getMeetingsForUser(int userId);
     MeetingResponse createMeeting(String projectId, String title, String description, LocalDateTime starTime, LocalDateTime deadline);
 }
