@@ -142,6 +142,7 @@ public class TaskServiceImpl implements TaskService {
                     task.getDeadline(),
                     task.getStatus()
             ));
+        System.out.println(list);
         return new ProjectTaskResponse(list);
     }
 }

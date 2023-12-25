@@ -53,9 +53,9 @@ public class TaskController {
     @DeleteMapping("/task/delete")
     @Operation(summary = "删除任务", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     APIResponse deleteTask(int taskId){
         if(!StpUtil.isLogin()){
@@ -71,9 +71,9 @@ public class TaskController {
     @PostMapping("/task/member/add")
     @Operation(summary = "添加任务成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     APIResponse addTaskMember(int taskId, int memberId){
         if (!StpUtil.isLogin()) {
@@ -184,14 +184,16 @@ public class TaskController {
     @GetMapping("/task/list")
     @Operation(summary = "获取项目任务清单", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = ProjectTaskResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectTaskResponse.class))),
     })
     ProjectTaskResponse getTasksForProject(int projectId){
         if (!StpUtil.isLogin()) {
             return new ProjectTaskResponse(APIResponse.fail("未登录"));
         }
-        return taskService.getTasksForProject( projectId);
+        var res= taskService.getTasksForProject( projectId);
+        System.out.println(res);
+        return res;
     }
 }
