@@ -16,4 +16,5 @@ public class EventData implements Serializable {
     private LocalDateTime startTime;
     private LocalDateTime deadline;
     private int priority;
+
 }
