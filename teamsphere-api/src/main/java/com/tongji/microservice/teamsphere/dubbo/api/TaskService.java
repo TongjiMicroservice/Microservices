@@ -5,7 +5,7 @@ import com.tongji.microservice.teamsphere.dto.taskservice.CreateTaskResponse;
 import com.tongji.microservice.teamsphere.dto.taskservice.TaskMemberResponse;
 import com.tongji.microservice.teamsphere.dto.taskservice.ProjectTaskResponse;
 import com.tongji.microservice.teamsphere.dto.taskservice.TaskResponse;
-import com.tongji.microservice.teamsphere.entities.taskservice.TaskData;
+import com.tongji.microservice.teamsphere.dto.taskservice.TaskData;
 
 import java.time.LocalDateTime;
 

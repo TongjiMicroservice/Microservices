@@ -1,8 +1,6 @@
 package com.tongji.microservice.teamsphere.dto.taskservice;
 
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import com.tongji.microservice.teamsphere.entities.taskservice.TaskData;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

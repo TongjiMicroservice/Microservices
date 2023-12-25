@@ -3,11 +3,9 @@ package com.tongji.microservice.teamsphere.projectservice.entities;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.tongji.microservice.teamsphere.entities.projectservice.ProjectData;
+import com.tongji.microservice.teamsphere.dto.projectservice.ProjectData;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor

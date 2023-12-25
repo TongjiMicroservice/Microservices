@@ -4,7 +4,7 @@ import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.MembersResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.PrivilegeResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.ProjectInfoResponse;
-import com.tongji.microservice.teamsphere.entities.projectservice.ProjectData;
+import com.tongji.microservice.teamsphere.dto.projectservice.ProjectData;
 
 public interface ProjectService {
     APIResponse creatProject(ProjectData projectData);

@@ -2,7 +2,7 @@ package com.tongji.microservice.teamsphere.taskservice.entities;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.tongji.microservice.teamsphere.entities.taskservice.TaskData;
+import com.tongji.microservice.teamsphere.dto.taskservice.TaskData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

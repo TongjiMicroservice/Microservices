@@ -8,7 +8,7 @@ import com.tongji.microservice.teamsphere.dto.projectservice.MembersResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.PrivilegeResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.ProjectInfoResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
-import com.tongji.microservice.teamsphere.entities.projectservice.ProjectData;
+import com.tongji.microservice.teamsphere.dto.projectservice.ProjectData;
 import com.tongji.microservice.teamsphere.projectservice.entities.Project;
 import com.tongji.microservice.teamsphere.projectservice.entities.ProjectMember;
 import com.tongji.microservice.teamsphere.projectservice.mapper.ProjectMapper;

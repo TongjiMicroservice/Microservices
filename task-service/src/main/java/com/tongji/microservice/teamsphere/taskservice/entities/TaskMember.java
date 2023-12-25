@@ -2,8 +2,7 @@ package com.tongji.microservice.teamsphere.taskservice.entities;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.tongji.microservice.teamsphere.entities.taskservice.TaskMemberData;
-import lombok.AllArgsConstructor;
+import com.tongji.microservice.teamsphere.dto.taskservice.TaskMemberData;
 import lombok.Data;
 
 import java.time.LocalDateTime;

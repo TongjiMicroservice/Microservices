@@ -29,19 +29,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public EventIdResponse createEvent(int userId, LocalDateTime startTime, LocalDateTime deadline, String description, String title, int priority) {
         APIResponse apiResponse = null;
-        int scheduleid = -1;
-        if (userId < 0) {
-            apiResponse = APIResponse.fakeToken();
-        }
-        // 现在认为调用该函数时userId一定是正确的
 
         // priority必须是0-2之间，否则报错
-        else if (priority < 0 || priority > 2) {
+        if (priority < 0 || priority > 2) {
             apiResponse = APIResponse.fail("Unexpected Priority");
+            return new EventIdResponse(apiResponse);
         } else {
-            scheduleid = eventMapper.getMaxId() + 1;
             Event event = new Event();
-            event.id = scheduleid;
             event.userId = userId;
             event.startTime = startTime;
             event.deadline = deadline;
@@ -51,19 +45,13 @@ public class ScheduleServiceImpl implements ScheduleService {
             var flag = eventMapper.insert(event);
             if (flag == 0) {
                 apiResponse = APIResponse.fail("Unable to insert into database");
-                scheduleid = -1;
+                return new EventIdResponse(apiResponse);
             } else {
                 apiResponse = APIResponse.success();
+                int eventId = eventMapper.getMaxId();
+                return new EventIdResponse(apiResponse, eventId);
             }
         }
-
-        EventIdResponse eventIdResponse;
-        if (scheduleid >= 0) {
-            eventIdResponse = new EventIdResponse(apiResponse, scheduleid);
-        } else {
-            eventIdResponse = new EventIdResponse(apiResponse);
-        }
-        return eventIdResponse;
     }
 
     @Override

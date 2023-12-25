@@ -8,16 +8,12 @@ import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.*;
 import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
-import com.tongji.microservice.teamsphere.entities.userservice.UserData;
 import com.tongji.microservice.teamsphere.userservice.entities.User;
 import com.tongji.microservice.teamsphere.userservice.mapper.UserMapper;
 import com.tongji.microservice.teamsphere.userservice.util.Jwt;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.tongji.microservice.teamsphere.dto.APIResponse.*;
 

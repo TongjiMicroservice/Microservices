@@ -9,7 +9,7 @@ import com.tongji.microservice.teamsphere.dto.taskservice.TaskResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.UserResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
 import com.tongji.microservice.teamsphere.dubbo.api.TaskService;
-import com.tongji.microservice.teamsphere.entities.taskservice.TaskData;
+import com.tongji.microservice.teamsphere.dto.taskservice.TaskData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
