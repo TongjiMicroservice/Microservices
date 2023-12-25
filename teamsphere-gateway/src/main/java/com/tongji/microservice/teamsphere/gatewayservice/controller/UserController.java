@@ -1,5 +1,6 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.*;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/api")
@@ -28,7 +30,13 @@ public class UserController {
                     content = @Content(mediaType = "application/json",schema = @Schema(implementation = LoginResponse.class))),
     })
     public LoginResponse login(String username, String password) {
-        return userService.login(username, password);
+        var res=userService.checkID(username, password);
+        if (res.getCode()==200){
+            StpUtil.login(res.getUserid());
+            return new LoginResponse(res, res.getUserid());
+        }else {
+            return new LoginResponse(res);
+        }
     }
 
     @PostMapping("/user/register")
@@ -42,19 +50,9 @@ public class UserController {
         return userService.register(request);
     }
 
-    @GetMapping("/user/authorize")
-    @Operation(summary = "用户鉴权", responses = {
-            @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = AuthorizeResponse.class))),
-            @ApiResponse(responseCode = "400", description = "鉴权失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthorizeResponse.class))),
-    })
-    public AuthorizeResponse authorize(String token) {
-        return userService.authorize(token);
-    }
 
     @GetMapping("user/info")
-    @Operation(summary = "获取用户详细信息", responses = {
+    @Operation(summary = "根据id获取用户详细信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
@@ -65,35 +63,48 @@ public class UserController {
     }
 
     @GetMapping("user")
-    @Operation(summary = "查询用户", responses = {
+    @Operation(summary = "查询当前登录用户", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "400", description = "访问失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+    })
+    public UserResponse queryCurrentUser(){
+        if (StpUtil.isLogin()){
+            return userService.getUserInfo(StpUtil.getLoginIdAsInt());
+        }else{
+            return new UserResponse(APIResponse.fail("未登录"));
+        }
+    }
+
+    @PatchMapping("user/update")
+    @Operation(summary = "更新当前登录用户信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = QueryResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = QueryResponse.class))),
     })
-    public QueryResponse queryUser(String token, UserQueryRequest request) {
-        return userService.queryUser(token, request);
+    APIResponse updateUserInfo(RegisterRequest request){
+        if (!StpUtil.isLogin()){
+            return APIResponse.fail("未登录");
+        }
+        return userService.updateUserInfo(StpUtil.getLoginIdAsInt(),request);
     }
 
-    @PatchMapping("user")
-    @Operation(summary = "更新用户信息", responses = {
-            @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = QueryResponse.class))),
-            @ApiResponse(responseCode = "400", description = "访问失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = QueryResponse.class))),
-    })
-    APIResponse updateUserInfo(String token, RegisterRequest request){
-        return userService.updateUserInfo(token, request);
-    }
-
-    @DeleteMapping("user")
+    @DeleteMapping("user/delete")
     @Operation(summary = "删除用户", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = QueryResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = QueryResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
-    APIResponse deleteUser(String token, int userId){
-        return userService.deleteUser(token, userId);
+    APIResponse deleteUser(int userId){
+        if (!StpUtil.isLogin()){
+            return APIResponse.fail("未登录");
+        }
+        if (StpUtil.getLoginIdAsInt()!=userId){
+            return APIResponse.fail("无权操作");
+        }
+        return userService.deleteUser(userId);
     }
 }

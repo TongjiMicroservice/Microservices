@@ -2,18 +2,16 @@ package com.tongji.microservice.teamsphere.taskservice.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
+import com.tongji.microservice.teamsphere.dto.taskservice.CreateTaskResponse;
 import com.tongji.microservice.teamsphere.dto.taskservice.ProjectTaskResponse;
 import com.tongji.microservice.teamsphere.dto.taskservice.TaskMemberResponse;
 import com.tongji.microservice.teamsphere.dto.taskservice.TaskResponse;
-import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
 import com.tongji.microservice.teamsphere.dubbo.api.TaskService;
-import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import com.tongji.microservice.teamsphere.entities.taskservice.TaskData;
 import com.tongji.microservice.teamsphere.entities.taskservice.TaskMemberData;
 import com.tongji.microservice.teamsphere.taskservice.entities.Task;
 import com.tongji.microservice.teamsphere.taskservice.mapper.TaskMapper;
 import com.tongji.microservice.teamsphere.taskservice.mapper.TaskMemberMapper;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,45 +24,25 @@ import static com.tongji.microservice.teamsphere.dto.APIResponse.*;
 @DubboService
 public class TaskServiceImpl implements TaskService {
 
-    @DubboReference(check = false)
-    private TaskService taskService;
-    @DubboReference(check = false)
-    private ProjectService projectService;
-    @DubboReference(check = false)
-    private UserService userService;
     // 注入TaskMapper和TaskMemberMapper
     @Autowired
     private TaskMapper taskMapper;
     @Autowired
     private TaskMemberMapper memberMapper;
     @Override
-    public APIResponse createTask(String token, int projectId, TaskData taskData) {
-        int adminId = userService.authorize(token).getUserid();
-        if(adminId <= 0){
-            return fakeToken();
-        }
-        System.out.printf("projectId = %d,userId = %d\n",projectId,adminId);
-        int privilege = projectService.getProjectMemberPrivilege(token,projectId,adminId).getPrivilege();
-        if(privilege <= 1){
-            return fail("没有权限");
-        }
-        var flat = taskMapper.insert(new Task(taskData));
+    public CreateTaskResponse createTask(String name, String description, int projectId, LocalDateTime deadline, int leader, int priority) {
+        var flat = taskMapper.insert(
+                new Task(name,description,projectId,deadline,leader,priority)
+        );
         if(flat == 0)
-            return fail("创建失败");
-        return success();
+            return new CreateTaskResponse(APIResponse.fail("创建失败")) ;
+        int taskId = taskMapper.getTaskId(projectId,name);
+        return new CreateTaskResponse(APIResponse.success(),taskId);
     }
 
     @Override
-    public APIResponse deleteTask(String token, int taskId) {
-        int adminId = userService.authorize(token).getUserid();
-        if(adminId <= 0){
-            return fakeToken();
-        }
+    public APIResponse deleteTask(int taskId) {
         int projectId = taskMapper.getProjectId(taskId);
-        int privilege = projectService.getProjectMemberPrivilege(token,projectId,adminId).getPrivilege();
-        if(privilege <= 1){
-            return fail("没有权限");
-        }
         var flat = taskMapper.deleteTaskById(taskId);
         if(flat == 0)
             return fail("删除失败");
@@ -72,16 +50,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public APIResponse addTaskMember(String token, int taskId, int memberId) {
-        int adminId = userService.authorize(token).getUserid();
-        if(adminId <= 0){
-            return fakeToken();
-        }
+    public APIResponse addTaskMember(int taskId, int memberId) {
         int projectId = taskMapper.getProjectId(taskId);
-        int privilege = projectService.getProjectMemberPrivilege(token,projectId,adminId).getPrivilege();
-        if(privilege <= 1){
-            return fail("没有权限");
-        }
         var flat =  memberMapper.addMember(taskId,memberId);
         if(flat == 0)
             return fail("添加失败");
@@ -89,16 +59,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public APIResponse deleteTaskMember(String token, int taskId, int memberId) {
-        int adminId = userService.authorize(token).getUserid();
-        if(adminId <= 0){
-            return fakeToken();
-        }
+    public APIResponse deleteTaskMember(int taskId, int memberId) {
         int projectId = taskMapper.getProjectId(taskId);
-        int privilege = projectService.getProjectMemberPrivilege(token,projectId,adminId).getPrivilege();
-        if(privilege <= 1){
-            return fail("没有权限");
-        }
         var flat =  memberMapper.deleteMember(taskId,memberId);
         if(flat == 0)
             return fail("删除失败");
@@ -106,16 +68,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public APIResponse scoreTaskMember(String token, int taskId, int memberId, int score) {
-        int adminId = userService.authorize(token).getUserid();
-        if(adminId <= 0){
-            return fakeToken();
-        }
+    public APIResponse scoreTaskMember(int taskId, int memberId, int score) {
         int projectId = taskMapper.getProjectId(taskId);
-        int privilege = projectService.getProjectMemberPrivilege(token,projectId,adminId).getPrivilege();
-        if(privilege <= 1){
-            return fail("没有权限");
-        }
         var flat =  memberMapper.setScore(taskId,memberId,score);
         if(flat == 0)
             return fail("评分失败");
@@ -123,11 +77,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public APIResponse uploadTaskFile(String token, int taskId, int memberId, String fileURL) {
-        int adminId = userService.authorize(token).getUserid();
-        if(adminId <= 0 || adminId != memberId){
-            return fakeToken();
-        }
+    public APIResponse uploadTaskFile(int taskId, int memberId, String fileURL) {
         int flat = memberMapper.setFileURL(taskId,memberId,fileURL, LocalDateTime.now());
         if(flat == 0)
             return fail("上传失败");
@@ -135,16 +85,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public APIResponse updateTaskInfo(String token, int taskId, TaskData taskData) {
-        int adminId = userService.authorize(token).getUserid();
-        if(adminId <= 0){
-            return fakeToken();
-        }
-        int projectId = taskMapper.getProjectId(taskId);
-        int privilege = projectService.getProjectMemberPrivilege(token,projectId,adminId).getPrivilege();
-        if(privilege <= 1){
-            return fail("没有权限");
-        }
+    public APIResponse updateTaskInfo( int taskId, TaskData taskData) {
         UpdateWrapper <Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id",taskId);
         int flat = taskMapper.update(new Task(taskData), updateWrapper);
@@ -154,11 +95,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskResponse getTaskInfo(String token, int taskId) {
-        int adminId = userService.authorize(token).getUserid();
-        if(adminId <= 0){
-            return new TaskResponse(fakeToken());
-        }
+    public TaskResponse getTaskInfo(int taskId) {
         Task task = taskMapper.selectById(taskId);
         if(task == null)
             return  new TaskResponse(fail("任务不存在"));
@@ -174,11 +111,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskMemberResponse getTaskMember(String token, int taskId) {
-        int adminId = userService.authorize(token).getUserid();
-        if(adminId <= 0){
-            return new TaskMemberResponse(fakeToken());
-        }
+    public TaskMemberResponse getTaskMember(int taskId) {
         Task task = taskMapper.selectById(taskId);
         if(task == null)
             return  new TaskMemberResponse(fail("任务不存在"));
@@ -196,11 +129,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public ProjectTaskResponse getTasksForProject(String token, int projectId) {
-        int adminId = userService.authorize(token).getUserid();
-        if(adminId <= 0){
-            return new ProjectTaskResponse(fakeToken());
-        }
+    public ProjectTaskResponse getTasksForProject(int projectId) {
         List<Task> tasks = taskMapper.selectTaskByProjectId(projectId);
         List<TaskData> list = new ArrayList<>();
         for(var task : tasks)

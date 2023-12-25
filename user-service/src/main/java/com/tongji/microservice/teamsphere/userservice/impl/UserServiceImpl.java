@@ -30,10 +30,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public APIResponse updateUserInfo(String token, RegisterRequest request){
-        int userId = authorize(token).getUserid();
-        if(userId<=0)
-            return fakeToken();
+    public APIResponse updateUserInfo(int userId,RegisterRequest request){
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", userId);
         if(userMapper.selectOne(queryWrapper)==null)
@@ -59,31 +56,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public QueryResponse queryUser(String token, UserQueryRequest request) {
-        if(authorize(token).getUserid()<=0)
-            return new QueryResponse(fakeToken());
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "username");
-        if(request.getUserid()>0){
-            queryWrapper.eq("id", request.getUserid());
-        } else if (request.getUsername()!=null) {
-            queryWrapper.eq("username", request.getUsername());
-        }else if(request.getEmail()!=null)
-            queryWrapper.eq("email", request.getEmail());
-        else
-            return new QueryResponse(fail("查询条件不能为空"));
-        List<User> users = userMapper.selectList(queryWrapper);
-        List<UserData> list= new ArrayList<>();
-        for(var user:users){
-            list.add(new UserData(user.id, user.username));
-        }
-        return new QueryResponse(success(),list);
-    }
-
-    @Override
-    public APIResponse deleteUser(String token, int userId){
-        if(authorize(token).getUserid() != userId)
-            return fail("权限不足，非本人无法删除用户");
+    public APIResponse deleteUser(int userId){
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", userId);
         if(userMapper.selectOne(queryWrapper)==null)
@@ -94,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public LoginResponse login(String username, String password) {
+    public LoginResponse checkID(String username, String password) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", username);
         User user = userMapper.selectOne(queryWrapper);
@@ -103,8 +76,7 @@ public class UserServiceImpl implements UserService {
         } else if (!user.password.equals(password)) {
             return new LoginResponse(fail( "错误的密码"));
         } else {
-            String token = Jwt.generateToken(user.id,3600*24*30);
-            return new LoginResponse(success(), user.id, token);
+            return new LoginResponse(success(),user.getId());
         }
     }
 
@@ -128,8 +100,7 @@ public class UserServiceImpl implements UserService {
             if(user==null){
                 return new RegisterResponse(fail("数据库查询失败"));
             }
-            String token = Jwt.generateToken(user.id,1000);
-            return new RegisterResponse(success(),user.id,user.username,token);
+            return new RegisterResponse(success(),user.id,user.username);
         }
     }
 
