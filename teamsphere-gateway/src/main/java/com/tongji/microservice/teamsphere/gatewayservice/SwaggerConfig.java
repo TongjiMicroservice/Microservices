@@ -9,14 +9,25 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @OpenAPIDefinition(
         security = @SecurityRequirement(name="JWT")
 )
 @SecurityScheme(type = SecuritySchemeType.HTTP,name = "JWT",scheme = "bearer",in= SecuritySchemeIn.HEADER)
 @Configuration
-public class SwaggerConfig {
+public class SwaggerConfig implements WebMvcConfigurer {
 
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .maxAge(3600)
+                .allowedHeaders("*")
+                .allowCredentials(true);
+    }
     @Bean
     public OpenAPI springShopOpenAPI() {
         return new OpenAPI()
