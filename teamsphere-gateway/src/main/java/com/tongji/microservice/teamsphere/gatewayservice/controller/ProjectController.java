@@ -153,7 +153,7 @@ public class ProjectController {
         return projectService.getProjectMemberPrivilege(projectId,userId);
     }
 
-    @GetMapping("/project/privilege/get")
+    @GetMapping("/project/all")
     @Operation(summary = "获取全部项目信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
