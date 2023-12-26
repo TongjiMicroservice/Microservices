@@ -36,7 +36,7 @@ public class ProjectController {
     })
     APIResponse creatProject(ProjectData projectData){
         if(!StpUtil.isLogin()){
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         return projectService.creatProject(projectData);
     }
@@ -49,7 +49,7 @@ public class ProjectController {
     })
     APIResponse addProjectMember(int projectId, int userId){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
             return APIResponse.fail("没有权限");
@@ -66,7 +66,7 @@ public class ProjectController {
     })
     APIResponse updateProjectInfo(int projectId, ProjectData projectData){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
             return APIResponse.fail("没有权限");
@@ -82,7 +82,7 @@ public class ProjectController {
     })
     APIResponse removeProjectMember(int projectId, int userId){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
             return APIResponse.fail("没有权限");
@@ -98,7 +98,7 @@ public class ProjectController {
     })
     APIResponse updateProjectMemberPrivilege(int projectId, int userId, int privilege){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
             return APIResponse.fail("没有权限");
@@ -114,7 +114,7 @@ public class ProjectController {
     })
     MembersResponse getProjectMembers(int projectId){
         if (!StpUtil.isLogin()) {
-            return new MembersResponse(APIResponse.fail("未登录"));
+            return new MembersResponse(APIResponse.notLoggedIn());
         }
         return projectService.getProjectMembers(projectId);
     }
@@ -137,7 +137,7 @@ public class ProjectController {
     })
     APIResponse deleteProject(int projectId){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
             return APIResponse.fail("没有权限");
