@@ -1,10 +1,7 @@
 package com.tongji.microservice.teamsphere.dubbo.api;
 
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.MembersResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.PrivilegeResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.ProjectInfoResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.ProjectData;
+import com.tongji.microservice.teamsphere.dto.projectservice.*;
 
 public interface ProjectService {
     APIResponse creatProject(ProjectData projectData);
@@ -17,4 +14,6 @@ public interface ProjectService {
     ProjectInfoResponse getProjectInfo(int projectId);
     APIResponse deleteProject(int projectId);
     PrivilegeResponse getProjectMemberPrivilege(int projectId, int userId);
+
+    ProjectQueryResponse queryProject();
 }

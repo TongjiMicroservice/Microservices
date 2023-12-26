@@ -2,12 +2,9 @@ package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.MembersResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.PrivilegeResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.ProjectInfoResponse;
+import com.tongji.microservice.teamsphere.dto.projectservice.*;
 import com.tongji.microservice.teamsphere.dto.userservice.LoginResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
-import com.tongji.microservice.teamsphere.dto.projectservice.ProjectData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -154,5 +151,19 @@ public class ProjectController {
     })
     PrivilegeResponse getProjectMemberPrivilege(int projectId, int userId){
         return projectService.getProjectMemberPrivilege(projectId,userId);
+    }
+
+    @GetMapping("/project/privilege/get")
+    @Operation(summary = "获取全部项目信息", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "400", description = "失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+    })
+    ProjectQueryResponse queryProject(){
+        if (!StpUtil.isLogin()) {
+            return new ProjectQueryResponse(APIResponse.notLoggedIn());
+        }
+        return projectService.queryProject();
     }
 }

@@ -3,12 +3,8 @@ package com.tongji.microservice.teamsphere.projectservice.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.MemberData;
-import com.tongji.microservice.teamsphere.dto.projectservice.MembersResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.PrivilegeResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.ProjectInfoResponse;
+import com.tongji.microservice.teamsphere.dto.projectservice.*;
 import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
-import com.tongji.microservice.teamsphere.dto.projectservice.ProjectData;
 import com.tongji.microservice.teamsphere.projectservice.entities.Project;
 import com.tongji.microservice.teamsphere.projectservice.entities.ProjectMember;
 import com.tongji.microservice.teamsphere.projectservice.mapper.ProjectMapper;
@@ -141,5 +137,15 @@ public class ProjectServiceImpl implements ProjectService {
         }catch (Exception e){
             return new PrivilegeResponse(fail("获取失败"));
         }
+    }
+
+    @Override
+    public ProjectQueryResponse queryProject() {
+        var projects = projectMapper.selectAll();
+        List<ProjectData> list = new ArrayList<>();
+        for(var project : projects){
+            list.add(new ProjectData(project.getScale(),project.getName(),project.getDescription(),project.getLeader()));
+        }
+        return new ProjectQueryResponse(list);
     }
 }
