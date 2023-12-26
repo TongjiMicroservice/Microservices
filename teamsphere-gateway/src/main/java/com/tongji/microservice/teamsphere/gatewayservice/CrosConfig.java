@@ -9,10 +9,10 @@ public class CrosConfig implements WebMvcConfigurer {
     @Override
         public void addCorsMappings(CorsRegistry registry) {
             registry.addMapping("/**")  //指定允许跨域请求的路径模式为"/**"，表示所有的路径都将允许跨域访问。
-                    .allowedOrigins("http://luxingzhi.cn","https://luxingzhi.cn","http://localhost:8090","https://localhost:8090") // 允许访问资源的域名
+                    .allowedOrigins("*") // 允许访问资源的域名
                     .allowedMethods("*") // 允许的HTTP方法
                     .allowedHeaders("*") // 允许的请求头
-                    .allowCredentials(true) // 是否允许发送凭证信息
+                    .allowCredentials(false) // 是否允许发送凭证信息
                     .maxAge(3600); // 预检请求的有效期
         }
 }
