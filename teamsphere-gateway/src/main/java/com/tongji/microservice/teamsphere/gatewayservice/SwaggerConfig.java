@@ -19,15 +19,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class SwaggerConfig implements WebMvcConfigurer {
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .maxAge(3600)
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOrigins("*")
+//                .allowedMethods("GET", "POST", "PUT", "DELETE")
+//                .maxAge(3600)
+//                .allowedHeaders("*")
+//                .allowCredentials(true);
+//    }
     @Bean
     public OpenAPI springShopOpenAPI() {
         return new OpenAPI()
