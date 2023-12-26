@@ -15,5 +15,7 @@ public interface ProjectService {
     APIResponse deleteProject(int projectId);
     PrivilegeResponse getProjectMemberPrivilege(int projectId, int userId);
 
+    ProjectQueryResponse getProjectByUserId(int userId);
+
     ProjectQueryResponse queryProject();
 }

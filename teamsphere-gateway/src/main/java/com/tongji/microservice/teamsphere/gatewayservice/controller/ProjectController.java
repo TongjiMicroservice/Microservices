@@ -166,4 +166,18 @@ public class ProjectController {
         }
         return projectService.queryProject();
     }
+
+    @GetMapping("/project/project-by-user")
+    @Operation(summary = "获取用户加入的项目信息", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "400", description = "失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+    })
+    ProjectQueryResponse getProjectByUserId(int userId){
+        if (!StpUtil.isLogin()) {
+            return new ProjectQueryResponse(APIResponse.notLoggedIn());
+        }
+        return projectService.getProjectByUserId(userId);
+    }
 }

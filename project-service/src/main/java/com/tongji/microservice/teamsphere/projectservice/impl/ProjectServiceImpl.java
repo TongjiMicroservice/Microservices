@@ -140,6 +140,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public ProjectQueryResponse getProjectByUserId(int userId) {
+        List<ProjectData> data = new ArrayList<>();
+        var list = memberMapper.getProjectByUserId(userId);
+        for(var i : list){
+            data.add(projectMapper.selectProjectById(list[i]));
+        }
+        return new ProjectQueryResponse(data);
+    }
+
+    @Override
     public ProjectQueryResponse queryProject() {
         var projects = projectMapper.selectAll();
         List<ProjectData> list = new ArrayList<>();
