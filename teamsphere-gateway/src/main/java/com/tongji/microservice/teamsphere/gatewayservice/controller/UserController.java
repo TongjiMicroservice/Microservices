@@ -20,7 +20,7 @@ public class UserController {
     @DubboReference(check = false)
     private UserService userService;
 
-    @GetMapping("/user/login")
+    @PostMapping("/user/login")
     @Operation(summary = "用户登录", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
