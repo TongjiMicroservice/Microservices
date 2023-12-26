@@ -73,7 +73,7 @@ public class UserController {
         if (StpUtil.isLogin()){
             return userService.getUserInfo(StpUtil.getLoginIdAsInt());
         }else{
-            return new UserResponse(APIResponse.fail("未登录"));
+            return new UserResponse(APIResponse.notLoggedIn());
         }
     }
 
@@ -86,7 +86,7 @@ public class UserController {
     })
     APIResponse updateUserInfo(RegisterRequest request){
         if (!StpUtil.isLogin()){
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         return userService.updateUserInfo(StpUtil.getLoginIdAsInt(),request);
     }
@@ -100,7 +100,7 @@ public class UserController {
     })
     APIResponse deleteUser(int userId){
         if (!StpUtil.isLogin()){
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         if (StpUtil.getLoginIdAsInt()!=userId){
             return APIResponse.fail("无权操作");

@@ -22,7 +22,7 @@ public class ScheduleController {
     @PostMapping("/schedule/create")
     EventIdResponse createEvent(LocalDateTime startTime, LocalDateTime deadline, String description, String title, int priority){
         if(!StpUtil.isLogin()){
-            return new EventIdResponse(APIResponse.fail("未登录"),-1);
+            return new EventIdResponse(APIResponse.notLoggedIn(),-1);
         }
         return scheduleService.createEvent(StpUtil.getLoginIdAsInt(),startTime,deadline,description,title,priority);
     }

@@ -43,7 +43,7 @@ public class TaskController {
     })
     CreateTaskResponse createTask(int projectId, String name, String description, int leader, LocalDateTime deadline, int priority){
         if(!StpUtil.isLogin()){
-            return new CreateTaskResponse(APIResponse.fail("未登录"));
+            return new CreateTaskResponse(APIResponse.notLoggedIn());
         }
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
             return new CreateTaskResponse(APIResponse.fail("没有权限"));
@@ -59,7 +59,7 @@ public class TaskController {
     })
     APIResponse deleteTask(int taskId){
         if(!StpUtil.isLogin()){
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         int projectId = taskService.getTaskInfo(taskId).getTaskData().getProjectId();
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
@@ -77,7 +77,7 @@ public class TaskController {
     })
     APIResponse addTaskMember(int taskId, int memberId){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         int projectId = taskService.getTaskInfo(taskId).getTaskData().getProjectId();
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
@@ -94,7 +94,7 @@ public class TaskController {
     })
     APIResponse deleteTaskMember(int taskId, int memberId){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         int projectId = taskService.getTaskInfo(taskId).getTaskData().getProjectId();
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
@@ -112,7 +112,7 @@ public class TaskController {
     })
     APIResponse scoreTaskMember(int taskId, int memberId, int score){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         int projectId = taskService.getTaskInfo(taskId).getTaskData().getProjectId();
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
@@ -129,7 +129,7 @@ public class TaskController {
     })
     APIResponse uploadTaskFile(int taskId, int memberId, String fileURL){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         int projectId = taskService.getTaskInfo(taskId).getTaskData().getProjectId();
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
@@ -146,7 +146,7 @@ public class TaskController {
     })
     APIResponse updateTaskInfo(int taskId, TaskData taskData){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         int projectId = taskService.getTaskInfo(taskId).getTaskData().getProjectId();
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
@@ -164,7 +164,7 @@ public class TaskController {
     })
     TaskResponse getTaskInfo(int taskId){
         if (!StpUtil.isLogin()) {
-            return new TaskResponse(APIResponse.fail("未登录"));
+            return new TaskResponse(APIResponse.notLoggedIn());
         }
         return taskService.getTaskInfo(taskId);
     }
@@ -177,11 +177,11 @@ public class TaskController {
     })
     TaskMemberResponse getTaskMember(int taskId){
         if (!StpUtil.isLogin()) {
-            return new TaskMemberResponse(APIResponse.fail("未登录"));
+            return new TaskMemberResponse(APIResponse.notLoggedIn());
         }
         return taskService.getTaskMember(taskId);
     }
-    @GetMapping("/task/list")
+    @GetMapping("/task/list-by-project")
     @Operation(summary = "获取项目任务清单", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = ProjectTaskResponse.class))),
@@ -190,11 +190,41 @@ public class TaskController {
     })
     ProjectTaskResponse getTasksForProject(int projectId){
         if (!StpUtil.isLogin()) {
-            return new ProjectTaskResponse(APIResponse.fail("未登录"));
+            return new ProjectTaskResponse(APIResponse.notLoggedIn());
         }
         var res= taskService.getTasksForProject( projectId);
         System.out.println(res);
         return res;
     }
 
+    @GetMapping("/task/list-by-leader")
+    @Operation(summary = "获取管理者所管理的任务清单", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = ProjectTaskResponse.class))),
+            @ApiResponse(responseCode = "400", description = "访问失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectTaskResponse.class))),
+    })
+    ProjectTaskResponse getTasksForLeader(int userId){
+        if (!StpUtil.isLogin()) {
+            return new ProjectTaskResponse(APIResponse.notLoggedIn());
+        }
+        var res= taskService.getTasksForLeader(userId);
+        System.out.println(res);
+        return res;
+    }
+    @GetMapping("/task/list-by-member")
+    @Operation(summary = "获取打工人的任务清单", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = ProjectTaskResponse.class))),
+            @ApiResponse(responseCode = "400", description = "访问失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectTaskResponse.class))),
+    })
+    ProjectTaskResponse getTasksForMember(int userId){
+        if (!StpUtil.isLogin()) {
+            return new ProjectTaskResponse(APIResponse.notLoggedIn());
+        }
+        var res= taskService.getTasksForMember(userId);
+        System.out.println(res);
+        return res;
+    }
 }

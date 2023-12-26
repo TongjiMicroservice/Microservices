@@ -30,6 +30,8 @@ public class APIResponse implements Serializable {
     }
     public static APIResponse unauthorized() {
         return new APIResponse(401, "无权操作");
+    }public static APIResponse notLoggedIn() {
+        return new APIResponse(401, "未登录");
     }
 
 }
