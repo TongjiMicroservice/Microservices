@@ -2,12 +2,9 @@ package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.MembersResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.PrivilegeResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.ProjectInfoResponse;
+import com.tongji.microservice.teamsphere.dto.projectservice.*;
 import com.tongji.microservice.teamsphere.dto.userservice.LoginResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
-import com.tongji.microservice.teamsphere.dto.projectservice.ProjectData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,7 +33,7 @@ public class ProjectController {
     })
     APIResponse creatProject(ProjectData projectData){
         if(!StpUtil.isLogin()){
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         return projectService.creatProject(projectData);
     }
@@ -49,7 +46,7 @@ public class ProjectController {
     })
     APIResponse addProjectMember(int projectId, int userId){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
             return APIResponse.fail("没有权限");
@@ -66,7 +63,7 @@ public class ProjectController {
     })
     APIResponse updateProjectInfo(int projectId, ProjectData projectData){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
             return APIResponse.fail("没有权限");
@@ -82,7 +79,7 @@ public class ProjectController {
     })
     APIResponse removeProjectMember(int projectId, int userId){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
             return APIResponse.fail("没有权限");
@@ -98,7 +95,7 @@ public class ProjectController {
     })
     APIResponse updateProjectMemberPrivilege(int projectId, int userId, int privilege){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
             return APIResponse.fail("没有权限");
@@ -114,7 +111,7 @@ public class ProjectController {
     })
     MembersResponse getProjectMembers(int projectId){
         if (!StpUtil.isLogin()) {
-            return new MembersResponse(APIResponse.fail("未登录"));
+            return new MembersResponse(APIResponse.notLoggedIn());
         }
         return projectService.getProjectMembers(projectId);
     }
@@ -137,7 +134,7 @@ public class ProjectController {
     })
     APIResponse deleteProject(int projectId){
         if (!StpUtil.isLogin()) {
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
             return APIResponse.fail("没有权限");
@@ -154,5 +151,33 @@ public class ProjectController {
     })
     PrivilegeResponse getProjectMemberPrivilege(int projectId, int userId){
         return projectService.getProjectMemberPrivilege(projectId,userId);
+    }
+
+    @GetMapping("/project/all")
+    @Operation(summary = "获取全部项目信息", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "400", description = "失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+    })
+    ProjectQueryResponse queryProject(){
+        if (!StpUtil.isLogin()) {
+            return new ProjectQueryResponse(APIResponse.notLoggedIn());
+        }
+        return projectService.queryProject();
+    }
+
+    @GetMapping("/project/project-by-user")
+    @Operation(summary = "获取用户加入的项目信息", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "400", description = "失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+    })
+    ProjectQueryResponse getProjectByUserId(int userId){
+        if (!StpUtil.isLogin()) {
+            return new ProjectQueryResponse(APIResponse.notLoggedIn());
+        }
+        return projectService.getProjectByUserId(userId);
     }
 }

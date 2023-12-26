@@ -11,6 +11,6 @@ import java.io.Serializable;
 public class ProjectData implements Serializable {
     private int scale;
     private String name;
-    private String description;
+private String description;
     private int leader;
 }
