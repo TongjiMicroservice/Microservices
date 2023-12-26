@@ -25,4 +25,9 @@ public interface TaskService {
 
     TaskMemberResponse getTaskMember(int taskId);
     ProjectTaskResponse getTasksForProject(int projectId);
+
+    ProjectTaskResponse getTasksForLeader(int userId);
+
+    ProjectTaskResponse getTasksForMember(int userId);
+
 }

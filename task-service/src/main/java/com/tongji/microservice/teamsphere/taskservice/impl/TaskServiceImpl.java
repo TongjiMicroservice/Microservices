@@ -145,4 +145,41 @@ public class TaskServiceImpl implements TaskService {
         System.out.println(list);
         return new ProjectTaskResponse(list);
     }
+
+    @Override
+    public ProjectTaskResponse getTasksForLeader(int userId) {
+        List<TaskData> taskData = new ArrayList<>();
+        var list = taskMapper.getTaskByLeader(userId);
+        for(var task : list){
+            taskData.add(new TaskData(
+                    task.getId(),
+                    task.getProjectId(),
+                    task.getLeader(),
+                    task.getName(),
+                    task.getDescription(),
+                    task.getDeadline(),
+                    task.getStatus()
+            ));
+        }
+        return new ProjectTaskResponse(taskData);
+    }
+
+    @Override
+    public ProjectTaskResponse getTasksForMember(int userId) {
+        List<TaskData> taskData= new ArrayList<>();
+        var list = memberMapper.getTaskByUserId(userId);
+        for(var i : list){
+            Task task = taskMapper.getTaskById(list[i]);
+            taskData.add(new TaskData(
+                    task.getId(),
+                    task.getProjectId(),
+                    task.getLeader(),
+                    task.getName(),
+                    task.getDescription(),
+                    task.getDeadline(),
+                    task.getStatus()
+            ));
+        }
+        return new ProjectTaskResponse(taskData);
+    }
 }

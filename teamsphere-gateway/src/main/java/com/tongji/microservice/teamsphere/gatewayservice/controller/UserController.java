@@ -20,7 +20,7 @@ public class UserController {
     @DubboReference(check = false)
     private UserService userService;
 
-    @GetMapping("/user/login")
+    @PostMapping("/user/login")
     @Operation(summary = "用户登录", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
@@ -73,7 +73,7 @@ public class UserController {
         if (StpUtil.isLogin()){
             return userService.getUserInfo(StpUtil.getLoginIdAsInt());
         }else{
-            return new UserResponse(APIResponse.fail("未登录"));
+            return new UserResponse(APIResponse.notLoggedIn());
         }
     }
 
@@ -86,7 +86,7 @@ public class UserController {
     })
     APIResponse updateUserInfo(RegisterRequest request){
         if (!StpUtil.isLogin()){
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         return userService.updateUserInfo(StpUtil.getLoginIdAsInt(),request);
     }
@@ -100,7 +100,7 @@ public class UserController {
     })
     APIResponse deleteUser(int userId){
         if (!StpUtil.isLogin()){
-            return APIResponse.fail("未登录");
+            return APIResponse.notLoggedIn();
         }
         if (StpUtil.getLoginIdAsInt()!=userId){
             return APIResponse.fail("无权操作");
