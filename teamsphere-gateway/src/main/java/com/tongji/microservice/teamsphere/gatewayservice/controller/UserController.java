@@ -1,6 +1,7 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.dev33.satoken.util.SaResult;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.userservice.*;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
@@ -29,13 +30,14 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "密码错误",
                     content = @Content(mediaType = "application/json",schema = @Schema(implementation = LoginResponse.class))),
     })
-    public LoginResponse login(String username, String password) {
+    public SaResult login(String username, String password) {
         var res=userService.checkID(username, password);
         if (res.getCode()==200){
             StpUtil.login(res.getUserid());
-            return new LoginResponse(res, res.getUserid());
+            var info=StpUtil.getTokenInfo();
+            return SaResult.data(info);
         }else {
-            return new LoginResponse(res);
+            return SaResult.error(res.getMessage());
         }
     }
 
