@@ -181,7 +181,7 @@ public class TaskController {
         }
         return taskService.getTaskMember(taskId);
     }
-    @GetMapping("/task/list")
+    @GetMapping("/task/list-by-project")
     @Operation(summary = "获取项目任务清单", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = ProjectTaskResponse.class))),
@@ -197,4 +197,34 @@ public class TaskController {
         return res;
     }
 
+    @GetMapping("/task/list-by-leader")
+    @Operation(summary = "获取管理者所管理的任务清单", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = ProjectTaskResponse.class))),
+            @ApiResponse(responseCode = "400", description = "访问失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectTaskResponse.class))),
+    })
+    ProjectTaskResponse getTasksForLeader(int userId){
+        if (!StpUtil.isLogin()) {
+            return new ProjectTaskResponse(APIResponse.notLoggedIn());
+        }
+        var res= taskService.getTasksForLeader(userId);
+        System.out.println(res);
+        return res;
+    }
+    @GetMapping("/task/list-by-member")
+    @Operation(summary = "获取打工人的任务清单", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = ProjectTaskResponse.class))),
+            @ApiResponse(responseCode = "400", description = "访问失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectTaskResponse.class))),
+    })
+    ProjectTaskResponse getTasksForMember(int userId){
+        if (!StpUtil.isLogin()) {
+            return new ProjectTaskResponse(APIResponse.notLoggedIn());
+        }
+        var res= taskService.getTasksForMember(userId);
+        System.out.println(res);
+        return res;
+    }
 }

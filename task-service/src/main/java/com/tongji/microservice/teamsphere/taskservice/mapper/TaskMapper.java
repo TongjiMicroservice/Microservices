@@ -20,4 +20,10 @@ public interface TaskMapper extends BaseMapper<Task> {
 
     @Select("SELECT id FROM Task WHERE project_id = #{projectId} AND name = #{name}")
     int getTaskId(@Param("projectId") int projectId, @Param("name") String name);
+
+    @Select("SELECT * FROM Task WHERE id = #{id}")
+    Task getTaskById(@Param("id") int id);
+
+    @Select("SELECT * FROM Task WHERE leader = #{userId}")
+    Task[] getTaskByLeader(@Param("userId") int userId);
 }
