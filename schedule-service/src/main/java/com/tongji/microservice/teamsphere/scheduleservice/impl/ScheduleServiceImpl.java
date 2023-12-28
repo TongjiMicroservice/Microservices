@@ -79,7 +79,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 
         if (eventid >= 0) {
-            eventIdResponse = new EventIdResponse(apiResponse, eventid);
+            eventIdResponse = new EventIdResponse(APIResponse.success(), eventid);
         } else {
             eventIdResponse = new EventIdResponse(apiResponse);
         }
