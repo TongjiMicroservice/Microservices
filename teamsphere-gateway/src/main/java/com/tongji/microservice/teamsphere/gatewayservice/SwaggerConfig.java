@@ -13,9 +13,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @OpenAPIDefinition(
-        security = @SecurityRequirement(name="JWT")
+        security = @SecurityRequirement(name="sa-token")
 )
-@SecurityScheme(type = SecuritySchemeType.HTTP,name = "JWT",scheme = "bearer",in= SecuritySchemeIn.HEADER)
+@SecurityScheme(type = SecuritySchemeType.HTTP,name = "sa-token",scheme = "bearer",in= SecuritySchemeIn.HEADER)
 @Configuration
 public class SwaggerConfig implements WebMvcConfigurer {
 
