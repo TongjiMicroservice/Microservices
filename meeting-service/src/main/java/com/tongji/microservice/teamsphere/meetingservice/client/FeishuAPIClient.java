@@ -17,7 +17,7 @@ public class FeishuAPIClient {
     private static Client client;
     // 这是使用tenant_access_token访问必传的参数，一个用户一个应用专属的id， 由于user_acccess
     // token刷新需要登录态，这里不采用
-    private static String tenant_access_token = "t-g104cqlF7J4RT624MAYWA3KFCMQBQLBRSPPTHAAH";
+    private static String tenant_access_token = "t-g104cskBBQKFNOSIXGPWWCOTWYQ3E6CPTS3N3MC2";
     private static final String open_id = "ou_3b3fb663eca94b776c1d5f921ccf602b";
     private static final String app_id = "cli_a5f40dee38b9100c";
     private static final String app_secret = "bfxhA82NwRuF6KSSJO2YQec3B6KTdWqf";
@@ -70,6 +70,7 @@ public class FeishuAPIClient {
 
     // 预约会议
     public MeetingBackData BookMeeting(LocalDateTime deadline) throws Exception {
+
         // 创建请求对象
         ApplyReserveReq req = ApplyReserveReq.newBuilder()
                 .applyReserveReqBody(ApplyReserveReqBody.newBuilder()
