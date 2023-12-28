@@ -9,8 +9,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectData implements Serializable {
+    private int id;
     private int scale;
     private String name;
-private String description;
+    private String description;
     private int leader;
 }
