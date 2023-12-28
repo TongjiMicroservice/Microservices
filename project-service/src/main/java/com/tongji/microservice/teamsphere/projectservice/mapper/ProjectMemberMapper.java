@@ -16,5 +16,5 @@ public interface ProjectMemberMapper extends BaseMapper<ProjectMember> {
     List<ProjectMember> getMembers(@Param("projectId")int projectId);
 
     @Select("SELECT ProjectMember.project_id FROM ProjectMember WHERE user_id = #{userId}")
-    int[] getProjectByUserId(@Param("userId") int userId);
+    List<Integer>getProjectByUserId(@Param("userId") int userId);
 }

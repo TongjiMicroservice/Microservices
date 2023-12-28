@@ -31,13 +31,17 @@ public class TaskServiceImpl implements TaskService {
     private TaskMemberMapper memberMapper;
     @Override
     public CreateTaskResponse createTask(String name, String description, int projectId, LocalDateTime deadline, int leader, int priority) {
-        var flat = taskMapper.insert(
-                new Task(name,description,projectId,deadline,leader,priority)
-        );
-        if(flat == 0)
-            return new CreateTaskResponse(APIResponse.fail("创建失败")) ;
-        int taskId = taskMapper.getTaskId(projectId,name);
-        return new CreateTaskResponse(APIResponse.success(),taskId);
+        try {
+            var flat = taskMapper.insert(
+                    new Task(name, description, projectId, deadline, leader, priority)
+            );
+            if(flat == 0)
+                return new CreateTaskResponse(APIResponse.fail("创建失败")) ;
+            int taskId = taskMapper.getTaskId(projectId,name);
+            return new CreateTaskResponse(APIResponse.success(),taskId);
+        }catch (Exception e) {
+            return new CreateTaskResponse(APIResponse.fail(e.getMessage()));
+        }
     }
 
     @Override

@@ -144,7 +144,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<ProjectData> data = new ArrayList<>();
         var list = memberMapper.getProjectByUserId(userId);
         for(var i : list){
-            data.add(projectMapper.selectProjectById(list[i]));
+            data.add(projectMapper.selectProjectById(i));
         }
         return new ProjectQueryResponse(data);
     }
