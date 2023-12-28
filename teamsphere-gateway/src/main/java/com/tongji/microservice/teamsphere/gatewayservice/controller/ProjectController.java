@@ -31,9 +31,9 @@ public class ProjectController {
             @ApiResponse(responseCode = "400", description = "失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
     })
-    APIResponse creatProject(ProjectData projectData){
+    ProjectIdResponse creatProject(ProjectData projectData){
         if(!StpUtil.isLogin()){
-            return APIResponse.notLoggedIn();
+            return new ProjectIdResponse(APIResponse.notLoggedIn(),-1) ;
         }
         return projectService.creatProject(projectData);
     }
@@ -170,9 +170,9 @@ public class ProjectController {
     @GetMapping("/project/project-by-user")
     @Operation(summary = "获取用户加入的项目信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = ProjectQueryResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectQueryResponse.class))),
     })
     ProjectQueryResponse getProjectByUserId(int userId){
         if (!StpUtil.isLogin()) {
