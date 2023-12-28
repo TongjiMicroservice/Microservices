@@ -4,7 +4,7 @@ import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.*;
 
 public interface ProjectService {
-    APIResponse creatProject(ProjectData projectData);
+    ProjectIdResponse creatProject(ProjectData projectData);
     APIResponse addProjectMember(int projectId, int userId);
 
     APIResponse updateProjectInfo(int projectId, ProjectData projectData);

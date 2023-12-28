@@ -24,12 +24,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private ProjectMemberMapper memberMapper;
     @Override
-    public APIResponse creatProject(ProjectData projectData)  {
+    public ProjectIdResponse creatProject(ProjectData projectData)  {
         Project project = new Project(projectData);
         //创建项目
         var flag = projectMapper.insert(project);
         if(flag == 0){
-            return fail("创建项目失败");
+            return new ProjectIdResponse(fail("创建项目失败"),-1) ;
         }
         QueryWrapper<Project> wrapper = new QueryWrapper<>();
         wrapper.eq("name",project.getName());
@@ -37,7 +37,7 @@ public class ProjectServiceImpl implements ProjectService {
         //添加超级管理员
         //System.out.printf("flag = %d插入%d\n", flag,project.getLeader());
         memberMapper.insert(new ProjectMember(project.getId(),project.getLeader(), 3));
-        return success();
+        return new ProjectIdResponse(success(),project.getId());
     }
 
     @Override
@@ -114,7 +114,7 @@ public class ProjectServiceImpl implements ProjectService {
         if(project == null)
             return new ProjectInfoResponse(fail("项目不存在"));
         return new ProjectInfoResponse(success(),project.getId(),
-                new ProjectData(project.getScale(),project.getName(),project.getDescription(),project.getLeader()));
+                new ProjectData(project.getId(),project.getScale(),project.getName(),project.getDescription(),project.getLeader()));
     }
 
     @Override
@@ -144,7 +144,7 @@ public class ProjectServiceImpl implements ProjectService {
         List<ProjectData> data = new ArrayList<>();
         var list = memberMapper.getProjectByUserId(userId);
         for(var i : list){
-            data.add(projectMapper.selectProjectById(list[i]));
+            data.add(projectMapper.selectProjectById(i));
         }
         return new ProjectQueryResponse(data);
     }
@@ -154,7 +154,7 @@ public class ProjectServiceImpl implements ProjectService {
         var projects = projectMapper.selectAll();
         List<ProjectData> list = new ArrayList<>();
         for(var project : projects){
-            list.add(new ProjectData(project.getScale(),project.getName(),project.getDescription(),project.getLeader()));
+            list.add(new ProjectData(project.getId(),project.getScale(),project.getName(),project.getDescription(),project.getLeader()));
         }
         return new ProjectQueryResponse(list);
     }

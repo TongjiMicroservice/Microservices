@@ -8,9 +8,9 @@ import org.apache.ibatis.annotations.Select;
 
 public interface ProjectMapper extends BaseMapper<Project> {
     // 查询项目列表
-    @Select("select * from project")
+    @Select("select * from Project")
     public Project[] selectAll();
 
-    @Select("select * from project where id = #{id}")
+    @Select("select * from Project where id = #{id}")
     ProjectData selectProjectById(@Param("id") int id);
 }
