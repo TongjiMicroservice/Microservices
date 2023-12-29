@@ -9,8 +9,9 @@ public class MongoDB {
     private static MongoDatabase database;
     static{
         try{
-            mongoClient = MongoClients.create("mongodb://localhost:27017");
-            database = mongoClient.getDatabase("db");
+            System.out.println("正在连接MongoDB...");
+            mongoClient = MongoClients.create("mongodb://123.60.177.179:27017");
+            database = mongoClient.getDatabase("test");
             System.out.println("Connected successfully");
         } catch (Exception e) {
             System.err.println("Error while inserting to MongoDB: " + e.getMessage());

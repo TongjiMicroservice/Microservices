@@ -173,7 +173,7 @@ public class TaskServiceImpl implements TaskService {
         List<TaskData> taskData= new ArrayList<>();
         var list = memberMapper.getTaskByUserId(userId);
         for(var i : list){
-            Task task = taskMapper.getTaskById(list[i]);
+            Task task = taskMapper.getTaskById(i);
             taskData.add(new TaskData(
                     task.getId(),
                     task.getProjectId(),

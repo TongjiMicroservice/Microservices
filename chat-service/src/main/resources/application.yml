@@ -1,5 +1,5 @@
 nacos:
-  address: mse-5a242a20-p.nacos-ans.mse.aliyuncs.com
+  #address: mse-5a242a20-p.nacos-ans.mse.aliyuncs.com
 dubbo:
   application:
     logger: slf4j
@@ -12,3 +12,9 @@ dubbo:
     port: 20882
 server:
   port: 8085
+spring:
+  data:
+    mongodb:
+      host: 123.60.177.179
+      port: 27017
+      database: test
