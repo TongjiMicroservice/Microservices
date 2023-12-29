@@ -72,6 +72,8 @@ public class FeishuAPIClient {
     // 预约会议
     public MeetingBackData BookMeeting(LocalDateTime deadline) throws Exception {
         tenant_access_token = TokenFetcher.fetchToken(); // 防止2小时的token过期
+        System.out.println("更新后的tenant_access_token是");
+        System.out.println(tenant_access_token);
         // 创建请求对象
         ApplyReserveReq req = ApplyReserveReq.newBuilder()
                 .applyReserveReqBody(ApplyReserveReqBody.newBuilder()

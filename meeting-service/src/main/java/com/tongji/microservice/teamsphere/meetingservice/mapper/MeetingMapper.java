@@ -13,6 +13,9 @@ public interface MeetingMapper extends BaseMapper<Meeting> {
     @Select("SELECT * FROM meeting WHERE id = #{id}")
     Meeting selectMeetingById(String id);
 
+    @Select("SELECT * FROM meeting WHERE book_id = #{book_id}")
+    Meeting selectMeetingByBookId(String book_id);
+
     @Insert("INSERT INTO meeting (id, project_id, title, description, star_time, duration, meeting_url, book_id) VALUES (#{id}, #{projectId},#{title}, #{description},#{starTime}, #{duration},#{meetingUrl}, #{bookId}")
     int insertMeeting(Meeting meeting);
 
@@ -20,7 +23,7 @@ public interface MeetingMapper extends BaseMapper<Meeting> {
     int deleteMeetingById(String bookId);
 
     @Select("SELECT * FROM meeting WHERE project_id = #{projectId}")
-    List<Meeting> selectMeetingsByProjectId(String projectId);
+    List<Meeting> selectMeetingsByProjectId(int projectId);
 
     @Select("SELECT EXISTS (SELECT 1 FROM meeting WHERE book_id = #{bookId})")
     boolean existsMeetingByBookId(String bookId);

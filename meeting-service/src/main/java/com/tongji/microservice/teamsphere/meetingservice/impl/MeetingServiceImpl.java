@@ -6,17 +6,17 @@ import com.tongji.microservice.teamsphere.dto.meetingservice.MeetingData;
 import com.tongji.microservice.teamsphere.dto.meetingservice.MeetingListResponse;
 import com.tongji.microservice.teamsphere.dto.meetingservice.MeetingResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.MeetingService;
-
 import com.tongji.microservice.teamsphere.meetingservice.client.FeishuAPIClient;
 import com.tongji.microservice.teamsphere.meetingservice.client.MeetingBackData;
 import com.tongji.microservice.teamsphere.meetingservice.entities.Meeting;
-
+import com.tongji.microservice.teamsphere.meetingservice.entities.MeetingParticipants;
 import com.tongji.microservice.teamsphere.meetingservice.mapper.MeetingMapper;
 import com.tongji.microservice.teamsphere.meetingservice.mapper.MeetingParticipantsMapper;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,8 +32,9 @@ public class MeetingServiceImpl implements MeetingService {
     public APIResponse cancelMeeting(String meetingId) {
         FeishuAPIClient client = new FeishuAPIClient();
         QueryWrapper<Meeting> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("book_id", meetingId);
+        queryWrapper.eq("id", meetingId);
         Meeting meeting = meetingMapper.selectOne(queryWrapper);
+//        Meeting meeting = meetingMapper.selectMeetingByBookId(meetingId);
         if (meeting == null) {
             return new APIResponse(400, "会议不存在");
         } else {
@@ -58,7 +59,7 @@ public class MeetingServiceImpl implements MeetingService {
     };
 
     @Override
-    public MeetingResponse createMeeting(String projectId, String title, String description, LocalDateTime starTime,
+    public MeetingResponse createMeeting(int projectId, String title, String description, LocalDateTime starTime,
                                          LocalDateTime deadline) {
         FeishuAPIClient client = new FeishuAPIClient();
         MeetingBackData meetingBackData;
@@ -87,11 +88,11 @@ public class MeetingServiceImpl implements MeetingService {
     };
 
     @Override
-    public MeetingListResponse getMeetingsForProject(String projectId) {
+    public MeetingListResponse getMeetingsForProject(int projectId) {
         List<Meeting> meetings = meetingMapper.selectMeetingsByProjectId(projectId);
         List<MeetingData> meetingDataList = meetings.stream()
                 .map(meeting -> new MeetingData(
-                        Integer.parseInt(meeting.id),
+                        meeting.id,
                         meeting.projectId,
                         meeting.title,
                         meeting.description,
@@ -114,12 +115,16 @@ public class MeetingServiceImpl implements MeetingService {
     public MeetingListResponse getMeetingsForUser(int userId) {
         List<String> meetingIds = participantsMapper.selectMeetingIdsByParticipantId(userId);
         if (meetingIds == null) {
-            return new MeetingListResponse(new APIResponse(400, "获取个人会议信息失败"), null);
+            return new MeetingListResponse(new APIResponse(400, "没有相关会议"), null);
         } else {
-            List<Meeting> meetings = participantsMapper.selectMeetingsByMeetingIds(meetingIds);
+            List<Meeting> meetings = new ArrayList<>(); // 创建一个ArrayList对象来存储Meeting对象
+            for(String item : meetingIds){
+                Meeting meeting = meetingMapper.selectMeetingById(item);
+                meetings.add(meeting);
+            }
             List<MeetingData> meetingDataList = meetings.stream()
                     .map(meeting -> new MeetingData(
-                            Integer.parseInt(meeting.id),
+                            meeting.id,
                             meeting.projectId,
                             meeting.title,
                             meeting.description,
@@ -130,10 +135,66 @@ public class MeetingServiceImpl implements MeetingService {
                     ))
                     .collect(Collectors.toList());
             if (meetings == null) {
-                return new MeetingListResponse(new APIResponse(400, "获取个人会议信息失败"), null);
+                return new MeetingListResponse(new APIResponse(401, "获取个人会议信息失败"), null);
             } else {
                 return new MeetingListResponse(new APIResponse(200, "获取个人会议信息成功"), meetingDataList);
             }
         }
     };
+
+    @Override
+    public APIResponse addParticipant(String meetingId, int participantId, String role) {
+        QueryWrapper<MeetingParticipants> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("meeting_id", meetingId);
+        queryWrapper.eq("participant_id", participantId);
+        MeetingParticipants existingParticipant = participantsMapper.selectOne(queryWrapper);
+
+        if (existingParticipant != null) {
+            return new APIResponse(400, "参会人已存在");
+        }
+
+        MeetingParticipants participant = new MeetingParticipants(meetingId, participantId, role);
+        boolean isDatabaseSuccess = participantsMapper.insert(participant) > 0;
+
+        if (isDatabaseSuccess) {
+            return new APIResponse(200, "添加参会人成功");
+        } else {
+            return new APIResponse(400, "添加参会人失败");
+        }
+    }
+
+    @Override
+    public APIResponse removeParticipant(String meetingId, int participantId){
+        QueryWrapper<MeetingParticipants> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("meeting_id", meetingId);
+        queryWrapper.eq("participant_id", participantId);
+        MeetingParticipants participant = participantsMapper.selectOne(queryWrapper);
+        if (participant == null) {
+            return new APIResponse(400, "参会人不存在");
+        } else {
+            boolean isDatabaseSuccess = participantsMapper.delete(queryWrapper) > 0; // 成功删除数据库中的数据
+                if (isDatabaseSuccess)
+                    return new APIResponse(200, "参会人移除成功");
+                else
+                    return new APIResponse(401, "参会人移除失败");
+        }
+    }
+
+    @Override
+    public APIResponse setParticipantRole(String meetingId, int participantId, String role){
+        QueryWrapper<MeetingParticipants> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("meeting_id", meetingId);
+        queryWrapper.eq("participant_id", participantId);
+        MeetingParticipants participant = participantsMapper.selectOne(queryWrapper);
+        if (participant == null) {
+            return new APIResponse(400, "参会人不存在");
+        } else {
+            participant.setRole(role);
+            boolean isDatabaseSuccess = participantsMapper.update(participant,queryWrapper) > 0; // 成功删除数据库中的数据
+            if (isDatabaseSuccess)
+                return new APIResponse(200, "参会人角色修改成功");
+            else
+                return new APIResponse(401, "参会人角色修改失败");
+        }
+    }
 }
