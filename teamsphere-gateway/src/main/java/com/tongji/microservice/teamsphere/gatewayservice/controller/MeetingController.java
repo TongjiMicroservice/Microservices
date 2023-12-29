@@ -1,7 +1,8 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import com.tongji.microservice.teamsphere.dto.meetingservice.*;
+import com.tongji.microservice.teamsphere.dto.meetingservice.MeetingListResponse;
+import com.tongji.microservice.teamsphere.dto.meetingservice.MeetingResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.MeetingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,6 +34,10 @@ public class MeetingController {
                                          @RequestParam("description") String description,
                                          @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
                                          @RequestParam("deadline") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime deadline) {
+//        if (!StpUtil.isLogin()){
+//            // 用户未登录
+//            return new MeetingResponse(new APIResponse(404, "用户未登录"), null);
+//        }
         return meetingService.createMeeting(projectId, title, description, startTime, deadline);
     }
 
@@ -44,6 +49,10 @@ public class MeetingController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     public APIResponse cancelMeeting(@PathVariable("meetingId") String meetingId) {
+//        if (!StpUtil.isLogin()){
+//            // 用户未登录
+//            return APIResponse.notLoggedIn();
+//        }
         return meetingService.cancelMeeting(meetingId);
     }
 
@@ -55,6 +64,10 @@ public class MeetingController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = MeetingListResponse.class))),
     })
     public MeetingListResponse getMeetingsForProject(@PathVariable("projectId") String projectId) {
+//        if (!StpUtil.isLogin()){
+//            // 用户未登录
+//            return new MeetingListResponse(new APIResponse(404, "用户未登录"), null);
+//        }
         return meetingService.getMeetingsForProject(projectId);
     }
 
@@ -66,6 +79,10 @@ public class MeetingController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = MeetingListResponse.class))),
     })
     public MeetingListResponse getMeetingsForUser(@PathVariable("userId") int userId) {
+//        if (!StpUtil.isLogin()){
+//            // 用户未登录
+//            return new MeetingListResponse(new APIResponse(404, "用户未登录"), null);
+//        }
         return meetingService.getMeetingsForUser(userId);
     }
 }

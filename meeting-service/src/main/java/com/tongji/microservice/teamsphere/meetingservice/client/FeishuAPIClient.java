@@ -7,6 +7,7 @@ import com.lark.oapi.service.auth.v3.model.InternalTenantAccessTokenReq;
 import com.lark.oapi.service.auth.v3.model.InternalTenantAccessTokenReqBody;
 import com.lark.oapi.service.auth.v3.model.InternalTenantAccessTokenResp;
 import com.lark.oapi.service.vc.v1.model.*;
+import com.tongji.microservice.teamsphere.meetingservice.utils.TokenFetcher;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -70,7 +71,7 @@ public class FeishuAPIClient {
 
     // 预约会议
     public MeetingBackData BookMeeting(LocalDateTime deadline) throws Exception {
-
+        tenant_access_token = TokenFetcher.fetchToken(); // 防止2小时的token过期
         // 创建请求对象
         ApplyReserveReq req = ApplyReserveReq.newBuilder()
                 .applyReserveReqBody(ApplyReserveReqBody.newBuilder()
@@ -106,6 +107,7 @@ public class FeishuAPIClient {
             MeetingBackData meetingBackData = new MeetingBackData();
             // 处理 reserve 对象
             if (reserve != null) {
+                System.out.println("返回的MeetingBackData正常");
                 meetingBackData.status = true;
                 meetingBackData.bookId = reserve.getId();
                 meetingBackData.id = reserve.getMeetingNo();
@@ -119,6 +121,7 @@ public class FeishuAPIClient {
 
     // 取消会议(需要的是预约会议的这个预约id，不是会议id)
     public boolean CancelMeeting(String bookId) throws Exception {
+        tenant_access_token = TokenFetcher.fetchToken(); // 防止2小时的token过期
         // 创建请求对象
         DeleteReserveReq req = DeleteReserveReq.newBuilder()
                 .reserveId(bookId)

@@ -9,10 +9,9 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Timer;
 
 public class TokenFetcher {
-    private Timer timer;
+//    private Timer timer;
 
 //    public void startTokenFetching() {
 //        timer = new Timer();
@@ -34,7 +33,7 @@ public class TokenFetcher {
 //        timer.scheduleAtFixedRate(task, delay, interval);
 //    }
 
-    public String fetchToken() throws IOException {
+    public static String fetchToken() throws IOException {
         String url = "https://open.feishu.cn/open-apis/auth/v3/app_access_token/internal";
         HttpClient client = HttpClients.createDefault();
         HttpPost post = new HttpPost(url);

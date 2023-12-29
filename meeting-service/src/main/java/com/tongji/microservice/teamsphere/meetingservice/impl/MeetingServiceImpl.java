@@ -32,7 +32,7 @@ public class MeetingServiceImpl implements MeetingService {
     public APIResponse cancelMeeting(String meetingId) {
         FeishuAPIClient client = new FeishuAPIClient();
         QueryWrapper<Meeting> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", meetingId);
+        queryWrapper.eq("book_id", meetingId);
         Meeting meeting = meetingMapper.selectOne(queryWrapper);
         if (meeting == null) {
             return new APIResponse(400, "会议不存在");
@@ -64,12 +64,17 @@ public class MeetingServiceImpl implements MeetingService {
         MeetingBackData meetingBackData;
         try{
             meetingBackData = client.BookMeeting(deadline);
-            if (meetingBackData.status == false) {
+            System.out.println("预约会议测试返回数据打印");
+            System.out.println(meetingBackData.status);
+            System.out.println(meetingBackData.url);
+            if (!meetingBackData.status) {
                 return new MeetingResponse(new APIResponse(400, "预约会议失败"), null);
             } else {
                 Meeting meeting = new Meeting(meetingBackData.id, projectId, title, description, starTime, deadline,
                         meetingBackData.url, meetingBackData.bookId);
-                boolean isDatabaseSuccess = meetingMapper.insertMeeting(meeting) > 0;
+                boolean isDatabaseSuccess = meetingMapper.insert(meeting) > 0;
+                System.out.println("会议录入数据库结果：");
+                System.out.println(isDatabaseSuccess);
                 if (isDatabaseSuccess)
                     return new MeetingResponse(new APIResponse(200, "预约会议成功"), meetingBackData.url);
                 else
@@ -77,7 +82,7 @@ public class MeetingServiceImpl implements MeetingService {
             }
         }catch (Exception e){
             System.out.println(e);
-            return new MeetingResponse(new APIResponse(400, "预约会议失败"), null);
+            return new MeetingResponse(new APIResponse(404, "网络解析失败"), null);
         }
     };
 
