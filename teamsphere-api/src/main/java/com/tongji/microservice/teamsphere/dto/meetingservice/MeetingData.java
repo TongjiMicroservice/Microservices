@@ -5,15 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class MeetingData implements Serializable {
-    public int id;
-    public String projectId;
+    public String id;
+    public int projectId;
     public String title;
     public String description;
     public LocalDateTime startTime;

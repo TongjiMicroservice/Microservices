@@ -8,11 +8,11 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 public interface MeetingParticipantsMapper extends BaseMapper<MeetingParticipants> {
-    @Select("SELECT DISTINCT meetingId FROM MeetingParticipants WHERE participantId = #{participantId}")
+    @Select("SELECT DISTINCT meeting_id FROM meeting_participants WHERE participant_id = #{participantId}")
     List<String> selectMeetingIdsByParticipantId(int participantId);
 
     @Select("<script>" +
-            "SELECT * FROM Meeting " +
+            "SELECT * FROM meeting " +
             "WHERE id IN " +
             "<foreach item='meetingId' collection='meetingIds' open='(' separator=',' close=')'>" +
             "#{meetingId}" +
