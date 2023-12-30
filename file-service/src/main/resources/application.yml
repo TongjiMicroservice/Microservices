@@ -13,7 +13,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://8.217.40.165:3306/schedule_service
-    username: root
-    password: ${teamsphere_database}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mariadb://123.60.177.179:3306/file_service
+    username: remote0
+    password: ${mariadb}
+    driver-class-name: org.mariadb.jdbc.Driver

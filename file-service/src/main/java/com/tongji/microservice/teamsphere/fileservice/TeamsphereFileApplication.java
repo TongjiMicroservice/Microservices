@@ -7,11 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @EnableDubbo
-@MapperScan("com.tongji.microservice.teamsphere.scheduleservice.mapper")
+@MapperScan("com.tongji.microservice.teamsphere.fileservice.mapper")
 public class TeamsphereFileApplication {
 
     public static void main(String[] args) {
-        
         SpringApplication.run(TeamsphereFileApplication.class, args);
     }
 
