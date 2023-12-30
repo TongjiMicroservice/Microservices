@@ -23,5 +23,5 @@ public interface TaskMemberMapper extends BaseMapper<TaskMember> {
     List<TaskMember> getMembersByTaskId(@Param("taskId")int taskId);
 
     @Select("SELECT task_id FROM TaskMember WHERE user_id = #{userId}")
-    int[] getTaskByUserId(@Param("userId") int userId);
+    List<Integer> getTaskByUserId(@Param("userId") int userId);
 }

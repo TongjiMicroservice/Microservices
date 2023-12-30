@@ -1,14 +1,20 @@
 package com.tongji.microservice.teamsphere.dubbo.api;
 
 
+import com.tongji.microservice.teamsphere.dto.APIResponse;
+import com.tongji.microservice.teamsphere.dto.chatservice.GroupMemberResponse;
+
 import java.util.List;
 
 public interface ChatService {
-    void createDiscussionGroup(String projectId, String groupName, List<String> memberIds);
-    void addMemberToGroup(String groupId, String memberId);
 
-    void updateDiscussionGroup();
-    void removeMemberFromGroup(String groupId, String memberId);
+    APIResponse getPort();
+    APIResponse createGroup(String groupName, String groupInfo, List<String> memberIds);
 
+    APIResponse updateDiscussionGroup();
+    APIResponse addMemberToGroup(String groupId, String memberId);
+    APIResponse removeMemberFromGroup(String groupId, String memberId);
+
+    GroupMemberResponse getGroupMember(String groupId);
     //test
 }

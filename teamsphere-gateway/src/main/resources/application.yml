@@ -1,5 +1,6 @@
 nacos:
-  address: mse-5a242a20-p.nacos-ans.mse.aliyuncs.com
+  address: 127.0.0.1
+  #address: mse-5a242a20-p.nacos-ans.mse.aliyuncs.com
 dubbo:
   application:
     logger: slf4j
