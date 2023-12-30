@@ -9,11 +9,11 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class MeetingResponse extends APIResponse implements Serializable {
-    String meetingUrl;
+public class MeetingListResponse extends APIResponse implements Serializable  {
+    List<MeetingData> meetings;
 
-    public MeetingResponse(APIResponse apiResponse, String meetingUrl) {
+    public MeetingListResponse(APIResponse apiResponse, List<MeetingData> meetings) {
         super(apiResponse.getCode(), apiResponse.getMessage());
-        this.meetingUrl = meetingUrl;
+        this.meetings = meetings;
     }
 }
