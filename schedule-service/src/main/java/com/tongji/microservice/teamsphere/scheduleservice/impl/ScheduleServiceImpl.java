@@ -28,13 +28,18 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private boolean CheckTimeCorruptByUserId(int userId, LocalDateTime startTime) {
         try {
-            int reslt = eventMapper.getCountOfEvents(userId);
-            if (reslt > 0) return true;
-            else return false;
+            List<Event> reslts = eventMapper.getCountOfEvents(userId);
+            for (Event reslt: reslts){
+                if((startTime.isAfter(reslt.startTime)&&startTime.isBefore(reslt.deadline))||startTime.isEqual(reslt.startTime)){
+                    return true;
+                }
+            }
+            return false;
+
         } catch (Exception e) {
             System.out.println("数据库查询过程中发生异常：");
             e.printStackTrace(); // 打印异常堆栈跟踪
-            return false; // 或者根据你的业务逻辑返回相应的值
+            return true; // 或者根据你的业务逻辑返回相应的值
         }
 
     }
@@ -53,7 +58,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             apiResponse = APIResponse.fail("Unexpected Priority");
         }
         else if(CheckTimeCorruptByUserId(userId,startTime)){
-            apiResponse = APIResponse.fail("插入时间存在冲突");
+            apiResponse = APIResponse.fail("插入时间存在冲突或有未知的错误");
         }
         else {
             scheduleid = eventMapper.getMaxId() + 1;
@@ -143,7 +148,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         else {
             int userId = eventMapper.getUserIdByEventId(eventId );
             if(CheckTimeCorruptByUserId(userId,startTime))
-                return APIResponse.fail("存在时间冲突");
+                return  APIResponse.fail("插入时间存在冲突或有未知的错误");
         }
 
         UpdateWrapper<Event> updateWrapper = new UpdateWrapper<>();
