@@ -1,12 +1,10 @@
-nacos:
-  #address: mse-5a242a20-p.nacos-ans.mse.aliyuncs.com
 dubbo:
   application:
     logger: slf4j
     name: chat-service
     qos-port: 22228
   registry:
-    address: nacos://${nacos.address:127.0.0.1}:8848
+    address: nacos://${nacos_address:127.0.0.1}:8848
   protocol:
     name: dubbo
     port: 20882
