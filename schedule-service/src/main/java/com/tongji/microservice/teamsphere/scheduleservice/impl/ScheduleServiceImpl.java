@@ -26,11 +26,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     private EventMapper eventMapper;
 
-    private boolean CheckTimeCorruptByUserId(int userId, LocalDateTime startTime) {
+    public boolean CheckTimeCorruptByUserId(int userId, LocalDateTime startTime) {
         try {
             List<Event> reslts = eventMapper.getCountOfEvents(userId);
             for (Event reslt: reslts){
                 if((startTime.isAfter(reslt.startTime)&&startTime.isBefore(reslt.deadline))||startTime.isEqual(reslt.startTime)){
+                    System.out.println("存在日程时间冲突：");
                     return true;
                 }
             }
@@ -39,7 +40,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         } catch (Exception e) {
             System.out.println("数据库查询过程中发生异常：");
             e.printStackTrace(); // 打印异常堆栈跟踪
-            return true; // 或者根据你的业务逻辑返回相应的值
+            return true;
         }
 
     }
