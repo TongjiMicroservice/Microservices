@@ -26,16 +26,39 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     private EventMapper eventMapper;
 
+    private boolean CheckTimeCorruptByUserId(int userId, LocalDateTime startTime) {
+        try {
+            int reslt = eventMapper.getCountOfEvents(userId);
+            if (reslt > 0) return true;
+            else return false;
+        } catch (Exception e) {
+            System.out.println("数据库查询过程中发生异常：");
+            e.printStackTrace(); // 打印异常堆栈跟踪
+            return false; // 或者根据你的业务逻辑返回相应的值
+        }
+
+    }
+
     @Override
     public EventIdResponse createEvent(int userId, LocalDateTime startTime, LocalDateTime deadline, String description, String title, int priority) {
         APIResponse apiResponse = null;
+        int scheduleid = -1;
+        if (userId < 0) {
+            apiResponse = APIResponse.fakeToken();
+        }
+        // 现在认为调用该函数时userId一定是正确的
 
         // priority必须是0-2之间，否则报错
-        if (priority < 0 || priority > 2) {
+        else if (priority < 0 || priority > 2) {
             apiResponse = APIResponse.fail("Unexpected Priority");
-            return new EventIdResponse(apiResponse);
-        } else {
+        }
+        else if(CheckTimeCorruptByUserId(userId,startTime)){
+            apiResponse = APIResponse.fail("插入时间存在冲突");
+        }
+        else {
+            scheduleid = eventMapper.getMaxId() + 1;
             Event event = new Event();
+            event.id = scheduleid;
             event.userId = userId;
             event.startTime = startTime;
             event.deadline = deadline;
@@ -45,13 +68,19 @@ public class ScheduleServiceImpl implements ScheduleService {
             var flag = eventMapper.insert(event);
             if (flag == 0) {
                 apiResponse = APIResponse.fail("Unable to insert into database");
-                return new EventIdResponse(apiResponse);
+                scheduleid = -1;
             } else {
                 apiResponse = APIResponse.success();
-                int eventId = eventMapper.getMaxId();
-                return new EventIdResponse(apiResponse, eventId);
             }
         }
+
+        EventIdResponse eventIdResponse;
+        if (scheduleid >= 0) {
+            eventIdResponse = new EventIdResponse(apiResponse, scheduleid);
+        } else {
+            eventIdResponse = new EventIdResponse(apiResponse);
+        }
+        return eventIdResponse;
     }
 
     @Override
@@ -61,7 +90,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         EventIdResponse eventIdResponse;
         QueryWrapper<Event> queryWrapper = new QueryWrapper<>();
         if (userId < 0) {
-
             String tmp = String.format("Unexpected Userid:%d", userId);
             apiResponse = APIResponse.fail(tmp);
             return new EventIdResponse(apiResponse);
@@ -79,7 +107,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 
         if (eventid >= 0) {
-            eventIdResponse = new EventIdResponse(APIResponse.success(), eventid);
+            eventIdResponse = new EventIdResponse(apiResponse, eventid);
         } else {
             eventIdResponse = new EventIdResponse(apiResponse);
         }
@@ -112,6 +140,12 @@ public class ScheduleServiceImpl implements ScheduleService {
         } else if (priority < 0 || priority > 2) {
             return APIResponse.fail("Unexpected priority");
         }
+        else {
+            int userId = eventMapper.getUserIdByEventId(eventId );
+            if(CheckTimeCorruptByUserId(userId,startTime))
+                return APIResponse.fail("存在时间冲突");
+        }
+
         UpdateWrapper<Event> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", eventId);
         if (startTime != null)
@@ -124,6 +158,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             updateWrapper.set("title", title);
 
         updateWrapper.set("priority", priority);
+
         int flag = eventMapper.update(updateWrapper);
         if (flag == 0) {
             return APIResponse.fail("Unexpected error,unable to update database");
@@ -152,16 +187,16 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public EventsResponse getEvents(int userId) {
         QueryWrapper<Event> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id",userId);
+        queryWrapper.eq("user_id", userId);
         List<Event> eventList = eventMapper.selectList(queryWrapper);
 
-        List<EventData> eventDataList =new ArrayList<>();
-        for(Event event :eventList){
-            EventData eventData = new EventData(event.title,event.description,event.startTime,event.deadline,event.priority);
+        List<EventData> eventDataList = new ArrayList<>();
+        for (Event event : eventList) {
+            EventData eventData = new EventData(event.title, event.description, event.startTime, event.deadline, event.priority);
             eventDataList.add(eventData);
 
         }
-        return new EventsResponse(APIResponse.success(),eventDataList);
+        return new EventsResponse(APIResponse.success(), eventDataList);
     }
 
 }
