@@ -171,9 +171,9 @@ public class TaskController {
     @GetMapping("/task/member/get")
     @Operation(summary = "获取任务成员清单", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = TaskMemberResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskMemberResponse.class))),
     })
     TaskMemberResponse getTaskMember(int taskId){
         if (!StpUtil.isLogin()) {

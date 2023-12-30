@@ -1,5 +1,6 @@
 package com.tongji.microservice.teamsphere.taskservice.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.taskservice.CreateTaskResponse;
@@ -10,6 +11,7 @@ import com.tongji.microservice.teamsphere.dubbo.api.TaskService;
 import com.tongji.microservice.teamsphere.dto.taskservice.TaskData;
 import com.tongji.microservice.teamsphere.dto.taskservice.TaskMemberData;
 import com.tongji.microservice.teamsphere.taskservice.entities.Task;
+import com.tongji.microservice.teamsphere.taskservice.entities.TaskMember;
 import com.tongji.microservice.teamsphere.taskservice.mapper.TaskMapper;
 import com.tongji.microservice.teamsphere.taskservice.mapper.TaskMemberMapper;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -119,17 +121,20 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskMapper.selectById(taskId);
         if(task == null)
             return  new TaskMemberResponse(fail("任务不存在"));
-        var l = memberMapper.getMembersByTaskId(taskId);
-        List<TaskMemberData> list = new ArrayList<>();
-        for (var member : l)
-            list.add(new TaskMemberData(
-                    member.getUserId(),
-                    member.getTaskId(),
-                    member.getScore(),
-                    member.getFinishTime(),
-                    member.getFileURL()
+        QueryWrapper<TaskMember> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("task_id",taskId);
+        List<TaskMember> list = memberMapper.selectList(queryWrapper);
+        List<TaskMemberData> l = new ArrayList<>();
+        for(var i : list){
+            l.add(new TaskMemberData(
+                    i.getUserId(),
+                    i.getTaskId(),
+                    i.getScore(),
+                    i.getFinishTime(),
+                    i.getFileURL()
             ));
-        return new TaskMemberResponse(list);
+        }
+        return new TaskMemberResponse(l);
     }
 
     @Override
