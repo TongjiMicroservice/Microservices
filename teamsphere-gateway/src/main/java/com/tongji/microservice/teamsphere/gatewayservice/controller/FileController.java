@@ -1,9 +1,11 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.obs.services.model.PutObjectRequest;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileResponse;
+import com.tongji.microservice.teamsphere.dto.projectservice.ProjectIdResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.FileService;
 import com.tongji.microservice.teamsphere.gatewayservice.util.Loader;
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,5 +75,44 @@ public class FileController {
                 projectId,
                 (int) file.getSize()
         ));
+    }
+
+    @PostMapping(value = "/file/star")
+    @Operation(summary = "设为星标", responses = {
+            @ApiResponse(responseCode = "200", description = "调用成功",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
+            @ApiResponse(responseCode = "400", description = "调用失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
+    })
+    public APIResponse putStar(int fileId){
+        if(!StpUtil.isLogin()){
+            return new ProjectIdResponse(APIResponse.notLoggedIn(),-1) ;
+        }
+        //System.out.printf("id %s\n" , StpUtil.getLoginId());
+        return fileService.putStar(Integer.parseInt(StpUtil.getLoginId().toString()),fileId);
+    }
+
+    @DeleteMapping(value = "/file/star")
+    @Operation(summary = "删除星标", responses = {
+            @ApiResponse(responseCode = "200", description = "调用成功",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
+            @ApiResponse(responseCode = "400", description = "调用失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
+    })
+    public APIResponse deleteStar(int fileId){
+        if(!StpUtil.isLogin()){
+            return new ProjectIdResponse(APIResponse.notLoggedIn(),-1) ;
+        }
+        return fileService.deleteStar((Integer) StpUtil.getLoginId(),fileId);
+    }
+    @GetMapping("/file-by-star")
+    @Operation(summary = "查看星标文件", responses = {
+            @ApiResponse(responseCode = "200", description = "调用成功",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class))),
+            @ApiResponse(responseCode = "400", description = "调用失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class)))
+    })
+    FileResponse getFileByStar(int userId) {
+        return fileService.getFileByStar(userId);
     }
 }
