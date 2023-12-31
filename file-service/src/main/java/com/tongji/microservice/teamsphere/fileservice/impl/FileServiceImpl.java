@@ -6,7 +6,6 @@ import com.obs.services.model.ObsObject;
 import com.obs.services.model.PutObjectRequest;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
-import com.tongji.microservice.teamsphere.dto.fileservice.FileRequest;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.FileService;
 import com.tongji.microservice.teamsphere.fileservice.entities.FileInfo;
