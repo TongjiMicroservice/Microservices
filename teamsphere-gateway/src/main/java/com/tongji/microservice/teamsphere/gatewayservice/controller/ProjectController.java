@@ -174,10 +174,11 @@ public class ProjectController {
             @ApiResponse(responseCode = "400", description = "失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectQueryResponse.class))),
     })
-    ProjectQueryResponse getProjectByUserId(int userId){
+    ProjectQueryResponse getProjectByUserId(){
         if (!StpUtil.isLogin()) {
             return new ProjectQueryResponse(APIResponse.notLoggedIn());
         }
+        int userId = Integer.parseInt(StpUtil.getLoginId().toString());
         return projectService.getProjectByUserId(userId);
     }
 }
