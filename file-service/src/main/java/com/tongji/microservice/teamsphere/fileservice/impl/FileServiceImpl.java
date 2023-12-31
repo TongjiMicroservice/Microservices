@@ -1,15 +1,23 @@
 package com.tongji.microservice.teamsphere.fileservice.impl;
 
+import com.obs.services.exception.ObsException;
+import com.obs.services.model.GetObjectRequest;
+import com.obs.services.model.ObsObject;
+import com.obs.services.model.PutObjectRequest;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
+import com.tongji.microservice.teamsphere.dto.fileservice.FileRequest;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.FileService;
 import com.tongji.microservice.teamsphere.fileservice.entities.FileInfo;
 import com.tongji.microservice.teamsphere.fileservice.mapper.FileMapper;
 import com.tongji.microservice.teamsphere.fileservice.mapper.StarMapper;
+import com.tongji.microservice.teamsphere.fileservice.util.Loader;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +28,22 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private StarMapper starMapper;
     @Override
-    public APIResponse upload(int userId, int projectId, byte[] file) {
-        return null;
+    public APIResponse upload(FileData fileData) {
+        try {
+            fileMapper.insert(new FileInfo(
+                    0,
+                    fileData.getUrl(),
+                    fileData.getType(),
+                    fileData.getName(),
+                    fileData.getUserId(),
+                    fileData.getProjectId(),
+                    fileData.getUploadTime(),
+                    fileData.getSize()
+            ));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return APIResponse.success();
     }
 
     @Override

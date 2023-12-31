@@ -2,12 +2,14 @@ package com.tongji.microservice.teamsphere.fileservice.entities;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
 @TableName("File")
 public class FileInfo implements Serializable {
     @TableField("id")
