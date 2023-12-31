@@ -9,6 +9,7 @@ import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.FileService;
 import com.tongji.microservice.teamsphere.fileservice.entities.FileInfo;
+import com.tongji.microservice.teamsphere.fileservice.entities.Star;
 import com.tongji.microservice.teamsphere.fileservice.mapper.FileMapper;
 import com.tongji.microservice.teamsphere.fileservice.mapper.StarMapper;
 import com.tongji.microservice.teamsphere.fileservice.util.Loader;
@@ -19,6 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tongji.microservice.teamsphere.dto.APIResponse.fail;
+import static com.tongji.microservice.teamsphere.dto.APIResponse.success;
 
 @DubboService
 public class FileServiceImpl implements FileService {
@@ -42,14 +46,14 @@ public class FileServiceImpl implements FileService {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-        return APIResponse.success();
+        return success();
     }
 
     @Override
     public FileResponse getFileByProject(int projectId) {
         System.out.printf("id:%d\n",projectId);
         List<FileData> list = new ArrayList<>();
-        for(var i :  fileMapper.getFileByProject(projectId)){
+        for(var i : fileMapper.getFileByProject(projectId)){
             list.add(new FileData(
                     i.getUrl(),
                     i.getType(),
@@ -62,6 +66,26 @@ public class FileServiceImpl implements FileService {
         }
         System.out.printf("list size:%d\n",list.size());
         return new FileResponse(list);
+    }
+
+    @Override
+    public APIResponse putStar(int userId, int fileId) {
+        try {
+            starMapper.insert(new Star(userId, fileId));
+        }catch (Exception e){
+            return fail(e.getMessage());
+        }
+        return success();
+    }
+
+    @Override
+    public APIResponse deleteStar(int userId, int fileId) {
+        try{
+            starMapper.deleteStar(userId, fileId);
+        }catch (Exception e){
+            return fail(e.getMessage());
+        }
+        return success();
     }
 
     @Override
