@@ -5,7 +5,6 @@ import com.obs.services.model.PutObjectRequest;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileResponse;
-import com.tongji.microservice.teamsphere.dto.projectservice.ProjectIdResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.FileService;
 import com.tongji.microservice.teamsphere.gatewayservice.util.Loader;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,11 +15,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/api")
@@ -37,6 +34,9 @@ public class FileController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class)))
     })
     public FileResponse getFileByProject(int projectId) {
+        if(!StpUtil.isLogin()){
+            return new FileResponse(APIResponse.notLoggedIn()) ;
+        }
         System.out.println("projectId: " + projectId);
         return fileService.getFileByProject(projectId);
     }
@@ -86,10 +86,11 @@ public class FileController {
     })
     public APIResponse putStar(int fileId){
         if(!StpUtil.isLogin()){
-            return new ProjectIdResponse(APIResponse.notLoggedIn(),-1) ;
+            return APIResponse.notLoggedIn();
         }
         //System.out.printf("id %s\n" , StpUtil.getLoginId());
-        return fileService.putStar(Integer.parseInt(StpUtil.getLoginId().toString()),fileId);
+        int userId = Integer.parseInt(StpUtil.getLoginId().toString());
+        return fileService.putStar(userId,fileId);
     }
 
     @DeleteMapping(value = "/file/star")
@@ -101,9 +102,10 @@ public class FileController {
     })
     public APIResponse deleteStar(int fileId){
         if(!StpUtil.isLogin()){
-            return new ProjectIdResponse(APIResponse.notLoggedIn(),-1) ;
+            return APIResponse.notLoggedIn();
         }
-        return fileService.deleteStar((Integer) StpUtil.getLoginId(),fileId);
+        int userId = Integer.parseInt(StpUtil.getLoginId().toString());
+        return fileService.deleteStar(userId,fileId);
     }
     @GetMapping("/file-by-star")
     @Operation(summary = "查看星标文件", responses = {
@@ -112,7 +114,11 @@ public class FileController {
             @ApiResponse(responseCode = "400", description = "调用失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class)))
     })
-    FileResponse getFileByStar(int userId) {
+    FileResponse getFileByStar() {
+        if(!StpUtil.isLogin()){
+            return new FileResponse(APIResponse.notLoggedIn()) ;
+        }
+        int userId = Integer.parseInt(StpUtil.getLoginId().toString());
         return fileService.getFileByStar(userId);
     }
 }
