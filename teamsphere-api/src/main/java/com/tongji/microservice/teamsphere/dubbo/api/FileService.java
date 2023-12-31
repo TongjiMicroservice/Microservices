@@ -8,5 +8,7 @@ public interface FileService {
 
     APIResponse upload(FileData fileData);
     FileResponse getFileByProject(int projectId);
+    APIResponse putStar(int userId, int fileId);
+    APIResponse deleteStar(int userId, int fileId);
     FileResponse getFileByStar(int userId);
 }

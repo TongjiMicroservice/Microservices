@@ -48,9 +48,9 @@ public class FileController {
     })
     public APIResponse upload(int userId, int projectId, @RequestPart MultipartFile file) {
         System.out.printf("收到文件:%s:%d\n", file.getOriginalFilename(), file.getSize());
-        if (!StpUtil.isLogin()) {
-            return new CreateTaskResponse(APIResponse.notLoggedIn());
-        }
+//        if (!StpUtil.isLogin()) {
+//            return new CreateTaskResponse(APIResponse.notLoggedIn());
+//        }
         try {
             InputStream i = new ByteArrayInputStream(file.getBytes());
             PutObjectRequest putObjectRequest = new PutObjectRequest("test-micro", file.getOriginalFilename(), i);
