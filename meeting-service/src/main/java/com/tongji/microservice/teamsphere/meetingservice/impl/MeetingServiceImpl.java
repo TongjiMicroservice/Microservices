@@ -65,9 +65,9 @@ public class MeetingServiceImpl implements MeetingService {
         MeetingBackData meetingBackData;
         try{
             meetingBackData = client.BookMeeting(deadline);
-            System.out.println("预约会议测试返回数据打印");
-            System.out.println(meetingBackData.status);
-            System.out.println(meetingBackData.url);
+//            System.out.println("预约会议测试返回数据打印");
+//            System.out.println(meetingBackData.status);
+//            System.out.println(meetingBackData.url);
             if (!meetingBackData.status) {
                 return new MeetingResponse(new APIResponse(400, "预约会议失败"), null);
             } else {
@@ -76,10 +76,22 @@ public class MeetingServiceImpl implements MeetingService {
                 boolean isDatabaseSuccess = meetingMapper.insert(meeting) > 0;
                 System.out.println("会议录入数据库结果：");
                 System.out.println(isDatabaseSuccess);
+
+                MeetingData backmeetingdata =new MeetingData(
+                        meeting.id,
+                        meeting.projectId,
+                        meeting.title,
+                        meeting.description,
+                        meeting.startTime,
+                        meeting.duration,
+                        meeting.url,
+                        meeting.bookId
+                );
+//                System.out.println(backmeetingdata);
                 if (isDatabaseSuccess)
-                    return new MeetingResponse(new APIResponse(200, "预约会议成功"), meetingBackData.url);
+                    return new MeetingResponse(new APIResponse(200, "预约会议成功"), backmeetingdata);
                 else
-                    return new MeetingResponse(new APIResponse(201, "预约会议成功,但录入数据库失败"), meetingBackData.url);
+                    return new MeetingResponse(new APIResponse(201, "预约会议成功,但录入数据库失败"), backmeetingdata);
             }
         }catch (Exception e){
             System.out.println(e);
