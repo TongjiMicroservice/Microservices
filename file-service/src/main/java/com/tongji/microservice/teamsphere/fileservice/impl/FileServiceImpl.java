@@ -49,6 +49,23 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public APIResponse delete(int userId, String fileName) {
+        try {
+            FileInfo f = fileMapper.getFileByName(fileName);
+            if(f.getUserId() != userId){
+                return fail("文件不属于你");
+            }
+            starMapper.deleteByFileId(f.getId());
+            fileMapper.deleteById(f.getId());
+            return success();
+        }catch (Exception e){
+            e.printStackTrace();
+            return fail("删除失败:"+e.getMessage());
+        }
+
+    }
+
+    @Override
     public FileResponse getFileByProject(int projectId) {
         System.out.printf("id:%d\n",projectId);
         List<FileData> list = new ArrayList<>();

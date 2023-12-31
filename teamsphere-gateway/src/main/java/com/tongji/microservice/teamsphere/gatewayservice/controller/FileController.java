@@ -1,5 +1,6 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.obs.services.model.PutObjectRequest;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
@@ -14,11 +15,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/api")
@@ -35,6 +34,9 @@ public class FileController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class)))
     })
     public FileResponse getFileByProject(int projectId) {
+        if(!StpUtil.isLogin()){
+            return new FileResponse(APIResponse.notLoggedIn()) ;
+        }
         System.out.println("projectId: " + projectId);
         return fileService.getFileByProject(projectId);
     }
@@ -73,5 +75,64 @@ public class FileController {
                 projectId,
                 (int) file.getSize()
         ));
+    }
+
+    @PostMapping(value = "/file/star")
+    @Operation(summary = "设为星标", responses = {
+            @ApiResponse(responseCode = "200", description = "调用成功",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
+            @ApiResponse(responseCode = "400", description = "调用失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
+    })
+    public APIResponse putStar(int fileId){
+        if(!StpUtil.isLogin()){
+            return APIResponse.notLoggedIn();
+        }
+        //System.out.printf("id %s\n" , StpUtil.getLoginId());
+        int userId = Integer.parseInt(StpUtil.getLoginId().toString());
+        return fileService.putStar(userId,fileId);
+    }
+
+    @DeleteMapping(value = "/file/star")
+    @Operation(summary = "删除星标", responses = {
+            @ApiResponse(responseCode = "200", description = "调用成功",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
+            @ApiResponse(responseCode = "400", description = "调用失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
+    })
+    public APIResponse deleteStar(int fileId){
+        if(!StpUtil.isLogin()){
+            return APIResponse.notLoggedIn();
+        }
+        int userId = Integer.parseInt(StpUtil.getLoginId().toString());
+        return fileService.deleteStar(userId,fileId);
+    }
+    @GetMapping("/file-by-star")
+    @Operation(summary = "查看星标文件", responses = {
+            @ApiResponse(responseCode = "200", description = "调用成功",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
+            @ApiResponse(responseCode = "400", description = "调用失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
+    })
+    FileResponse getFileByStar() {
+        if(!StpUtil.isLogin()){
+            return new FileResponse(APIResponse.notLoggedIn()) ;
+        }
+        int userId = Integer.parseInt(StpUtil.getLoginId().toString());
+        return fileService.getFileByStar(userId);
+    }
+    @DeleteMapping("/file")
+    @Operation(summary = "删除文件", responses = {
+            @ApiResponse(responseCode = "200", description = "调用成功",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
+            @ApiResponse(responseCode = "400", description = "调用失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
+    })
+    public APIResponse delete(String fileName) {
+        if(!StpUtil.isLogin()){
+            return new FileResponse(APIResponse.notLoggedIn()) ;
+        }
+        int userId = Integer.parseInt(StpUtil.getLoginId().toString());
+        return fileService.delete(userId, fileName);
     }
 }

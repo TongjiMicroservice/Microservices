@@ -15,4 +15,7 @@ public interface StarMapper extends BaseMapper<Star> {
 
     @Delete("DELETE FROM Star WHERE user_id = #{userId} AND file_id = #{fileId}")
     void deleteStar(@Param("userId") int userId, @Param("fileId") int fileId);
+
+    @Delete("DELETE FROM Star WHERE file_id = #{fileId}")
+    void deleteByFileId(@Param("fileId") int fileId);
 }
