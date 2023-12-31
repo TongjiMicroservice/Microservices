@@ -110,9 +110,9 @@ public class FileController {
     @GetMapping("/file-by-star")
     @Operation(summary = "查看星标文件", responses = {
             @ApiResponse(responseCode = "200", description = "调用成功",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "调用失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
     })
     FileResponse getFileByStar() {
         if(!StpUtil.isLogin()){
@@ -120,5 +120,19 @@ public class FileController {
         }
         int userId = Integer.parseInt(StpUtil.getLoginId().toString());
         return fileService.getFileByStar(userId);
+    }
+    @DeleteMapping("/file")
+    @Operation(summary = "删除文件", responses = {
+            @ApiResponse(responseCode = "200", description = "调用成功",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
+            @ApiResponse(responseCode = "400", description = "调用失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
+    })
+    public APIResponse delete(String fileName) {
+        if(!StpUtil.isLogin()){
+            return new FileResponse(APIResponse.notLoggedIn()) ;
+        }
+        int userId = Integer.parseInt(StpUtil.getLoginId().toString());
+        return fileService.delete(userId, fileName);
     }
 }
