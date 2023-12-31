@@ -7,7 +7,7 @@ import com.tongji.microservice.teamsphere.dto.sceduleservice.EventsResponse;
 
 import java.time.LocalDateTime;
 
-public interface ScheduleService {
+public interface    ScheduleService {
     EventIdResponse createEvent(int userId, LocalDateTime startTime, LocalDateTime deadline, String description, String title, int priority);
     APIResponse removeEvent(int eventId);
     EventsResponse getEvents(int userId);

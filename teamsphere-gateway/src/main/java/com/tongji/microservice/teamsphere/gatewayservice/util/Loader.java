@@ -1,11 +1,12 @@
-package com.tongji.microservice.teamsphere.fileservice.util;
-import java.io.*;
+package com.tongji.microservice.teamsphere.gatewayservice.util;
 
 import com.obs.services.ObsClient;
 import com.obs.services.exception.ObsException;
 import com.obs.services.model.GetObjectRequest;
 import com.obs.services.model.ObsObject;
 import com.obs.services.model.PutObjectRequest;
+
+import java.io.*;
 
 public class Loader {
 
@@ -18,6 +19,9 @@ public class Loader {
 
     public static ObsClient getObsClient() {
         return obsClient;
+    }
+    public static String getURL(){
+        return "https://test-micro.obs.cn-north-4.myhuaweicloud.com/";
     }
     public static void main(String[] args) {
         try {
