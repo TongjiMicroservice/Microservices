@@ -15,4 +15,8 @@ public class FileResponse extends APIResponse implements Serializable {
         super(success());
         this.list = list;
     }
+    public FileResponse(APIResponse response){
+        super(response);
+        this.list=null;
+    }
 }

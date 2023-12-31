@@ -33,16 +33,15 @@ public class FileServiceImpl implements FileService {
     @Override
     public APIResponse upload(FileData fileData) {
         try {
-            fileMapper.insert(new FileInfo(
-                    0,
-                    fileData.getUrl(),
-                    fileData.getType(),
-                    fileData.getName(),
-                    fileData.getUserId(),
-                    fileData.getProjectId(),
-                    fileData.getUploadTime(),
-                    fileData.getSize()
-            ));
+            var fi = new FileInfo();
+            fi.setId(0);
+            fi.setUrl(fileData.getUrl());
+            fi.setType(fileData.getType());
+            fi.setName(fileData.getName());
+            fi.setUserId(fileData.getUserId());
+            fi.setProjectId(fileData.getProjectId());
+            fi.setUploadTime(fileData.getUploadTime());
+            fileMapper.insert(fi);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -53,7 +52,10 @@ public class FileServiceImpl implements FileService {
     public FileResponse getFileByProject(int projectId) {
         System.out.printf("id:%d\n",projectId);
         List<FileData> list = new ArrayList<>();
-        for(var i : fileMapper.getFileByProject(projectId)){
+        var l = fileMapper.getFileByProject(projectId);
+        for(var i : l){
+            System.out.println("i.getUploadTime()");
+            System.out.println(i.getUploadTime());
             list.add(new FileData(
                     i.getUrl(),
                     i.getType(),
@@ -65,6 +67,7 @@ public class FileServiceImpl implements FileService {
             ));
         }
         System.out.printf("list size:%d\n",list.size());
+        //return new FileResponse(fail("error"));
         return new FileResponse(list);
     }
 

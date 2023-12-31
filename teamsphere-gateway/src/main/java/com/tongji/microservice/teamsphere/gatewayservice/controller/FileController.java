@@ -1,11 +1,9 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.obs.services.model.PutObjectRequest;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileResponse;
-import com.tongji.microservice.teamsphere.dto.taskservice.CreateTaskResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.FileService;
 import com.tongji.microservice.teamsphere.gatewayservice.util.Loader;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/api")
@@ -36,6 +35,7 @@ public class FileController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class)))
     })
     public FileResponse getFileByProject(int projectId) {
+        System.out.println("projectId: " + projectId);
         return fileService.getFileByProject(projectId);
     }
 
@@ -67,6 +67,7 @@ public class FileController {
                 Loader.getURL() + name,
                 i < 0 ? "file" : name.substring(i + 1),
                 name,
+//                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 LocalDateTime.now(),
                 userId,
                 projectId,
