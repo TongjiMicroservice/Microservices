@@ -63,6 +63,16 @@ public class UserController {
     public UserResponse getUserDetails(int userId) {
         return userService.getUserInfo(userId);
     }
+    @GetMapping("user/info-by-email")
+    @Operation(summary = "根据id获取用户详细信息", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "400", description = "访问失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+    })
+    public UserResponse getUserInfoByEmail(String email) {
+        return userService.getUserInfoByEmail(email);
+    }
 
     @GetMapping("user")
     @Operation(summary = "查询当前登录用户", responses = {

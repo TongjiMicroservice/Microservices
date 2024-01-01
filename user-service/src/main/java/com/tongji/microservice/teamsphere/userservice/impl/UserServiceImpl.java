@@ -26,10 +26,10 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public APIResponse updateUserInfo(int userId,RegisterRequest request){
+    public APIResponse updateUserInfo(int userId, RegisterRequest request) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", userId);
-        if(userMapper.selectOne(queryWrapper)==null)
+        if (userMapper.selectOne(queryWrapper) == null)
             return fail("用户不存在");
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", userId);
@@ -42,23 +42,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getUserInfo(int userId){
+    public UserResponse getUserInfo(int userId) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", userId);
         User user = userMapper.selectOne(queryWrapper);
-        if(user == null)
+        if (user == null)
             return new UserResponse(fail("用户不存在"));
-        return new UserResponse(success(), user.id,user.username, user.email, user.avatar);
+        return new UserResponse(user.id, user.username, user.email, user.avatar);
     }
 
     @Override
-    public APIResponse deleteUser(int userId){
+    public APIResponse deleteUser(int userId) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", userId);
-        if(userMapper.selectOne(queryWrapper)==null)
+        if (userMapper.selectOne(queryWrapper) == null)
             return fail("用户不存在");
         userMapper.delete(queryWrapper);
         return success();
+    }
+
+    @Override
+    public UserResponse getUserInfoByEmail(String email) {
+        try {
+            var user = userMapper.selectOne(new QueryWrapper<User>().eq("email", email));
+            if (user == null) {
+                return new UserResponse(fail("用户不存在"));
+            }
+            return new UserResponse(
+                    user.id, user.username, user.email, user.avatar
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new UserResponse(fail("查询失败"));
+        }
+
     }
 
 
@@ -70,33 +87,32 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return new LoginResponse(fail("无效用户名"));
         } else if (!user.password.equals(password)) {
-            return new LoginResponse(fail( "错误的密码"));
+            return new LoginResponse(fail("错误的密码"));
         } else {
-            return new LoginResponse(success(),user.getId());
+            return new LoginResponse(success(), user.getId());
         }
     }
 
     @Override
     public RegisterResponse register(RegisterRequest request) {
 
-        var user=new User(request.getUsername(), request.getPassword(), request.getEmail(), request.getAvatar());
+        var user = new User(request.getUsername(), request.getPassword(), request.getEmail(), request.getAvatar());
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", request.getUsername());
-        System.out.printf("username:%s",request.getUsername());
-        if(userMapper.selectOne(queryWrapper)!=null){
+        System.out.printf("username:%s", request.getUsername());
+        if (userMapper.selectOne(queryWrapper) != null) {
             return new RegisterResponse(fail("用户名已存在"));
         }
-        var flag=userMapper.insert(user);
-        if(flag==0){
+        var flag = userMapper.insert(user);
+        if (flag == 0) {
             return new RegisterResponse(fail("数据库访问失败"));
-        }
-        else{
+        } else {
             //访问数据库生成id
-            user=userMapper.selectOne(queryWrapper);
-            if(user==null){
+            user = userMapper.selectOne(queryWrapper);
+            if (user == null) {
                 return new RegisterResponse(fail("数据库查询失败"));
             }
-            return new RegisterResponse(success(),user.id,user.username);
+            return new RegisterResponse(success(), user.id, user.username);
         }
     }
 
@@ -105,9 +121,9 @@ public class UserServiceImpl implements UserService {
         DecodedJWT x;
         try {
             x = Jwt.getVerifier().verify(token);
-        }catch (JWTVerificationException e){
+        } catch (JWTVerificationException e) {
             return new AuthorizeResponse(APIResponse.fakeToken());
         }
-        return new AuthorizeResponse(success(),x.getClaim("userid").asInt());
+        return new AuthorizeResponse(success(), x.getClaim("userid").asInt());
     }
 }

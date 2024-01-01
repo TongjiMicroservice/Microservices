@@ -9,6 +9,7 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 import com.tongji.microservice.teamsphere.chatservice.entities.MessageObject;
 import com.tongji.microservice.teamsphere.chatservice.util.MongoDB;
+import com.tongji.microservice.teamsphere.dubbo.api.ChatService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.bson.Document;
@@ -27,6 +28,8 @@ public class SocketIOService {
     //用于连接用户数据库来获取用户信息
     @DubboReference(check = false)
     private UserService userService;
+    @DubboReference(check = false)
+    private ChatService chatService;
     private final SocketIOServer server;
 
     @Autowired
@@ -60,6 +63,8 @@ public class SocketIOService {
                 System.out.println("连接成功");
                 //广播通知所有在线成员
                 server.getBroadcastOperations().sendEvent("login",id_string);
+                //将最近聊天消息发给用户
+                client.sendEvent("recentChatResponse",chatService.getRecentChat(userid).getList());
             }
             //id校验失败，直接切断链接
             else {
@@ -79,8 +84,6 @@ public class SocketIOService {
                 biMap.remove(userId);
                 server.getBroadcastOperations().sendEvent("logout",userId);
             }
-            System.out.println("Client disconnected: " + client.getSessionId());
-
         });
         /*
           消息已读状态更替
@@ -109,54 +112,34 @@ public class SocketIOService {
         });
 
         /*
-          获取最近聊天对象
-         */
-        server.addEventListener("recentChatRequest", String.class, (client, data, ackRequest) -> {
-            System.out.println("Received userId message: " + data);
-            String userId = data;
-            MongoCollection<Document> collection = MongoDB.getDatabase().getCollection("chat");
-            Set<String> contactIds = new HashSet<>();
-            // 查询 sender 或 receiver 为 userId 的记录
-            collection.find(
-                    Filters.or(
-                            Filters.eq("sender", userId),
-                            Filters.eq("receiver", userId)
-                    )
-            ).forEach(doc -> {
-                String sender = doc.getString("sender");
-                String receiver = doc.getString("receiver");
-                if (!sender.equals(userId)) {
-                    contactIds.add(sender);
-                }
-                if (!receiver.equals(userId)) {
-                    contactIds.add(receiver);
-                }
-            });
-
-            List<Document> contacts = new ArrayList<>();
-            for (String contactId : contactIds) {
-                contacts.add(new Document("contactId", contactId));
-                System.out.println(contactId);
-            }
-            client.sendEvent("recentChatResponse", contacts);
-        });
-
-        /*
           查询聊天记录
          */
-        server.addEventListener("chatHistoryRequest", MessageObject.class, (client, data, ackRequest) -> {
-            int sender = data.getSenderId();
-            int receiver = data.getReceiverId();
-            // 从 MongoDB 中获取聊天记录
-            MongoCollection<Document> collection = MongoDB.getDatabase().getCollection("chat");
+        server.addEventListener("chatHistoryRequest", String.class, (client, data, ackRequest) -> {
+            String selfId = biMap.inverse().get(client.getSessionId()).toString();
+            String src = data;
+            //群聊
+            MongoCollection<Document> collection;
+            Bson condition;
+            if(src.charAt(1)=='g'){
+                collection = MongoDB.getDatabase().getCollection("chat");
 //                List<Document> chatHistory = collection.find(
 //                        Filters.or(Filters.eq("sender", sender), Filters.eq("sender", receiver))
 //                ).sort(Sorts.ascending("timestamp")).into(new ArrayList<>());
-            Bson condition = Filters.or(
-                    Filters.and(Filters.eq("sender", sender), Filters.eq("receiver", receiver)),
-                    Filters.and(Filters.eq("sender", receiver), Filters.eq("receiver", sender))
-            );
+                condition = Filters.eq("receiver", src);
+            }
+            //私聊
+            else{
+                collection = MongoDB.getDatabase().getCollection("chat");
+//                List<Document> chatHistory = collection.find(
+//                        Filters.or(Filters.eq("sender", sender), Filters.eq("sender", receiver))
+//                ).sort(Sorts.ascending("timestamp")).into(new ArrayList<>());
+                condition = Filters.or(
+                        Filters.and(Filters.eq("sender", selfId), Filters.eq("receiver", src)),
+                        Filters.and(Filters.eq("sender", src), Filters.eq("receiver", selfId))
+                );
 
+            }
+            // 从 MongoDB 中获取聊天记录
             List<Document> chatHistory = collection.find(condition)
                     .sort(Sorts.ascending("timestamp"))
                     .into(new ArrayList<>());
