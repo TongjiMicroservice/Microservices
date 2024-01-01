@@ -12,14 +12,14 @@ import java.util.List;
 //@AllArgsConstructor
 public class QueryResponse extends APIResponse implements Serializable {
     private List<UserData> data;
-    public QueryResponse(APIResponse apiResponse, List<UserData> data) {
+    public QueryResponse(List<UserData> data) {
         // 调用父类的构造函数来设置状态码和消息
-        super(apiResponse.getCode(), apiResponse.getMessage());
+        super(success());
         this.data = data;
     }
 
     public QueryResponse(APIResponse apiResponse) {
-        super(apiResponse.getCode(), apiResponse.getMessage());
+        super(apiResponse);
         this.data = null;
     }
 }
