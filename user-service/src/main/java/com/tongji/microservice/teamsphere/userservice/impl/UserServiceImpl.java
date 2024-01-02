@@ -20,7 +20,7 @@ import static com.tongji.microservice.teamsphere.dto.APIResponse.*;
 @DubboService
 public class UserServiceImpl implements UserService {
     @DubboReference(check = false)
-    private ProjectService memberService;
+    private ProjectService projectService;
 
     @Autowired
     private UserMapper userMapper;

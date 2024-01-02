@@ -11,6 +11,11 @@ dubbo:
 server:
   port: 8085
 spring:
+  datasource:
+    url: jdbc:mariadb://123.60.177.179:3306/chat_service
+    username: remote0
+    password: ${mariadb}
+    driver-class-name: org.mariadb.jdbc.Driver
   data:
     mongodb:
       host: 123.60.177.179
