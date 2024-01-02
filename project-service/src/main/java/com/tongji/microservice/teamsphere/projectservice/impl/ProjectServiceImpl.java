@@ -111,7 +111,14 @@ public class ProjectServiceImpl implements ProjectService {
         var members = memberMapper.getMembers(projectId);
         List<MemberData> memberData = new ArrayList<>();
         for (var member : members) {
-            memberData.add(new MemberData(member.getUserId(), member.getProjectId(), member.getPrivilege()));
+            var user = userService.getUserInfo(member.getUserId());
+            memberData.add(new MemberData(
+                    member.getUserId(),
+                    member.getProjectId(),
+                    member.getPrivilege(),
+                    user.getUsername(),
+                    user.getAvatar()
+            ));
         }
         return new MembersResponse(memberData);
     }
