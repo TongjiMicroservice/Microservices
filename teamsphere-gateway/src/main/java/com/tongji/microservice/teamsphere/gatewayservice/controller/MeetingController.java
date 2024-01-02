@@ -1,8 +1,10 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.meetingservice.MeetingListResponse;
 import com.tongji.microservice.teamsphere.dto.meetingservice.MeetingResponse;
+import com.tongji.microservice.teamsphere.dto.meetingservice.ParticipantListResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.MeetingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import cn.dev33.satoken.stp.StpUtil;
 
 import java.time.LocalDateTime;
 
@@ -144,5 +145,22 @@ public class MeetingController {
             return APIResponse.notLoggedIn();
         }
         return meetingService.setParticipantRole(meetingId, participantId, role);
+    }
+
+    @Operation(summary = "获取会议参与者列表", responses = {
+            @ApiResponse(responseCode = "200", description = "成功获取参与者列表",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ParticipantListResponse.class))),
+            @ApiResponse(responseCode = "401", description = "会议不存在",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
+    })
+    @GetMapping("/meeting/{meetingId}/participants")
+    public ParticipantListResponse getParticipantsForMeeting(
+            @PathVariable("meetingId") String meetingId
+    ) {
+        if (!StpUtil.isLogin()) {
+            // 用户未登录
+            return new ParticipantListResponse(APIResponse.notLoggedIn(),null);
+        }
+        return meetingService.getParticipantsForMeeting(meetingId);
     }
 }

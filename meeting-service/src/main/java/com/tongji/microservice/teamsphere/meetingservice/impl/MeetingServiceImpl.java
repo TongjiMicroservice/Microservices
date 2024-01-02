@@ -2,9 +2,7 @@ package com.tongji.microservice.teamsphere.meetingservice.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
-import com.tongji.microservice.teamsphere.dto.meetingservice.MeetingData;
-import com.tongji.microservice.teamsphere.dto.meetingservice.MeetingListResponse;
-import com.tongji.microservice.teamsphere.dto.meetingservice.MeetingResponse;
+import com.tongji.microservice.teamsphere.dto.meetingservice.*;
 import com.tongji.microservice.teamsphere.dubbo.api.MeetingService;
 import com.tongji.microservice.teamsphere.meetingservice.client.FeishuAPIClient;
 import com.tongji.microservice.teamsphere.meetingservice.client.MeetingBackData;
@@ -244,5 +242,31 @@ public class MeetingServiceImpl implements MeetingService {
             else
                 return new APIResponse(401, "参会人角色修改失败");
         }
+    }
+
+    @Override
+    public ParticipantListResponse getParticipantsForMeeting(String meetingId) {
+        QueryWrapper<Meeting> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("id", meetingId);
+        Meeting existingMeeting = meetingMapper.selectOne(queryWrapper1);
+        if(existingMeeting == null){
+            return new ParticipantListResponse(new APIResponse(401, "会议不存在"),null);
+        }
+
+        QueryWrapper<MeetingParticipants> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("meeting_id", meetingId);
+        List<MeetingParticipants> participants = participantsMapper.selectList(queryWrapper);
+
+        List<ParticipantData> participantDataList = participants.stream()
+                .filter(Objects::nonNull)
+                .map(participant -> new ParticipantData(
+                        participant.id,
+                        participant.meetingId,
+                        participant.participantId,
+                        participant.role
+                ))
+                .collect(Collectors.toList());
+
+        return new ParticipantListResponse(new APIResponse(200, "成功获取参会人列表"), participantDataList);
     }
 }
