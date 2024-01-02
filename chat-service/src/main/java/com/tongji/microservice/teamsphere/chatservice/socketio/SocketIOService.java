@@ -8,7 +8,10 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 import com.tongji.microservice.teamsphere.chatservice.entities.MessageObject;
+import com.tongji.microservice.teamsphere.chatservice.mapper.GroupMemberMapper;
 import com.tongji.microservice.teamsphere.chatservice.util.MongoDB;
+import com.tongji.microservice.teamsphere.dto.chatservice.RecentChatResponse;
+import com.tongji.microservice.teamsphere.dubbo.api.ChatService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.bson.Document;
@@ -27,6 +30,8 @@ public class SocketIOService {
     //用于连接用户数据库来获取用户信息
     @DubboReference(check = false)
     private UserService userService;
+    @DubboReference(check = false)
+    private ChatService chatService;
     private final SocketIOServer server;
 
     @Autowired
@@ -44,22 +49,27 @@ public class SocketIOService {
           3. 获取系统消息
          */
         server.addConnectListener(client -> {
-            System.out.println("Client connected: " + client.getSessionId());
+            System.out.println("连接:" + client.getSessionId() + '@' + client.getRemoteAddress());
             // 在和用户握手建立连接时，就进行token校验，获取客户端的 userId
 //          String userId = client.getHandshakeData().getSingleUrlParam("userId");
-            String id_string = client.getHandshakeData().getSingleUrlParam("id");
+
+        });
+
+        server.addEventListener("loginRequest", String.class, (client, id_string, ackRequest) -> {
             //token通过校验
             if (id_string != null) {
                 //将int转为String
                 int userid = Integer.parseInt(id_string);
-                //该用户已经在线，则先断开上一个用户的连接
-                if (!biMap.containsKey(userid))
-                    server.getClient(biMap.get(userid)).disconnect();
+                //该用户已经在线，则先将该用户id绑定到最新连接的SessionId
+                if (biMap.containsKey(userid))
+                    if(biMap.get(userid) != client.getSessionId())
+                        biMap.replace(userid, client.getSessionId());
+//                    server.getClient(biMap.get(userid)).disconnect();
                 //将新的连接信息存入map
                 biMap.put(userid, client.getSessionId());
-                System.out.println("连接成功");
+                System.out.printf("连接成功,session%s绑定到%d\n", client.getSessionId(), userid);
                 //广播通知所有在线成员
-                server.getBroadcastOperations().sendEvent("login",id_string);
+                server.getBroadcastOperations().sendEvent("loginResponse",id_string);
             }
             //id校验失败，直接切断链接
             else {
@@ -73,29 +83,28 @@ public class SocketIOService {
           通知其他用户该用户下线
          */
         server.addDisconnectListener(client ->{
-            System.out.println("Client disconnected: " + client.getSessionId());
+            System.out.println("注销" + client.getSessionId());
             if (biMap.containsValue(client.getSessionId())) {
                 int  userId = biMap.inverse().get(client.getSessionId());
                 biMap.remove(userId);
-                server.getBroadcastOperations().sendEvent("logout",userId);
+                server.getBroadcastOperations().sendEvent("logoutResponse",String.valueOf(userId));
             }
-            System.out.println("Client disconnected: " + client.getSessionId());
-
         });
         /*
           消息已读状态更替
           将所有sender发给receiver的消息状态改为已读
           q:id不应该由前端传递，应该由后端生成
          */
-        server.addEventListener("acknowledgeRequest", MessageObject.class, (client, data, ackRequest) -> {
-            int sender = data.getSenderId();
-            int receiver = data.getReceiverId();
-
+        server.addEventListener("acknowledgeRequest", String.class, (client, senderId, ackRequest) -> {
+            System.out.println("收到消息已读状态更替请求:"+senderId);
+            if(senderId.charAt(0) == 'g')
+                return;
+            String receiverId = String.valueOf(biMap.inverse().get(client.getSessionId()));
             //更新数据库
             MongoCollection<Document> collection = MongoDB.getDatabase().getCollection("chat");
             Bson filter = Filters.and(
-                    Filters.eq("sender", sender),
-                    Filters.eq("receiver", receiver),
+                    Filters.eq("sender", senderId),
+                    Filters.eq("receiver", receiverId),
                     Filters.eq("isRead", false)
             );
 // Create an update operation to set isRead to true
@@ -104,59 +113,40 @@ public class SocketIOService {
             collection.updateMany(filter, updateOperation);
 
             //通知对方消息已被阅读
-            server.getClient(biMap.get(sender)).sendEvent("acknowledgeResponse", sender);
+            server.getClient(biMap.get(Integer.parseInt(senderId))).sendEvent("acknowledgeResponse", senderId);
 //        server.getBroadcastOperations().sendEvent("readStatusUpdated", sender);
-        });
-
-        /*
-          获取最近聊天对象
-         */
-        server.addEventListener("recentChatRequest", String.class, (client, data, ackRequest) -> {
-            System.out.println("Received userId message: " + data);
-            String userId = data;
-            MongoCollection<Document> collection = MongoDB.getDatabase().getCollection("chat");
-            Set<String> contactIds = new HashSet<>();
-            // 查询 sender 或 receiver 为 userId 的记录
-            collection.find(
-                    Filters.or(
-                            Filters.eq("sender", userId),
-                            Filters.eq("receiver", userId)
-                    )
-            ).forEach(doc -> {
-                String sender = doc.getString("sender");
-                String receiver = doc.getString("receiver");
-                if (!sender.equals(userId)) {
-                    contactIds.add(sender);
-                }
-                if (!receiver.equals(userId)) {
-                    contactIds.add(receiver);
-                }
-            });
-
-            List<Document> contacts = new ArrayList<>();
-            for (String contactId : contactIds) {
-                contacts.add(new Document("contactId", contactId));
-                System.out.println(contactId);
-            }
-            client.sendEvent("recentChatResponse", contacts);
         });
 
         /*
           查询聊天记录
          */
-        server.addEventListener("chatHistoryRequest", MessageObject.class, (client, data, ackRequest) -> {
-            int sender = data.getSenderId();
-            int receiver = data.getReceiverId();
-            // 从 MongoDB 中获取聊天记录
-            MongoCollection<Document> collection = MongoDB.getDatabase().getCollection("chat");
+        server.addEventListener("chatHistoryRequest", String.class, (client, data, ackRequest) -> {
+            System.out.printf("sessionId:%s\n", client.getSessionId());
+            String selfId = biMap.inverse().get(client.getSessionId()).toString();
+            String src = data;
+            //群聊
+            MongoCollection<Document> collection;
+            Bson condition;
+            if(src.charAt(0)=='g'){
+                collection = MongoDB.getDatabase().getCollection("chat");
 //                List<Document> chatHistory = collection.find(
 //                        Filters.or(Filters.eq("sender", sender), Filters.eq("sender", receiver))
 //                ).sort(Sorts.ascending("timestamp")).into(new ArrayList<>());
-            Bson condition = Filters.or(
-                    Filters.and(Filters.eq("sender", sender), Filters.eq("receiver", receiver)),
-                    Filters.and(Filters.eq("sender", receiver), Filters.eq("receiver", sender))
-            );
+                condition = Filters.eq("receiver", src);
+            }
+            //私聊
+            else{
+                collection = MongoDB.getDatabase().getCollection("chat");
+//                List<Document> chatHistory = collection.find(
+//                        Filters.or(Filters.eq("sender", sender), Filters.eq("sender", receiver))
+//                ).sort(Sorts.ascending("timestamp")).into(new ArrayList<>());
+                condition = Filters.or(
+                        Filters.and(Filters.eq("sender", selfId), Filters.eq("receiver", src)),
+                        Filters.and(Filters.eq("sender", src), Filters.eq("receiver", selfId))
+                );
 
+            }
+            // 从 MongoDB 中获取聊天记录
             List<Document> chatHistory = collection.find(condition)
                     .sort(Sorts.ascending("timestamp"))
                     .into(new ArrayList<>());
@@ -164,13 +154,14 @@ public class SocketIOService {
 //                client.sendEvent("chatHistoryResponse", chatHistory);
             // 发送聊天记录回客户端
             client.sendEvent("chatHistoryResponse", chatHistory);
+            System.out.println("Chat history sent to client: " + chatHistory);
         });
 
         /*
           处理接收到的消息
          */
-        server.addEventListener("message", MessageObject.class, (client, data, ackRequest) -> {
-            System.out.println("Received message: " + data);
+        server.addEventListener("messageRequest", MessageObject.class, (client, data, ackRequest) -> {
+            System.out.println("收到消息：" + data);
             //聊天记录插入数据库
             MongoCollection<Document> collection = MongoDB.getDatabase().getCollection("chat");
             // 将 MessageObject 转换为 Document 并插入到集合中
@@ -182,6 +173,18 @@ public class SocketIOService {
             //如果对应的人在线，将消息发给对应的人
             if (biMap.containsKey(data.getReceiverId())) {
                 server.getClient(biMap.get(data.getReceiverId())).sendEvent("messageEvent", data);
+            }
+        });
+
+        server.addEventListener("recentChatRequest", String.class,(client, userIdStr, ackRequest) -> {
+            //将最近聊天消息发给用户
+            try{
+                var list = chatService.getRecentChat(Integer.parseInt(userIdStr)).getList();
+                client.sendEvent("recentChatResponse", list);
+                System.out.println("发送最近聊天消息成功"+list);
+            }catch (Exception e){
+                e.printStackTrace();
+                System.out.println("发送最近聊天消息失败");
             }
         });
 

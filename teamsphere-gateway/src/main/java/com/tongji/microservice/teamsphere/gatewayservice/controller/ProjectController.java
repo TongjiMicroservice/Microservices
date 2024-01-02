@@ -5,6 +5,7 @@ import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.projectservice.*;
 import com.tongji.microservice.teamsphere.dto.userservice.LoginResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
+import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class ProjectController {
     @DubboReference(check = false)
     private ProjectService projectService;
+    @DubboReference(check = false)
+    private UserService userService;
 
     private boolean checkAdmin(int userId, int projectId){
         return projectService.getProjectMemberPrivilege(projectId,userId).getPrivilege() > 1;
@@ -51,6 +54,23 @@ public class ProjectController {
         if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
             return APIResponse.fail("没有权限");
         }
+        return projectService.addProjectMember(projectId,userId);
+    }
+    @PostMapping("/project/member/add-by-email")
+    @Operation(summary = "通过email添加项目成员", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "400", description = "失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+    })
+    APIResponse addProjectMemberByEmail(int projectId, String email){
+        if (!StpUtil.isLogin()) {
+            return APIResponse.notLoggedIn();
+        }
+        if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
+            return APIResponse.fail("没有权限");
+        }
+        int userId =  userService.getUserInfoByEmail(email).getUserId();
         return projectService.addProjectMember(projectId,userId);
     }
 
@@ -174,10 +194,11 @@ public class ProjectController {
             @ApiResponse(responseCode = "400", description = "失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectQueryResponse.class))),
     })
-    ProjectQueryResponse getProjectByUserId(int userId){
+    ProjectQueryResponse getProjectByUserId(){
         if (!StpUtil.isLogin()) {
             return new ProjectQueryResponse(APIResponse.notLoggedIn());
         }
+        int userId = Integer.parseInt(StpUtil.getLoginId().toString());
         return projectService.getProjectByUserId(userId);
     }
 }

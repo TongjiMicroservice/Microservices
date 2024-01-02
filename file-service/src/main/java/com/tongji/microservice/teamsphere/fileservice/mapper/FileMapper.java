@@ -16,6 +16,9 @@ public interface FileMapper extends BaseMapper<FileInfo> {
     @Select("SELECT * FROM File WHERE project_id = #{projectId}")
     List<FileInfo> getFileByProject(@Param("projectId") int projectId);
 
-    @Select("SELECT * FROM File WHERE file_id = #{fileId}")
+    @Select("SELECT * FROM File WHERE id = #{fileId}")
     FileInfo getFileById(@Param("fileId") int fileId);
+
+    @Select("SELECT * FROM File WHERE name = #{fileName}")
+    FileInfo getFileByName(@Param("fileName") String fileName);
 }

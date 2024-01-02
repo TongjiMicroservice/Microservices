@@ -15,5 +15,6 @@ public interface UserService {
 
     APIResponse deleteUser(int userId);
 
+    UserResponse getUserInfoByEmail(String email);
 }
 

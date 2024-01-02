@@ -8,11 +8,13 @@ import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.FileService;
+import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
 import com.tongji.microservice.teamsphere.fileservice.entities.FileInfo;
 import com.tongji.microservice.teamsphere.fileservice.entities.Star;
 import com.tongji.microservice.teamsphere.fileservice.mapper.FileMapper;
 import com.tongji.microservice.teamsphere.fileservice.mapper.StarMapper;
 import com.tongji.microservice.teamsphere.fileservice.util.Loader;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,19 +32,21 @@ public class FileServiceImpl implements FileService {
     private FileMapper fileMapper;
     @Autowired
     private StarMapper starMapper;
+    @DubboReference(check = false)
+    private ProjectService projectService;
     @Override
     public APIResponse upload(FileData fileData) {
         try {
-            fileMapper.insert(new FileInfo(
-                    0,
-                    fileData.getUrl(),
-                    fileData.getType(),
-                    fileData.getName(),
-                    fileData.getUserId(),
-                    fileData.getProjectId(),
-                    fileData.getUploadTime(),
-                    fileData.getSize()
-            ));
+            var fi = new FileInfo();
+            fi.setId(0);
+            fi.setUrl(fileData.getUrl());
+            fi.setType(fileData.getType());
+            fi.setName(fileData.getName());
+            fi.setUserId(fileData.getUserId());
+            fi.setProjectId(fileData.getProjectId());
+            fi.setUploadTime(fileData.getUploadTime());
+            fi.setSize(fileData.getSize());
+            fileMapper.insert(fi);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -50,10 +54,30 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public APIResponse delete(int userId, String fileName) {
+        try {
+            FileInfo f = fileMapper.getFileByName(fileName);
+            if(f.getUserId() != userId){
+                return fail("文件不属于你");
+            }
+            starMapper.deleteByFileId(f.getId());
+            fileMapper.deleteById(f.getId());
+            return success();
+        }catch (Exception e){
+            e.printStackTrace();
+            return fail("删除失败:"+e.getMessage());
+        }
+
+    }
+
+    @Override
     public FileResponse getFileByProject(int projectId) {
         System.out.printf("id:%d\n",projectId);
         List<FileData> list = new ArrayList<>();
-        for(var i : fileMapper.getFileByProject(projectId)){
+        var l = fileMapper.getFileByProject(projectId);
+        for(var i : l){
+            System.out.println("i.getUploadTime()");
+            System.out.println(i.getUploadTime());
             list.add(new FileData(
                     i.getUrl(),
                     i.getType(),
@@ -65,6 +89,7 @@ public class FileServiceImpl implements FileService {
             ));
         }
         System.out.printf("list size:%d\n",list.size());
+        //return new FileResponse(fail("error"));
         return new FileResponse(list);
     }
 
