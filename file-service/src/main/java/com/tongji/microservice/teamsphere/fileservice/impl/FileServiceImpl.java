@@ -47,6 +47,8 @@ public class FileServiceImpl implements FileService {
             fi.setUploadTime(fileData.getUploadTime());
             fi.setSize(fileData.getSize());
             fileMapper.insert(fi);
+            //上传新文件的同时默认收藏
+            starMapper.insert(new Star(fileData.getUserId(),fileMapper.getFileByName(fileData.getName()).getId()));
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -71,7 +73,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public FileResponse getFileByProject(int projectId) {
+    public FileResponse getFileByProject(int projectId, int userId) {
         System.out.printf("id:%d\n",projectId);
         List<FileData> list = new ArrayList<>();
         var l = fileMapper.getFileByProject(projectId);
@@ -79,13 +81,15 @@ public class FileServiceImpl implements FileService {
             System.out.println("i.getUploadTime()");
             System.out.println(i.getUploadTime());
             list.add(new FileData(
+                    i.getId(),
                     i.getUrl(),
                     i.getType(),
                     i.getName(),
                     i.getUploadTime(),
                     i.getUserId(),
                     i.getProjectId(),
-                    i.getSize()
+                    i.getSize(),
+                    starMapper.isStarred(userId,i.getId())
             ));
         }
         System.out.printf("list size:%d\n",list.size());
@@ -120,15 +124,22 @@ public class FileServiceImpl implements FileService {
         for(var star : stars){
             FileInfo i = fileMapper.getFileById(star);
             list.add(new FileData(
+                    i.getId(),
                     i.getUrl(),
                     i.getType(),
                     i.getName(),
                     i.getUploadTime(),
                     i.getUserId(),
                     i.getProjectId(),
-                    i.getSize()
+                    i.getSize(),
+                    1
             ));
         }
         return new FileResponse(list);
+    }
+
+    @Override
+    public int isStarred(int userId, int fileId) {
+        return starMapper.isStarred(userId, fileId);
     }
 }
