@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileData implements Serializable {
+    private int id;
     private String url;
     private String type;
     private String name;
@@ -19,4 +20,5 @@ public class FileData implements Serializable {
     private int userId;
     private int projectId;
     private int size;
+    private int starred;
 }

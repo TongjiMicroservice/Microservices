@@ -14,6 +14,4 @@ public class TaskMemberData implements Serializable {
     private int id;
     private int taskId;
     private int score;
-    private LocalDateTime finishTime;
-    private String fileURL;
 }
