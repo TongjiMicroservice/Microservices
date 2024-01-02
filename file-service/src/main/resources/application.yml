@@ -8,6 +8,8 @@ dubbo:
   protocol:
     name: dubbo
     port: 20887
+  provider:
+    timeout: 5000
 server:
   port: 8088
 

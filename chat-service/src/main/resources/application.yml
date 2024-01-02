@@ -8,6 +8,8 @@ dubbo:
   protocol:
     name: dubbo
     port: 20882
+  provider:
+    timeout: 5000
 server:
   port: 8085
 spring:
