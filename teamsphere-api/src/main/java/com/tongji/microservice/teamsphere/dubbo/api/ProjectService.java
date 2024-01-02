@@ -18,4 +18,9 @@ public interface ProjectService {
     ProjectQueryResponse getProjectByUserId(int userId);
 
     ProjectQueryResponse queryProject();
+
+    ProjectJoinRequestResponse getProjectJoinRequest(int projectId);
+    APIResponse makeJoinRequest(int userId, int projectId);
+
+    APIResponse judgeJoinRequest(int userId, int projectId, int judgement);
 }

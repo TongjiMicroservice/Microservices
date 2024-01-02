@@ -12,8 +12,8 @@ import java.util.List;
 public class MembersResponse extends APIResponse implements Serializable {
    private List<MemberData> members;
 
-    public MembersResponse(APIResponse apiResponse, List<MemberData> members) {
-         super(apiResponse.getCode(), apiResponse.getMessage());
+    public MembersResponse(List<MemberData> members) {
+         super(success());
          this.members = members;
     }
 
