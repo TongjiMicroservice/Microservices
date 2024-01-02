@@ -45,6 +45,7 @@ public class FileServiceImpl implements FileService {
             fi.setUserId(fileData.getUserId());
             fi.setProjectId(fileData.getProjectId());
             fi.setUploadTime(fileData.getUploadTime());
+            fi.setSize(fileData.getSize());
             fileMapper.insert(fi);
         }catch (Exception e){
             System.out.println(e.getMessage());
