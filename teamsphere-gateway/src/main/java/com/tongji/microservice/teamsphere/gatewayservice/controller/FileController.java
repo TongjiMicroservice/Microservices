@@ -131,9 +131,9 @@ public class FileController {
     @GetMapping("/file-by-star")
     @Operation(summary = "查看星标文件", responses = {
             @ApiResponse(responseCode = "200", description = "调用成功",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class))),
             @ApiResponse(responseCode = "400", description = "调用失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class)))
     })
     FileResponse getFileByStar() {
         if(!StpUtil.isLogin()){

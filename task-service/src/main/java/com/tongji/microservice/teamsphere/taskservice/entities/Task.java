@@ -25,11 +25,15 @@ public class Task {
     @TableField("deadline")
     private LocalDateTime deadline;
     @TableField("status")
-    private int status;
+    private int status;  //0正常 1已提交 2已审核
     @TableField("leader")
     private int leader;
     @TableField("priority")
     private int priority;  // 优先级: 0-低, 1-中, 2-高
+    @TableField("file")
+    private String file;
+    @TableField("finish_time")
+    private LocalDateTime finishTime;
     public Task(TaskData taskData) {
         this.projectId = taskData.getProjectId();
         this.name = taskData.getName();

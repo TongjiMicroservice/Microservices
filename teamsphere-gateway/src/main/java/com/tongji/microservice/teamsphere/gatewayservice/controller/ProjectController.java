@@ -30,9 +30,9 @@ public class ProjectController {
     @PostMapping("/project/create")
     @Operation(summary = "创建项目", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = ProjectIdResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectIdResponse.class))),
     })
     ProjectIdResponse creatProject(ProjectData projectData){
         if(!StpUtil.isLogin()){
@@ -43,9 +43,9 @@ public class ProjectController {
     @PostMapping("/project/member/add")
     @Operation(summary = "添加项目成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     APIResponse addProjectMember(int projectId, int userId){
         if (!StpUtil.isLogin()) {
@@ -59,9 +59,9 @@ public class ProjectController {
     @PostMapping("/project/member/add-by-email")
     @Operation(summary = "通过email添加项目成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     APIResponse addProjectMemberByEmail(int projectId, String email){
         if (!StpUtil.isLogin()) {
@@ -77,9 +77,9 @@ public class ProjectController {
     @PatchMapping("/project/info/update")
     @Operation(summary = "更新项目信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     APIResponse updateProjectInfo(int projectId, ProjectData projectData){
         if (!StpUtil.isLogin()) {
@@ -93,9 +93,9 @@ public class ProjectController {
     @DeleteMapping("/project/member/delete")
     @Operation(summary = "删除项目成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     APIResponse removeProjectMember(int projectId, int userId){
         if (!StpUtil.isLogin()) {
@@ -109,9 +109,9 @@ public class ProjectController {
     @PatchMapping("/project/privilege/update")
     @Operation(summary = "变更成员权限", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     APIResponse updateProjectMemberPrivilege(int projectId, int userId, int privilege){
         if (!StpUtil.isLogin()) {
@@ -125,9 +125,9 @@ public class ProjectController {
     @GetMapping("/project/member/get")
     @Operation(summary = "获取项目成员清单", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = MembersResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = MembersResponse.class))),
     })
     MembersResponse getProjectMembers(int projectId){
         if (!StpUtil.isLogin()) {
@@ -138,9 +138,9 @@ public class ProjectController {
     @GetMapping("/project/info/get")
     @Operation(summary = "获取项目信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = ProjectInfoResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectInfoResponse.class))),
     })
     ProjectInfoResponse getProjectInfo(int projectId){
         return projectService.getProjectInfo(projectId);
@@ -148,9 +148,9 @@ public class ProjectController {
     @DeleteMapping("/project/delete")
     @Operation(summary = "删除项目", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     APIResponse deleteProject(int projectId){
         if (!StpUtil.isLogin()) {
@@ -165,9 +165,9 @@ public class ProjectController {
     @GetMapping("/project/privilege/get")
     @Operation(summary = "获取用户项目权限", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = PrivilegeResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = PrivilegeResponse.class))),
     })
     PrivilegeResponse getProjectMemberPrivilege(int projectId, int userId){
         return projectService.getProjectMemberPrivilege(projectId,userId);
@@ -176,9 +176,9 @@ public class ProjectController {
     @GetMapping("/project/all")
     @Operation(summary = "获取全部项目信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = ProjectQueryResponse.class))),
             @ApiResponse(responseCode = "400", description = "失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectQueryResponse.class))),
     })
     ProjectQueryResponse queryProject(){
         if (!StpUtil.isLogin()) {

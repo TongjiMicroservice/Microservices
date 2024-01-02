@@ -29,9 +29,9 @@ public class ChatController {
     @GetMapping("/chat/api")
     @Operation(summary = "获取聊天ws服务器API", responses = {
             @ApiResponse(responseCode = "200", description = "调用成功",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "调用失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
     })
     APIResponse getPort(){
         return chatService.getPort();
@@ -40,18 +40,31 @@ public class ChatController {
     @PostMapping("/chat/group")
     @Operation(summary = "获取聊天ws服务器API", responses = {
             @ApiResponse(responseCode = "200", description = "调用成功",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "调用失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponse.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
     })
     APIResponse createGroup(String groupName, String groupInfo, List<String> memberIds){
         return chatService.createGroup(groupName, groupInfo, memberIds);
     }
-
+    @GetMapping("/chat/recent-chat")
+    @Operation(summary = "获取最近聊天对象", responses = {
+            @ApiResponse(responseCode = "200", description = "调用成功",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecentChatResponse.class))),
+            @ApiResponse(responseCode = "400", description = "调用失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecentChatResponse.class)))
+    })
     RecentChatResponse getRecentChat(int userId){
         return chatService.getRecentChat(userId);
     }
 
+    @GetMapping("/chat/member")
+    @Operation(summary = "获取特定聊天组成员", responses = {
+            @ApiResponse(responseCode = "200", description = "调用成功",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupMemberResponse.class))),
+            @ApiResponse(responseCode = "400", description = "调用失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GroupMemberResponse.class)))
+    })
     GroupMemberResponse getGroupMember(int groupId) {
         return chatService.getGroupMember(groupId);
     }

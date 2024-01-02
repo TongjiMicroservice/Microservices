@@ -59,8 +59,9 @@ public class FileServiceImpl implements FileService {
     public APIResponse delete(int userId, String fileName) {
         try {
             FileInfo f = fileMapper.getFileByName(fileName);
-            if(f.getUserId() != userId){
-                return fail("文件不属于你");
+            if(projectService.getProjectMemberPrivilege(f.getProjectId(),userId).getPrivilege()<2 &&
+                    f.getUserId() != userId){
+                return fail("文件不属于你，且你不是管理员，无权删除");
             }
             starMapper.deleteByFileId(f.getId());
             fileMapper.deleteById(f.getId());
