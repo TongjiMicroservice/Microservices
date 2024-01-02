@@ -12,4 +12,5 @@ import java.io.Serializable;
 public class ContactObject implements Serializable {
     private String id;
     private String name;
+    private String avatar;
 }
