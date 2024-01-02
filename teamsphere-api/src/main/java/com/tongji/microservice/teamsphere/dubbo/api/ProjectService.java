@@ -18,4 +18,6 @@ public interface ProjectService {
     ProjectQueryResponse getProjectByUserId(int userId);
 
     ProjectQueryResponse queryProject();
+
+    ProjectJoinRequestResponse getProjectJoinRequest(int projectId);
 }
