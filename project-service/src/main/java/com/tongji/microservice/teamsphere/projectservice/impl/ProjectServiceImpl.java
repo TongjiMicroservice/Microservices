@@ -8,6 +8,7 @@ import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import com.tongji.microservice.teamsphere.projectservice.entities.Project;
 import com.tongji.microservice.teamsphere.projectservice.entities.ProjectMember;
+import com.tongji.microservice.teamsphere.projectservice.entities.ProjectMemberRequest;
 import com.tongji.microservice.teamsphere.projectservice.mapper.ProjectMapper;
 import com.tongji.microservice.teamsphere.projectservice.mapper.ProjectMemberMapper;
 import com.tongji.microservice.teamsphere.projectservice.mapper.ProjectMemberRequestMapper;
@@ -15,6 +16,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -168,13 +170,51 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectJoinRequestResponse  getProjectJoinRequest(int projectId) {
+    public ProjectJoinRequestResponse getProjectJoinRequest(int projectId) {
         var list = requestMapper.getRequestByProjectId(projectId);
+        System.out.println("查询完成"+list.size());
+        System.out.println(list);
         List<RequestData> dataList = new ArrayList<>();
         for (var req : list) {
             String name = userService.getUserInfo(req.getUserId()).getUsername();
             dataList.add(new RequestData(req.getUserId(), name, req.getRequestTime(), req.getStatus()));
         }
+        System.out.println(dataList);
         return new ProjectJoinRequestResponse (dataList);
+    }
+
+    @Override
+    public APIResponse makeJoinRequest(int userId, int projectId) {
+        if(memberMapper.exists(new QueryWrapper<ProjectMember>().eq("user_id", userId).eq("project_id", projectId))){
+            return fail("您已加入组织");
+        }
+        else if(requestMapper.exists(new QueryWrapper<ProjectMemberRequest>().eq("user_id", userId).eq("project_id", projectId))){
+            return fail("您已发出加入申请");
+        }
+        int flat = requestMapper.insert(new ProjectMemberRequest(userId, projectId, LocalDateTime.now(),0));
+        if(flat == 0){
+            return fail("操作失败");
+        }
+        return success();
+    }
+
+    @Override
+    public APIResponse judgeJoinRequest(int userId, int projectId, int judgement){
+        try {
+            int flat;
+            if (judgement == 1) {
+                flat = requestMapper.agree(userId, projectId);
+                addProjectMember(projectId, userId);
+            } else {
+                flat = requestMapper.refuse(userId, projectId);
+            }
+            if(flat == 0){
+                return fail("操作失败");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return fail("发生错误:" + e.getMessage());
+        }
+        return success();
     }
 }
