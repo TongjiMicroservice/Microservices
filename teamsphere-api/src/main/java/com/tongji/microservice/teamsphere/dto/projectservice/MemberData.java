@@ -13,4 +13,6 @@ public class MemberData implements Serializable {
     private int userId;
     private int projectId;
     private int privilege;
+    private String name;
+    private String avatar;
 }
