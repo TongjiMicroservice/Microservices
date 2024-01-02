@@ -11,11 +11,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskData implements Serializable {
-    private int taskId;
+    private int id;
     private int projectId;
     private int leader;
     private String name;
     private String description;
     private LocalDateTime deadline;
     private int status;
+    private int priority;
+    private String file;
+    private LocalDateTime finishTime;
 }

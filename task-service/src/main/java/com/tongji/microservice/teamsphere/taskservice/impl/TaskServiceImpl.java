@@ -138,15 +138,7 @@ public class TaskServiceImpl implements TaskService {
             Task task = taskMapper.selectById(taskId);
             if(task == null)
                 return new TaskResponse(fail("任务不存在"));
-            return new TaskResponse(new TaskData(
-                    task.getId(),
-                    task.getProjectId(),
-                    task.getLeader(),
-                    task.getName(),
-                    task.getDescription(),
-                    task.getDeadline(),
-                    task.getStatus()
-            ));
+            return new TaskResponse(TaskToTaskData(task));
         }catch (Exception e){
             e.printStackTrace();
             return new TaskResponse(fail(e.getMessage()));
@@ -184,16 +176,9 @@ public class TaskServiceImpl implements TaskService {
         try{
             List<Task> tasks = taskMapper.selectTaskByProjectId(projectId);
             List<TaskData> list = new ArrayList<>();
-            for(var task : tasks)
-                list.add(new TaskData(
-                        task.getId(),
-                        task.getProjectId(),
-                        task.getLeader(),
-                        task.getName(),
-                        task.getDescription(),
-                        task.getDeadline(),
-                        task.getStatus()
-                ));
+            for(var task : tasks){
+                list.add(TaskToTaskData(task));
+            }
             System.out.println(list);
             return new ProjectTaskResponse(list);
         }catch (Exception e){
@@ -205,20 +190,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public ProjectTaskResponse getTasksForLeader(int userId) {
         try{
-            List<TaskData> taskData = new ArrayList<>();
+            List<TaskData> taskDataList = new ArrayList<>();
             var list = taskMapper.getTaskByLeader(userId);
-            for(var task : list){
-                taskData.add(new TaskData(
-                        task.getId(),
-                        task.getProjectId(),
-                        task.getLeader(),
-                        task.getName(),
-                        task.getDescription(),
-                        task.getDeadline(),
-                        task.getStatus()
-                ));
-            }
-            return new ProjectTaskResponse(taskData);
+            for(var task : list)
+                taskDataList.add(TaskToTaskData(task));
+            return new ProjectTaskResponse(taskDataList);
         }catch (Exception e){
             e.printStackTrace();
             return new ProjectTaskResponse(fail(e.getMessage()));
@@ -228,25 +204,30 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public ProjectTaskResponse getTasksForMember(int userId) {
         try{
-            List<TaskData> taskData= new ArrayList<>();
+            List<TaskData> taskDataList= new ArrayList<>();
             var list = memberMapper.getTaskByUserId(userId);
             for(var i : list){
                 Task task = taskMapper.getTaskById(i);
-                taskData.add(new TaskData(
-                        task.getId(),
-                        task.getProjectId(),
-                        task.getLeader(),
-                        task.getName(),
-                        task.getDescription(),
-                        task.getDeadline(),
-                        task.getStatus()
-                ));
+                taskDataList.add(TaskToTaskData(task));
             }
-            return new ProjectTaskResponse(taskData);
+            return new ProjectTaskResponse(taskDataList);
         }catch (Exception e){
             e.printStackTrace();
             return new ProjectTaskResponse(fail(e.getMessage()));
         }
-
+    }
+    private TaskData TaskToTaskData(Task task){
+        TaskData taskData = new TaskData();
+        taskData.setId(task.getId());
+        taskData.setProjectId(task.getProjectId());
+        taskData.setLeader(task.getLeader());
+        taskData.setName(task.getName());
+        taskData.setDescription(task.getDescription());
+        taskData.setDeadline(task.getDeadline());
+        taskData.setStatus(task.getStatus());
+        taskData.setPriority(task.getPriority());
+        taskData.setFile(task.getFile());
+        taskData.setFinishTime(task.getFinishTime());
+        return taskData;
     }
 }

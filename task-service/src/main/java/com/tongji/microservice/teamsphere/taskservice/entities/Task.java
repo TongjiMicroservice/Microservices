@@ -38,11 +38,13 @@ public class Task {
         this.projectId = taskData.getProjectId();
         this.name = taskData.getName();
         this.description = taskData.getDescription();
-        this.id = taskData.getTaskId();
+        this.id = taskData.getId();
         this.deadline = taskData.getDeadline();
         this.status = taskData.getStatus();
         this.leader = taskData.getLeader();
-        this.priority = 0;
+        this.priority = taskData.getPriority();
+        this.file = taskData.getFile();
+        this.finishTime = taskData.getFinishTime();
     }
 
     public Task(String name, String description, int projectId, LocalDateTime deadline, int leader, int priority) {
@@ -52,5 +54,6 @@ public class Task {
         this.deadline = deadline;
         this.leader = leader;
         this.priority = priority;
+        this.status = 0;
     }
 }
