@@ -20,7 +20,7 @@ public interface TaskService {
     APIResponse scoreTaskMember(int taskId, int memberId, int score);
 
     APIResponse judgeTask(int taskId);
-    APIResponse uploadTaskFile(int taskId, String fileURL);
+    APIResponse uploadTaskFile(int userId, int taskId, String fileURL);
     APIResponse updateTaskInfo(int taskId, TaskData taskData);
     TaskResponse getTaskInfo(int taskId);
 

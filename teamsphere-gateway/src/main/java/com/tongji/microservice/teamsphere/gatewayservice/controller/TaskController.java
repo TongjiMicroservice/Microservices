@@ -79,9 +79,9 @@ public class TaskController {
         if (!StpUtil.isLogin()) {
             return APIResponse.notLoggedIn();
         }
-        int projectId = taskService.getTaskInfo(taskId).getTaskData().getProjectId();
-        if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
-            return APIResponse.fail("没有权限");
+        int projectId = taskService.getTaskInfo(taskId).getTaskData().getLeader();
+        if (StpUtil.getLoginIdAsInt() != projectId) {
+            return APIResponse.fail("你不是任务领导者，没有权限");
         }
         return taskService.addTaskMember(taskId, memberId);
     }
@@ -131,11 +131,8 @@ public class TaskController {
         if (!StpUtil.isLogin()) {
             return APIResponse.notLoggedIn();
         }
-        int projectId = taskService.getTaskInfo(taskId).getTaskData().getProjectId();
-        if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
-            return APIResponse.fail("没有权限");
-        }
-        return taskService.uploadTaskFile(taskId, fileURL);
+        int userId = StpUtil.getLoginIdAsInt();
+        return taskService.uploadTaskFile(userId, taskId, fileURL);
     }
     @PatchMapping("/task/info/update")
     @Operation(summary = "修改任务信息", responses = {

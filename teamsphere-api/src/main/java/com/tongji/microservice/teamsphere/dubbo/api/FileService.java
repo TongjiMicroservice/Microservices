@@ -12,5 +12,7 @@ public interface FileService {
     APIResponse putStar(int userId, int fileId);
     APIResponse deleteStar(int userId, int fileId);
     FileResponse getFileByStar(int userId);
+
+    FileData getFileByURL(String url);
     int isStarred(int userId, int fileId);
 }

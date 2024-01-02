@@ -7,13 +7,16 @@ import com.tongji.microservice.teamsphere.dto.taskservice.CreateTaskResponse;
 import com.tongji.microservice.teamsphere.dto.taskservice.ProjectTaskResponse;
 import com.tongji.microservice.teamsphere.dto.taskservice.TaskMemberResponse;
 import com.tongji.microservice.teamsphere.dto.taskservice.TaskResponse;
+import com.tongji.microservice.teamsphere.dubbo.api.FileService;
 import com.tongji.microservice.teamsphere.dubbo.api.TaskService;
 import com.tongji.microservice.teamsphere.dto.taskservice.TaskData;
 import com.tongji.microservice.teamsphere.dto.taskservice.TaskMemberData;
+import com.tongji.microservice.teamsphere.dubbo.api.UserService;
 import com.tongji.microservice.teamsphere.taskservice.entities.Task;
 import com.tongji.microservice.teamsphere.taskservice.entities.TaskMember;
 import com.tongji.microservice.teamsphere.taskservice.mapper.TaskMapper;
 import com.tongji.microservice.teamsphere.taskservice.mapper.TaskMemberMapper;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,6 +34,10 @@ public class TaskServiceImpl implements TaskService {
     private TaskMapper taskMapper;
     @Autowired
     private TaskMemberMapper memberMapper;
+    @DubboReference(check = false)
+    private UserService userService;
+    @DubboReference(check = false)
+    private FileService fileService;
     @Override
     public CreateTaskResponse createTask(String name, String description, int projectId, LocalDateTime deadline, int leader, int priority) {
         try {
@@ -62,7 +69,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public APIResponse addTaskMember(int taskId, int memberId) {
-        int projectId = taskMapper.getProjectId(taskId);
         try {
             var flat = memberMapper.addMember(taskId,memberId);
             if(flat == 0)
@@ -118,8 +124,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public APIResponse uploadTaskFile(int taskId, String fileURL) {
+    public APIResponse uploadTaskFile(int userId, int taskId, String fileURL) {
         try{
+            if(!memberMapper.exists(new QueryWrapper<TaskMember>().eq("task_id",taskId).eq("user_id",userId)))
+                return fail("你不是该任务成员");
             int flat = taskMapper.setFileURL(taskId,fileURL,LocalDateTime.now());
             if(flat == 0)
                 return fail("上传失败");
@@ -241,6 +249,12 @@ public class TaskServiceImpl implements TaskService {
         taskData.setPriority(task.getPriority());
         taskData.setFile(task.getFile());
         taskData.setFinishTime(task.getFinishTime());
+        taskData.setLeaderName(userService.getUserInfo(task.getLeader()).getUsername());
+        var f = fileService.getFileByURL(task.getFile());
+        if(f != null)
+            taskData.setFileName(f.getName());
+        else
+            taskData.setFileName("");
         return taskData;
     }
 }

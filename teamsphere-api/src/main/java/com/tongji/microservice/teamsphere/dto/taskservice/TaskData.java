@@ -21,4 +21,6 @@ public class TaskData implements Serializable {
     private int priority;
     private String file;
     private LocalDateTime finishTime;
+    private String leaderName;
+    private String fileName;
 }
