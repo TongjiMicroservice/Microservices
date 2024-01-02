@@ -5,15 +5,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class MeetingResponse extends APIResponse implements Serializable {
-    String meetingUrl;
+    MeetingData meetingData;
 
-    public MeetingResponse(APIResponse apiResponse, String meetingUrl) {
+    public MeetingResponse(APIResponse apiResponse, MeetingData meetingData) {
         super(apiResponse.getCode(), apiResponse.getMessage());
-        this.meetingUrl = meetingUrl;
+        this.meetingData = meetingData;
     }
 }

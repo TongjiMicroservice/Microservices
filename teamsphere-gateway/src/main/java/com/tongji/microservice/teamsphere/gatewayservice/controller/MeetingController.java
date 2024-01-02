@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import cn.dev33.satoken.stp.StpUtil;
 
 import java.time.LocalDateTime;
 
@@ -34,10 +35,10 @@ public class MeetingController {
                                          @RequestParam("description") String description,
                                          @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
                                          @RequestParam("deadline") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime deadline) {
-//        if (!StpUtil.isLogin()){
-//            // 用户未登录
-//            return new MeetingResponse(new APIResponse(404, "用户未登录"), null);
-//        }
+        if (!StpUtil.isLogin()){
+            // 用户未登录
+            return new MeetingResponse(APIResponse.notLoggedIn(), null);
+        }
         return meetingService.createMeeting(projectId, title, description, startTime, deadline);
     }
 
@@ -49,10 +50,10 @@ public class MeetingController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     public APIResponse cancelMeeting(@PathVariable("meetingId") String meetingId) {
-//        if (!StpUtil.isLogin()){
-//            // 用户未登录
-//            return APIResponse.notLoggedIn();
-//        }
+        if (!StpUtil.isLogin()){
+            // 用户未登录
+            return APIResponse.notLoggedIn();
+        }
         return meetingService.cancelMeeting(meetingId);
     }
 
@@ -64,10 +65,10 @@ public class MeetingController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = MeetingListResponse.class))),
     })
     public MeetingListResponse getMeetingsForProject(@PathVariable("projectId") int projectId) {
-//        if (!StpUtil.isLogin()){
-//            // 用户未登录
-//            return new MeetingListResponse(new APIResponse(404, "用户未登录"), null);
-//        }
+        if (!StpUtil.isLogin()){
+            // 用户未登录
+            return new MeetingListResponse(APIResponse.notLoggedIn(), null);
+        }
         return meetingService.getMeetingsForProject(projectId);
     }
 
@@ -79,10 +80,10 @@ public class MeetingController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = MeetingListResponse.class))),
     })
     public MeetingListResponse getMeetingsForUser(@PathVariable("userId") int userId) {
-//        if (!StpUtil.isLogin()){
-//            // 用户未登录
-//            return new MeetingListResponse(new APIResponse(404, "用户未登录"), null);
-//        }
+        if (!StpUtil.isLogin()){
+            // 用户未登录
+            return new MeetingListResponse(APIResponse.notLoggedIn(), null);
+        }
         return meetingService.getMeetingsForUser(userId);
     }
 
@@ -98,6 +99,10 @@ public class MeetingController {
             @RequestParam("participantId") int participantId,
             @RequestParam("role") String role
     ) {
+        if (!StpUtil.isLogin()){
+            // 用户未登录
+            return APIResponse.notLoggedIn();
+        }
         return meetingService.addParticipant(meetingId, participantId, role);
     }
 
@@ -113,6 +118,10 @@ public class MeetingController {
     public APIResponse removeParticipant(
             @RequestParam("meetingId") String meetingId,
             @PathVariable("participantId") int participantId) {
+        if (!StpUtil.isLogin()){
+            // 用户未登录
+            return APIResponse.notLoggedIn();
+        }
         return meetingService.removeParticipant(meetingId, participantId);
     }
 
@@ -130,6 +139,10 @@ public class MeetingController {
             @PathVariable("participantId") int participantId,
             @RequestParam("role") String role
     ) {
+        if (!StpUtil.isLogin()){
+            // 用户未登录
+            return APIResponse.notLoggedIn();
+        }
         return meetingService.setParticipantRole(meetingId, participantId, role);
     }
 }
