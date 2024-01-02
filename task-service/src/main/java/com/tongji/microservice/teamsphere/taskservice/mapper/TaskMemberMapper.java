@@ -20,7 +20,7 @@ public interface TaskMemberMapper extends BaseMapper<TaskMember> {
     @Update("UPDATE TaskMember SET (file_url, finish_time) = (#{fileURL},#{time}) WHERE task_id = #{taskId} AND user_id = #{userId}")
     int setFileURL(@Param("taskId")int taskId, @Param("userId")int userId, @Param("fileURL")String fileURL, @Param("time")LocalDateTime time);
 
-    @Select("SELECT t.* FROM TaskMember t WHERE task_id = #{taskId}")
+    @Select("SELECT * FROM TaskMember WHERE task_id = #{taskId}")
     List<TaskMember> getMembersByTaskId(@Param("taskId") int taskId);
 
     @Select("SELECT task_id FROM TaskMember WHERE user_id = #{userId}")

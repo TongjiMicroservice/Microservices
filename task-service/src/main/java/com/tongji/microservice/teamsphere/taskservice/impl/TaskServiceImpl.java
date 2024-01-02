@@ -105,9 +105,22 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public APIResponse uploadTaskFile(int taskId, int memberId, String fileURL) {
+    public APIResponse judgeTask(int taskId) {
+        try {
+            var flat = taskMapper.setStatus(taskId,2);
+            if(flat == 0)
+                return fail("审批失败");
+            return success();
+        }catch (Exception e){
+            e.printStackTrace();
+            return fail(e.getMessage());
+        }
+    }
+
+    @Override
+    public APIResponse uploadTaskFile(int taskId, String fileURL) {
         try{
-            int flat = memberMapper.setFileURL(taskId,memberId,fileURL, LocalDateTime.now());
+            int flat = taskMapper.setFileURL(taskId,fileURL,LocalDateTime.now());
             if(flat == 0)
                 return fail("上传失败");
             return success();
@@ -151,17 +164,13 @@ public class TaskServiceImpl implements TaskService {
             Task task = taskMapper.selectById(taskId);
             if(task == null)
                 return  new TaskMemberResponse(fail("任务不存在"));
-            QueryWrapper<TaskMember> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("task_id",taskId);
-            List<TaskMember> list = memberMapper.selectList(queryWrapper);
+            List<TaskMember> list = memberMapper.getMembersByTaskId(taskId);
             List<TaskMemberData> l = new ArrayList<>();
             for(var i : list){
                 l.add(new TaskMemberData(
                         i.getUserId(),
                         i.getTaskId(),
-                        i.getScore(),
-                        i.getFinishTime(),
-                        i.getFileURL()
+                        i.getScore()
                 ));
             }
             return new TaskMemberResponse(l);
@@ -215,6 +224,10 @@ public class TaskServiceImpl implements TaskService {
             e.printStackTrace();
             return new ProjectTaskResponse(fail(e.getMessage()));
         }
+    }
+    @Override
+    public int getLeader(int taskId){
+        return taskMapper.getLeader(taskId);
     }
     private TaskData TaskToTaskData(Task task){
         TaskData taskData = new TaskData();

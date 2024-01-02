@@ -55,5 +55,6 @@ public class Task {
         this.leader = leader;
         this.priority = priority;
         this.status = 0;
+        //其他值均为空
     }
 }
