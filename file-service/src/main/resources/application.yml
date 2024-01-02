@@ -1,7 +1,7 @@
 dubbo:
   application:
     logger: slf4j
-    name: schedule-service
+    name: file-service
     qos-port: 22225
   registry:
     address: nacos://${nacos_address:127.0.0.1}:8848
