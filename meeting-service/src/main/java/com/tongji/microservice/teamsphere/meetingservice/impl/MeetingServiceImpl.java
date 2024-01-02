@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @DubboService
@@ -39,6 +40,7 @@ public class MeetingServiceImpl implements MeetingService {
             return new APIResponse(400, "会议不存在");
         } else {
             boolean isDatabaseSuccess = meetingMapper.deleteMeetingById(meeting.getBookId()) > 0; // 成功删除数据库中的数据
+            participantsMapper.deleteMeetingById(meeting.getId());
             try {
                 boolean isFeishunSuccess = client.CancelMeeting(meeting.getBookId());
                 if (isDatabaseSuccess && isFeishunSuccess)
@@ -61,13 +63,25 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     public MeetingResponse createMeeting(int projectId, String title, String description, LocalDateTime starTime,
                                          LocalDateTime deadline) {
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        // 判断 starttime 和 deadline 是否在当前时间之后
+        if (starTime.isBefore(currentTime)) {
+            return new MeetingResponse(new APIResponse(406, "会议开始时间必须在未来时间"), null);
+        }
+
+        // 判断 deadline 是否在 starttime 之后
+        if (deadline.isBefore(starTime)) {
+            return new MeetingResponse(new APIResponse(407, "会议结束时间必须在开始时间后"), null);
+        }
+
         FeishuAPIClient client = new FeishuAPIClient();
         MeetingBackData meetingBackData;
         try{
             meetingBackData = client.BookMeeting(deadline);
-            System.out.println("预约会议测试返回数据打印");
-            System.out.println(meetingBackData.status);
-            System.out.println(meetingBackData.url);
+//            System.out.println("预约会议测试返回数据打印");
+//            System.out.println(meetingBackData.status);
+//            System.out.println(meetingBackData.url);
             if (!meetingBackData.status) {
                 return new MeetingResponse(new APIResponse(400, "预约会议失败"), null);
             } else {
@@ -76,10 +90,22 @@ public class MeetingServiceImpl implements MeetingService {
                 boolean isDatabaseSuccess = meetingMapper.insert(meeting) > 0;
                 System.out.println("会议录入数据库结果：");
                 System.out.println(isDatabaseSuccess);
+
+                MeetingData backmeetingdata =new MeetingData(
+                        meeting.id,
+                        meeting.projectId,
+                        meeting.title,
+                        meeting.description,
+                        meeting.startTime,
+                        meeting.duration,
+                        meeting.url,
+                        meeting.bookId
+                );
+//                System.out.println(backmeetingdata);
                 if (isDatabaseSuccess)
-                    return new MeetingResponse(new APIResponse(200, "预约会议成功"), meetingBackData.url);
+                    return new MeetingResponse(new APIResponse(200, "预约会议成功"), backmeetingdata);
                 else
-                    return new MeetingResponse(new APIResponse(201, "预约会议成功,但录入数据库失败"), meetingBackData.url);
+                    return new MeetingResponse(new APIResponse(201, "预约会议成功,但录入数据库失败"), backmeetingdata);
             }
         }catch (Exception e){
             System.out.println(e);
@@ -91,6 +117,7 @@ public class MeetingServiceImpl implements MeetingService {
     public MeetingListResponse getMeetingsForProject(int projectId) {
         List<Meeting> meetings = meetingMapper.selectMeetingsByProjectId(projectId);
         List<MeetingData> meetingDataList = meetings.stream()
+                .filter(Objects::nonNull)
                 .map(meeting -> new MeetingData(
                         meeting.id,
                         meeting.projectId,
@@ -123,6 +150,7 @@ public class MeetingServiceImpl implements MeetingService {
                 meetings.add(meeting);
             }
             List<MeetingData> meetingDataList = meetings.stream()
+                    .filter(Objects::nonNull)
                     .map(meeting -> new MeetingData(
                             meeting.id,
                             meeting.projectId,
@@ -149,6 +177,12 @@ public class MeetingServiceImpl implements MeetingService {
         queryWrapper.eq("participant_id", participantId);
         MeetingParticipants existingParticipant = participantsMapper.selectOne(queryWrapper);
 
+        QueryWrapper<Meeting> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("id", meetingId);
+        Meeting existingMeeting = meetingMapper.selectOne(queryWrapper1);
+        if(existingMeeting == null){
+            return new APIResponse(401, "会议不存在");
+        }
         if (existingParticipant != null) {
             return new APIResponse(400, "参会人已存在");
         }
@@ -169,6 +203,13 @@ public class MeetingServiceImpl implements MeetingService {
         queryWrapper.eq("meeting_id", meetingId);
         queryWrapper.eq("participant_id", participantId);
         MeetingParticipants participant = participantsMapper.selectOne(queryWrapper);
+
+        QueryWrapper<Meeting> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("id", meetingId);
+        Meeting existingMeeting = meetingMapper.selectOne(queryWrapper1);
+        if(existingMeeting == null){
+            return new APIResponse(401, "会议不存在");
+        }
         if (participant == null) {
             return new APIResponse(400, "参会人不存在");
         } else {
@@ -186,6 +227,13 @@ public class MeetingServiceImpl implements MeetingService {
         queryWrapper.eq("meeting_id", meetingId);
         queryWrapper.eq("participant_id", participantId);
         MeetingParticipants participant = participantsMapper.selectOne(queryWrapper);
+
+        QueryWrapper<Meeting> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("id", meetingId);
+        Meeting existingMeeting = meetingMapper.selectOne(queryWrapper1);
+        if(existingMeeting == null){
+            return new APIResponse(401, "会议不存在");
+        }
         if (participant == null) {
             return new APIResponse(400, "参会人不存在");
         } else {

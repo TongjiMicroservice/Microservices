@@ -3,6 +3,7 @@ package com.tongji.microservice.teamsphere.meetingservice.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tongji.microservice.teamsphere.meetingservice.entities.MeetingParticipants;
 import com.tongji.microservice.teamsphere.meetingservice.entities.Meeting;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -19,4 +20,7 @@ public interface MeetingParticipantsMapper extends BaseMapper<MeetingParticipant
             "</foreach>" +
             "</script>")
     List<Meeting> selectMeetingsByMeetingIds(List<String> meetingIds);
+
+    @Delete("DELETE FROM meeting_participants WHERE meeting_id = #{meetingId}")
+    int deleteMeetingById(String meetingId);
 }
