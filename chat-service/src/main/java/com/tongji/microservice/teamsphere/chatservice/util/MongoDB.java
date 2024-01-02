@@ -11,7 +11,7 @@ public class MongoDB {
         try{
             System.out.println("正在连接MongoDB...");
             mongoClient = MongoClients.create("mongodb://123.60.177.179:27017");
-            database = mongoClient.getDatabase("test");
+            database = mongoClient.getDatabase("chat");
             System.out.println("Connected successfully");
         } catch (Exception e) {
             System.err.println("Error while inserting to MongoDB: " + e.getMessage());

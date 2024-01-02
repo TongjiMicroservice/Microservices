@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("Group")
-public class Group {
+@TableName("GroupChat")
+public class GroupChat {
     @TableField("id")
     private int id;
     @TableField("name")

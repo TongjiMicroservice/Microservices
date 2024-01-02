@@ -2,15 +2,19 @@ package com.tongji.microservice.teamsphere.chatservice.impl;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-import com.tongji.microservice.teamsphere.chatservice.entities.Group;
+import com.tongji.microservice.teamsphere.chatservice.entities.GroupChat;
 import com.tongji.microservice.teamsphere.chatservice.entities.GroupMember;
 import com.tongji.microservice.teamsphere.chatservice.mapper.GroupMapper;
 import com.tongji.microservice.teamsphere.chatservice.mapper.GroupMemberMapper;
 import com.tongji.microservice.teamsphere.chatservice.util.MongoDB;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
+import com.tongji.microservice.teamsphere.dto.chatservice.ContactObject;
 import com.tongji.microservice.teamsphere.dto.chatservice.GroupMemberResponse;
 import com.tongji.microservice.teamsphere.dto.chatservice.RecentChatResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.ChatService;
+import com.tongji.microservice.teamsphere.dubbo.api.UserService;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,12 +25,15 @@ import java.util.Set;
 
 import static com.tongji.microservice.teamsphere.dto.APIResponse.*;
 
+@DubboService
 public class ChatServiceImpl implements ChatService {
 
     @Autowired
-    GroupMapper groupMapper;
+    private GroupMapper groupMapper;
     @Autowired
-    GroupMemberMapper memberMapper;
+    private GroupMemberMapper memberMapper;
+    @DubboReference(check = false)
+    private UserService userService;
     @Override
     public APIResponse getPort() {
         return success();
@@ -35,7 +42,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public APIResponse createGroup(String groupName, String avatar, List<String> memberIds) {
         try {
-            groupMapper.insert(new Group(0, groupName, avatar));
+            groupMapper.insert(new GroupChat(0, groupName, avatar));
             int groupId = groupMapper.getMaxId();
             for (var i : memberIds) {
                 memberMapper.insert(new GroupMember(groupId, Integer.parseInt(i)));
@@ -61,20 +68,21 @@ public class ChatServiceImpl implements ChatService {
         ).forEach(doc -> {
             String sender = doc.getString("sender");
             String receiver = doc.getString("receiver");
-            if (!sender.equals(str_id)) {
-                contactIds.add(sender);
-            }
-            if (!receiver.equals(str_id)) {
-                contactIds.add(receiver);
+            if(receiver.charAt(0) != 'g' && sender.charAt(0) != 'g'){
+                if (!sender.equals(str_id)) {
+                    contactIds.add(sender);
+                }
+                if (!receiver.equals(str_id)) {
+                    contactIds.add(receiver);
+                }
             }
         });
-        List<String> contacts = new ArrayList<>();
-        for (String contactId : contactIds) {
-            contacts.add(contactId);
-            System.out.println(contactId);
+        List<ContactObject> contacts = new ArrayList<>();
+        for (String i : contactIds) {
+            contacts.add(new ContactObject(i,userService.getUserInfo(Integer.parseInt(i)).getUsername()));
         }
-        for(var i:memberMapper.getGroupByMember(userId)){
-            contacts.add(i.toString());
+        for(var i: memberMapper.getGroupByMember(userId)){
+            contacts.add(new ContactObject('g'+i.toString(),groupMapper.selectById(i).getName()));
         }
         return new RecentChatResponse(contacts);
     }

@@ -12,9 +12,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class RecentChatResponse extends APIResponse implements Serializable {
-    private List<String> list;
+    private List<ContactObject> list;
 
-    public RecentChatResponse(List<String> list) {
+    public RecentChatResponse(List<ContactObject> list) {
         super(success());
         this.list = list;
     }

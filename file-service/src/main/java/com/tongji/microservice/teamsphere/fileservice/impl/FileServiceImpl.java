@@ -8,11 +8,13 @@ import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.FileService;
+import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
 import com.tongji.microservice.teamsphere.fileservice.entities.FileInfo;
 import com.tongji.microservice.teamsphere.fileservice.entities.Star;
 import com.tongji.microservice.teamsphere.fileservice.mapper.FileMapper;
 import com.tongji.microservice.teamsphere.fileservice.mapper.StarMapper;
 import com.tongji.microservice.teamsphere.fileservice.util.Loader;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +32,8 @@ public class FileServiceImpl implements FileService {
     private FileMapper fileMapper;
     @Autowired
     private StarMapper starMapper;
+    @DubboReference(check = false)
+    private ProjectService projectService;
     @Override
     public APIResponse upload(FileData fileData) {
         try {
