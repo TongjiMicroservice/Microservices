@@ -156,4 +156,14 @@ public class FileController {
         int userId = Integer.parseInt(StpUtil.getLoginId().toString());
         return fileService.delete(userId, fileName);
     }
+    @GetMapping("/file-by-id")
+    @Operation(summary = "获取单个文件", responses = {
+            @ApiResponse(responseCode = "200", description = "调用成功",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileData.class))),
+            @ApiResponse(responseCode = "400", description = "调用失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileData.class)))
+    })
+    FileData getFileByURL(String url){
+        return fileService.getFileByURL(url);
+    }
 }

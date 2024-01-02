@@ -140,6 +140,27 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public FileData getFileByURL(String url) {
+        try {
+            var f = fileMapper.getFileByURL(url);
+            return new FileData(
+                    f.getId(),
+                    f.getUrl(),
+                    f.getType(),
+                    f.getName(),
+                    f.getUploadTime(),
+                    f.getUserId(),
+                    f.getProjectId(),
+                    f.getSize(),
+                    0
+            );
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public int isStarred(int userId, int fileId) {
         return starMapper.isStarred(userId, fileId);
     }
