@@ -18,9 +18,4 @@ public class TaskMember {
     private int taskId;
     @TableField("score")
     private int score;
-    @TableField("finish_time")
-    private LocalDateTime finishTime;
-    @TableField("file")
-    private String fileURL;
-
 }

@@ -79,10 +79,12 @@ public class ChatServiceImpl implements ChatService {
         });
         List<ContactObject> contacts = new ArrayList<>();
         for (String i : contactIds) {
-            contacts.add(new ContactObject(i,userService.getUserInfo(Integer.parseInt(i)).getUsername()));
+            var user = userService.getUserInfo(Integer.parseInt(i));
+            contacts.add(new ContactObject(i,user.getUsername(),user.getAvatar()));
         }
         for(var i: memberMapper.getGroupByMember(userId)){
-            contacts.add(new ContactObject('g'+i.toString(),groupMapper.selectById(i).getName()));
+            var group = groupMapper.selectById(i);
+            contacts.add(new ContactObject('g'+i.toString(),group.getName(), group.getAvatar()));
         }
         return new RecentChatResponse(contacts);
     }

@@ -19,7 +19,8 @@ public interface TaskService {
 
     APIResponse scoreTaskMember(int taskId, int memberId, int score);
 
-    APIResponse uploadTaskFile(int taskId, int memberId, String fileURL);
+    APIResponse judgeTask(int taskId);
+    APIResponse uploadTaskFile(int userId, int taskId, String fileURL);
     APIResponse updateTaskInfo(int taskId, TaskData taskData);
     TaskResponse getTaskInfo(int taskId);
 
@@ -30,4 +31,5 @@ public interface TaskService {
 
     ProjectTaskResponse getTasksForMember(int userId);
 
+    int getLeader(int taskId);
 }

@@ -5,7 +5,9 @@ import com.tongji.microservice.teamsphere.taskservice.entities.Task;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TaskMapper extends BaseMapper<Task> {
@@ -26,4 +28,13 @@ public interface TaskMapper extends BaseMapper<Task> {
 
     @Select("SELECT * FROM Task WHERE leader = #{userId}")
     Task[] getTaskByLeader(@Param("userId") int userId);
+
+    @Update("UPDATE Task SET file = #{file}, update_time = #{time} , status = 1 WHERE id = #{id}")
+    int setFileURL(@Param("id") int taskId, @Param("file") String file,@Param("time") LocalDateTime time);
+
+    @Update("UPDATE Task SET status = #{status} WHERE id = #{taskId}")
+    int setStatus(@Param("taskId") int taskId, @Param("status")int status);
+
+    @Select("SELECT leader FROM Task WHERE id = #{taskId}")
+    int getLeader(@Param("id") int taskId);
 }

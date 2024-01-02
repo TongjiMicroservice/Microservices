@@ -79,18 +79,18 @@ public class TaskController {
         if (!StpUtil.isLogin()) {
             return APIResponse.notLoggedIn();
         }
-        int projectId = taskService.getTaskInfo(taskId).getTaskData().getProjectId();
-        if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
-            return APIResponse.fail("没有权限");
+        int projectId = taskService.getTaskInfo(taskId).getTaskData().getLeader();
+        if (StpUtil.getLoginIdAsInt() != projectId) {
+            return APIResponse.fail("你不是任务领导者，没有权限");
         }
         return taskService.addTaskMember(taskId, memberId);
     }
     @DeleteMapping("/task/member/delete")
     @Operation(summary = "删除任务成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     APIResponse deleteTaskMember(int taskId, int memberId){
         if (!StpUtil.isLogin()) {
@@ -106,9 +106,9 @@ public class TaskController {
     @PatchMapping("/task/member/score")
     @Operation(summary = "为成员评分", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     APIResponse scoreTaskMember(int taskId, int memberId, int score){
         if (!StpUtil.isLogin()) {
@@ -123,26 +123,23 @@ public class TaskController {
     @PutMapping("/task/member/upload")
     @Operation(summary = "上传任务文件资料", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
-    APIResponse uploadTaskFile(int taskId, int memberId, String fileURL){
+    APIResponse uploadTaskFile(int taskId, String fileURL){
         if (!StpUtil.isLogin()) {
             return APIResponse.notLoggedIn();
         }
-        int projectId = taskService.getTaskInfo(taskId).getTaskData().getProjectId();
-        if (!checkAdmin(StpUtil.getLoginIdAsInt(),projectId)){
-            return APIResponse.fail("没有权限");
-        }
-        return taskService.uploadTaskFile(taskId, memberId, fileURL);
+        int userId = StpUtil.getLoginIdAsInt();
+        return taskService.uploadTaskFile(userId, taskId, fileURL);
     }
     @PatchMapping("/task/info/update")
     @Operation(summary = "修改任务信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
     APIResponse updateTaskInfo(int taskId, TaskData taskData){
         if (!StpUtil.isLogin()) {
@@ -158,9 +155,9 @@ public class TaskController {
     @GetMapping("/task/info/get")
     @Operation(summary = "获取任务信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
-                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = TaskResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskResponse.class))),
     })
     TaskResponse getTaskInfo(int taskId){
         if (!StpUtil.isLogin()) {
@@ -224,6 +221,25 @@ public class TaskController {
             return new ProjectTaskResponse(APIResponse.notLoggedIn());
         }
         var res= taskService.getTasksForMember(userId);
+        System.out.println(res);
+        return res;
+    }
+
+    @PostMapping("task/judge")
+    @Operation(summary = "获取打工人的任务清单", responses = {
+            @ApiResponse(responseCode = "200", description = "成功调用方法",
+                    content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
+            @ApiResponse(responseCode = "400", description = "访问失败",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
+    })
+    APIResponse judgeTask(int taskId){
+        if (!StpUtil.isLogin()) {
+            return APIResponse.notLoggedIn();
+        }
+        int userId = StpUtil.getLoginIdAsInt();
+        if(userId != taskService.getLeader(taskId))
+            return APIResponse.fail("您不是该任务的组长，无法审核");
+        var res= taskService.judgeTask(taskId);
         System.out.println(res);
         return res;
     }
