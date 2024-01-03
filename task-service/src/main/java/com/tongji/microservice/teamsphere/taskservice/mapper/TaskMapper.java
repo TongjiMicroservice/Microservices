@@ -35,6 +35,6 @@ public interface TaskMapper extends BaseMapper<Task> {
     @Update("UPDATE Task SET status = #{status}  WHERE id = #{taskId}")
     int setStatus(@Param("taskId") int taskId, @Param("status")int status);
 
-    @Select("SELECT leader FROM Task WHERE id = #{taskId}")
+    @Select("SELECT leader FROM Task WHERE id = #{id}")
     int getLeader(@Param("id") int taskId);
 }
