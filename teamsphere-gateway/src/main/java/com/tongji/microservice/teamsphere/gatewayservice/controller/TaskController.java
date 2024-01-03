@@ -226,7 +226,7 @@ public class TaskController {
     }
 
     @PostMapping("task/judge")
-    @Operation(summary = "获取打工人的任务清单", responses = {
+    @Operation(summary = "审批完成了的任务", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
