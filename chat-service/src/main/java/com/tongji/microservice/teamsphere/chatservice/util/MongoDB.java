@@ -28,19 +28,19 @@ public class MongoDB {
     public static MongoDatabase getDatabase() {
     return database;
     }
-    public static void main(String[] args){
-        try{
-            MongoCollection<Document> collection = database.getCollection("chat");
-            // 将 MessageObject 转换为 Document 并插入到集合中
-            Document doc = new Document("sender", "10")
-                    .append("receiver", "g100")
-                    .append("message", "hello,world")
-                    .append("timestamp", "2013-3-23T12:00:00.102Z")
-                    .append("isRead", false);
-            collection.insertOne(doc);
-            System.out.println("Document inserted successfully");
-        } catch (Exception e) {
-            System.err.println("Error while inserting to MongoDB: " + e.getMessage());
-        }
-    }
+//    public static void main(String[] args){
+//        try{
+//            MongoCollection<Document> collection = database.getCollection("chat");
+//            // 将 MessageObject 转换为 Document 并插入到集合中
+//            Document doc = new Document("sender", "10")
+//                    .append("receiver", "g100")
+//                    .append("message", "hello,world")
+//                    .append("timestamp", "2013-3-23T12:00:00.102Z")
+//                    .append("isRead", false);
+//            collection.insertOne(doc);
+//            System.out.println("Document inserted successfully");
+//        } catch (Exception e) {
+//            System.err.println("Error while inserting to MongoDB: " + e.getMessage());
+//        }
+//    }
 }
