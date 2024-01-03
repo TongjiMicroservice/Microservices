@@ -6,6 +6,7 @@ import com.obs.services.model.ObsObject;
 import com.obs.services.model.PutObjectRequest;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
+import com.tongji.microservice.teamsphere.dto.fileservice.FileDataResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.FileService;
 import com.tongji.microservice.teamsphere.dubbo.api.ProjectService;
@@ -35,7 +36,7 @@ public class FileServiceImpl implements FileService {
     @DubboReference(check = false)
     private ProjectService projectService;
     @Override
-    public APIResponse upload(FileData fileData) {
+    public FileDataResponse upload(FileData fileData) {
         try {
             var fi = new FileInfo();
             fi.setId(0);
@@ -52,7 +53,7 @@ public class FileServiceImpl implements FileService {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-        return success();
+        return new FileDataResponse(APIResponse.success(),fileData);
     }
 
     @Override

@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.obs.services.model.PutObjectRequest;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
+import com.tongji.microservice.teamsphere.dto.fileservice.FileDataResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.FileService;
 import com.tongji.microservice.teamsphere.gatewayservice.util.Loader;
@@ -48,7 +49,7 @@ public class FileController {
             @ApiResponse(responseCode = "400", description = "调用失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class)))
     })
-    public APIResponse upload(int userId, int projectId, @RequestPart MultipartFile file) {
+    public FileDataResponse upload(int userId, int projectId, @RequestPart MultipartFile file) {
         System.out.printf("收到文件:%s:%d\n", file.getOriginalFilename(), file.getSize());
 //        if (!StpUtil.isLogin()) {
 //            return new CreateTaskResponse(APIResponse.notLoggedIn());
@@ -60,7 +61,7 @@ public class FileController {
             System.out.println("上传成功");
         } catch (Exception e) {
             e.printStackTrace();
-            return APIResponse.fail("上传失败");
+            return new FileDataResponse(APIResponse.fail("上传失败"),null) ;
         }
         String name = file.getOriginalFilename();
         assert name != null;
