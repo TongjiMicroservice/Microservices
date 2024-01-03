@@ -128,7 +128,7 @@ public class TaskServiceImpl implements TaskService {
         try{
             if(!memberMapper.exists(new QueryWrapper<TaskMember>().eq("task_id",taskId).eq("user_id",userId)))
                 return fail("你不是该任务成员");
-            int flat = taskMapper.setFileURL(taskId,fileURL,LocalDateTime.now());
+            int flat = taskMapper.setFileURL(taskId,fileURL);
             if(flat == 0)
                 return fail("上传失败");
             return success();

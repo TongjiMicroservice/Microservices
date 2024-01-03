@@ -29,8 +29,8 @@ public interface TaskMapper extends BaseMapper<Task> {
     @Select("SELECT * FROM Task WHERE leader = #{userId}")
     Task[] getTaskByLeader(@Param("userId") int userId);
 
-    @Update("UPDATE Task SET file = #{file}, update_time = #{time} , status = 1 WHERE id = #{id}")
-    int setFileURL(@Param("id") int taskId, @Param("file") String file,@Param("time") LocalDateTime time);
+    @Update("UPDATE Task SET file = #{file}, status = 1 WHERE id = #{id}")
+    int setFileURL(@Param("id") int taskId, @Param("file") String file);
 
     @Update("UPDATE Task SET status = #{status} WHERE id = #{taskId}")
     int setStatus(@Param("taskId") int taskId, @Param("status")int status);
