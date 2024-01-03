@@ -11,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ParticipantData  implements Serializable {
     int id;
+    String name;
     String meeting_id;
     int participant_id;
     String role;
