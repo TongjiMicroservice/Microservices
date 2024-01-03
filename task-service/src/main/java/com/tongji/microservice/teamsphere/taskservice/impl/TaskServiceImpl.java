@@ -111,9 +111,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public APIResponse judgeTask(int taskId) {
+    public APIResponse judgeTask(int taskId,int status) {
         try {
-            var flat = taskMapper.setStatus(taskId,2);
+            var flat = taskMapper.setStatus(taskId,status);
             if(flat == 0)
                 return fail("审批失败");
             return success();

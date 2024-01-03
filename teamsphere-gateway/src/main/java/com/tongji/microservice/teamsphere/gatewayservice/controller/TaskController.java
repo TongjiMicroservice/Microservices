@@ -103,8 +103,8 @@ public class TaskController {
         return taskService.deleteTaskMember(taskId, memberId);
     }
 
-    @PatchMapping("/task/member/score")
-    @Operation(summary = "为成员评分", responses = {
+    @PatchMapping("/task/score")
+    @Operation(summary = "为任务评分", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "访问失败",
@@ -232,14 +232,14 @@ public class TaskController {
             @ApiResponse(responseCode = "400", description = "访问失败",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
     })
-    APIResponse judgeTask(int taskId){
+    APIResponse judgeTask(int taskId,int status){
         if (!StpUtil.isLogin()) {
             return APIResponse.notLoggedIn();
         }
         int userId = StpUtil.getLoginIdAsInt();
         if(userId != taskService.getLeader(taskId))
             return APIResponse.fail("您不是该任务的组长，无法审核");
-        var res= taskService.judgeTask(taskId);
+        var res= taskService.judgeTask(taskId,status);
         System.out.println(res);
         return res;
     }
