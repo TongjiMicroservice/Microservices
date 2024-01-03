@@ -2,7 +2,7 @@ dubbo:
   application:
     logger: slf4j
     name: file-service
-    qos-port: 22225
+    qos-port: 22229
   registry:
     address: nacos://${nacos_address:127.0.0.1}:8848
   protocol:
