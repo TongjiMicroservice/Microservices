@@ -16,8 +16,3 @@ spring:
     username: remote0
     password: ${mariadb}
     driver-class-name: org.mariadb.jdbc.Driver
-  data:
-    mongodb:
-      host: 123.60.177.179
-      port: 27017
-      database: test
