@@ -89,7 +89,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping("user/update")
+    @PatchMapping("user/info")
     @Operation(summary = "更新当前登录用户信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = QueryResponse.class))),

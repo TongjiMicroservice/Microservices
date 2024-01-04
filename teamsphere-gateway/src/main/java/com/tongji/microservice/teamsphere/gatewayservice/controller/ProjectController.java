@@ -41,7 +41,7 @@ public class ProjectController {
         return projectService.creatProject(projectData);
     }
 
-    @PostMapping("/project/member/add")
+    @PostMapping("/project/members")
     @Operation(summary = "添加项目成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
@@ -76,7 +76,7 @@ public class ProjectController {
         return projectService.addProjectMember(projectId, userId);
     }
 
-    @PatchMapping("/project/info/update")
+    @PatchMapping("/project/info")
     @Operation(summary = "更新项目信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
@@ -93,7 +93,7 @@ public class ProjectController {
         return projectService.updateProjectInfo(projectId, projectData);
     }
 
-    @DeleteMapping("/project/member/delete")
+    @DeleteMapping("/project/member")
     @Operation(summary = "删除项目成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
@@ -110,7 +110,7 @@ public class ProjectController {
         return projectService.removeProjectMember(projectId, userId);
     }
 
-    @PatchMapping("/project/privilege/update")
+    @PatchMapping("/project/privilege")
     @Operation(summary = "变更成员权限", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
@@ -127,7 +127,7 @@ public class ProjectController {
         return projectService.updateProjectMemberPrivilege(projectId, userId, privilege);
     }
 
-    @GetMapping("/project/member/get")
+    @GetMapping("/project/members")
     @Operation(summary = "获取项目成员清单", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = MembersResponse.class))),
@@ -141,7 +141,7 @@ public class ProjectController {
         return projectService.getProjectMembers(projectId);
     }
 
-    @GetMapping("/project/info/get")
+    @GetMapping("/project/info")
     @Operation(summary = "获取项目信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectInfoResponse.class))),
@@ -152,7 +152,7 @@ public class ProjectController {
         return projectService.getProjectInfo(projectId);
     }
 
-    @DeleteMapping("/project/delete")
+    @DeleteMapping("/project")
     @Operation(summary = "删除项目", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
@@ -169,7 +169,7 @@ public class ProjectController {
         return projectService.deleteProject(projectId);
     }
 
-    @GetMapping("/project/privilege/get")
+    @GetMapping("/project/privilege")
     @Operation(summary = "获取用户项目权限", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = PrivilegeResponse.class))),

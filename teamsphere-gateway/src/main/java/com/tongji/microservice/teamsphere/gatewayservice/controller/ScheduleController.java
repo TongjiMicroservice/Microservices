@@ -8,10 +8,7 @@ import com.tongji.microservice.teamsphere.dto.sceduleservice.EventsResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.ScheduleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -22,7 +19,7 @@ public class ScheduleController {
     @DubboReference(check = false)
     private ScheduleService scheduleService;
 
-    @PostMapping("/schedule/create")
+    @PostMapping("/schedule")
     EventIdResponse createEvent(LocalDateTime startTime, LocalDateTime deadline, String description, String title, int priority){
         if(!StpUtil.isLogin()){
             return new EventIdResponse(APIResponse.notLoggedIn(),-1);
@@ -30,7 +27,7 @@ public class ScheduleController {
         return scheduleService.createEvent(StpUtil.getLoginIdAsInt(),startTime,deadline,description,title,priority);
     }
 
-    @PostMapping("/schedule/delete")
+    @DeleteMapping("/schedule")
     APIResponse deleteEvent(int eventId){
         if(!StpUtil.isLogin()){
             return APIResponse.notLoggedIn();
@@ -38,7 +35,7 @@ public class ScheduleController {
         return scheduleService.removeEvent(eventId);
     }
 
-    @PostMapping("/schedule/update")
+    @PatchMapping("/schedule")
     APIResponse updateEvent(int eventId,LocalDateTime startTime, LocalDateTime deadline, String description, String title, int priority){
         if(!StpUtil.isLogin()){
             return APIResponse.notLoggedIn();
@@ -46,7 +43,7 @@ public class ScheduleController {
         return scheduleService.updateEventInfo(eventId,startTime,deadline,description,title,priority);
     }
 
-    @GetMapping("/schedule/get")
+    @GetMapping("/schedule")
     EventsResponse getEvents(){
         if(!StpUtil.isLogin()){
             return new EventsResponse(APIResponse.notLoggedIn(),null);
@@ -54,7 +51,7 @@ public class ScheduleController {
         return scheduleService.getEvents(StpUtil.getLoginIdAsInt());
     }
 
-    @GetMapping("/schedule/getEventInfo")
+    @GetMapping("/schedule/info")
     EventInfoResponse getEventInfo(int eventId){
         if(!StpUtil.isLogin()){
             return new EventInfoResponse(APIResponse.notLoggedIn());
@@ -62,7 +59,7 @@ public class ScheduleController {
         return scheduleService.getEventInfo(eventId);
     }
 
-    @GetMapping("/schedule/getEventId")
+    @GetMapping("/schedule/id")
     EventIdResponse getEventId(String title){
         if(!StpUtil.isLogin()){
             return new EventIdResponse(APIResponse.notLoggedIn(),-1);

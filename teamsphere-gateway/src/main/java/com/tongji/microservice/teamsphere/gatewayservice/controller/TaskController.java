@@ -34,7 +34,7 @@ public class TaskController {
         return projectService.getProjectMemberPrivilege(projectId,userId).getPrivilege() > 1;
     }
 
-    @PostMapping("/task/create")
+    @PostMapping("/task")
     @Operation(summary = "创建任务", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = CreateTaskResponse.class))),
@@ -50,7 +50,7 @@ public class TaskController {
         }
         return taskService.createTask(name, description, projectId, deadline, leader, priority);
     }
-    @DeleteMapping("/task/delete")
+    @DeleteMapping("/task")
     @Operation(summary = "删除任务", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
@@ -68,7 +68,7 @@ public class TaskController {
         return taskService.deleteTask(taskId);
     }
 
-    @PostMapping("/task/member/add")
+    @PostMapping("/task/member")
     @Operation(summary = "添加任务成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
@@ -85,7 +85,7 @@ public class TaskController {
         }
         return taskService.addTaskMember(taskId, memberId);
     }
-    @DeleteMapping("/task/member/delete")
+    @DeleteMapping("/task/member")
     @Operation(summary = "删除任务成员", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
@@ -120,7 +120,7 @@ public class TaskController {
         }
         return taskService.scoreTaskMember(taskId, memberId, score);
     }
-    @PutMapping("/task/member/upload")
+    @PutMapping("/task/file")
     @Operation(summary = "上传任务文件资料", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
@@ -134,7 +134,7 @@ public class TaskController {
         int userId = StpUtil.getLoginIdAsInt();
         return taskService.uploadTaskFile(userId, taskId, fileURL);
     }
-    @PatchMapping("/task/info/update")
+    @PatchMapping("/task/info")
     @Operation(summary = "修改任务信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = APIResponse.class))),
@@ -152,7 +152,7 @@ public class TaskController {
         return taskService.updateTaskInfo(taskId, taskData);
     }
 
-    @GetMapping("/task/info/get")
+    @GetMapping("/task/info")
     @Operation(summary = "获取任务信息", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = TaskResponse.class))),
@@ -165,7 +165,7 @@ public class TaskController {
         }
         return taskService.getTaskInfo(taskId);
     }
-    @GetMapping("/task/member/get")
+    @GetMapping("/task/members/")
     @Operation(summary = "获取任务成员清单", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = TaskMemberResponse.class))),
