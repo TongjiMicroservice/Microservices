@@ -165,7 +165,7 @@ public class TaskController {
         }
         return taskService.getTaskInfo(taskId);
     }
-    @GetMapping("/task/members/")
+    @GetMapping("/task/members")
     @Operation(summary = "获取任务成员清单", responses = {
             @ApiResponse(responseCode = "200", description = "成功调用方法",
                     content = @Content(mediaType ="application/json",schema = @Schema(implementation = TaskMemberResponse.class))),
