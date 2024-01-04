@@ -5,6 +5,7 @@ import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.chatservice.GroupMemberResponse;
 import com.tongji.microservice.teamsphere.dto.chatservice.RecentChatResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ChatService {
@@ -14,5 +15,7 @@ public interface ChatService {
 
     RecentChatResponse getRecentChat(int userId);
     GroupMemberResponse getGroupMember(int groupId);
+
+    List<Integer> getGroups(int userId);
     //test
 }

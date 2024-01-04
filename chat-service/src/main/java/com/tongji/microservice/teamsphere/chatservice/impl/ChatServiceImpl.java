@@ -18,6 +18,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -91,6 +92,16 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public GroupMemberResponse getGroupMember(int groupId) {
-        return null;
+        try {
+            return new GroupMemberResponse(memberMapper.getMemberByGroupId(groupId));
+        }catch (Exception e){
+            e.printStackTrace();
+            return new GroupMemberResponse(APIResponse.fail("数据库访问失败" + e.getMessage()));
+        }
+    }
+
+    @Override
+    public List<Integer> getGroups(int userId) {
+        return memberMapper.getGroupByMember(userId);
     }
 }
