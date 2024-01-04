@@ -11,4 +11,7 @@ public interface GroupMemberMapper extends BaseMapper<GroupMember> {
 
     @Select("SELECT group_id FROM GroupMember WHERE user_id = #{userId}")
     List<Integer> getGroupByMember(@Param("userId") int userId);
+
+    @Select("SELECT user_id FROM GroupMember WHERE group_id = #{groupId}")
+    List<Integer> getMemberByGroupId(@Param("groupId") int groupId);
 }

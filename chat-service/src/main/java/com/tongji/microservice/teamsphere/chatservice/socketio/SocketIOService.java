@@ -10,6 +10,7 @@ import com.mongodb.client.model.Updates;
 import com.tongji.microservice.teamsphere.chatservice.entities.MessageObject;
 import com.tongji.microservice.teamsphere.chatservice.mapper.GroupMemberMapper;
 import com.tongji.microservice.teamsphere.chatservice.util.MongoDB;
+import com.tongji.microservice.teamsphere.dto.chatservice.ContactObject;
 import com.tongji.microservice.teamsphere.dto.chatservice.RecentChatResponse;
 import com.tongji.microservice.teamsphere.dubbo.api.ChatService;
 import com.tongji.microservice.teamsphere.dubbo.api.UserService;
@@ -50,11 +51,7 @@ public class SocketIOService {
          */
         server.addConnectListener(client -> {
             System.out.println("连接:" + client.getSessionId() + '@' + client.getRemoteAddress());
-            // 在和用户握手建立连接时，就进行token校验，获取客户端的 userId
-//          String userId = client.getHandshakeData().getSingleUrlParam("userId");
-
         });
-
         server.addEventListener("loginRequest", String.class, (client, id_string, ackRequest) -> {
             //token通过校验
             if (id_string != null) {
@@ -166,22 +163,43 @@ public class SocketIOService {
             MongoCollection<Document> collection = MongoDB.getDatabase().getCollection("chat");
             // 将 MessageObject 转换为 Document 并插入到集合中
             Document doc = data.toDocument();
+            server.getBroadcastOperations().sendEvent("messageEvent", data);
+            //群消息标为已读
+            if(doc.getString("receiver").charAt(0) == 'g'){
+                doc.replace("isRead", true);
+            }
+            //私聊，如果对应的人在线，将消息发给对应的人
+            else {
+                int id = Integer.parseInt(data.getReceiverId());
+                if (biMap.containsKey(id)) {
+                    server.getClient(biMap.get(id)).sendEvent("messageEvent", data);
+                }
+            }
             collection.insertOne(doc);
             System.out.println("Document inserted successfully");
-
-//            server.getBroadcastOperations().sendEvent("messageEvent", data);
-            //如果对应的人在线，将消息发给对应的人
-            if (biMap.containsKey(data.getReceiverId())) {
-                server.getClient(biMap.get(data.getReceiverId())).sendEvent("messageEvent", data);
-            }
         });
 
         server.addEventListener("recentChatRequest", String.class,(client, userIdStr, ackRequest) -> {
             //将最近聊天消息发给用户
             try{
-                var list = chatService.getRecentChat(Integer.parseInt(userIdStr)).getList();
+                int userId = Integer.parseInt(userIdStr);
+                var list = chatService.getRecentChat(userId).getList();
                 client.sendEvent("recentChatResponse", list);
                 System.out.println("发送最近聊天消息成功"+list);
+                //发送聊天用户的名字
+                Map<Integer,String> nameMap = new HashMap<>();
+                for(var groupId: chatService.getGroups(userId)){
+                    for(var i : chatService.getGroupMember(groupId).getList()){
+                        if(!nameMap.containsKey(i))
+                            nameMap.put(i , userService.getUserInfo(i).getUsername());
+                    }
+                }
+                List<ContactObject> groupMemberNameList = new ArrayList<>();
+                nameMap.forEach((id, name) -> {
+                    groupMemberNameList.add(new ContactObject(id,name));
+                });
+                client.sendEvent("groupNameResponse" , groupMemberNameList);
+                System.out.println("最近群聊成员成功"+groupMemberNameList);
             }catch (Exception e){
                 e.printStackTrace();
                 System.out.println("发送最近聊天消息失败");
