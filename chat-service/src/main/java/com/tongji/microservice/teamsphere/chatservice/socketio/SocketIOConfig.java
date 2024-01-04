@@ -12,7 +12,7 @@ public class SocketIOConfig {
     @Bean
     public SocketIOServer socketIOServer() {
         Configuration config = new Configuration();
-        config.setHostname("localhost");
+        config.setHostname("0.0.0.0");
         config.setPort(9092); // 选择一个合适的端口
         System.out.printf(" SocketIO server started on port %d\n", config.getPort());
         return new SocketIOServer(config);
