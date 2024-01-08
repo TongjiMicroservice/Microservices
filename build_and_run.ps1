@@ -8,6 +8,7 @@ if (mvn clean package) {
     $PROJECT_SERVICE_JAR = "./project-service/target/project-service-0.0.1-SNAPSHOT.jar"
     $MEETING_SERVICE_JAR = "./meeting-service/target/meeting-service-0.0.1-SNAPSHOT.jar"
     $CHAT_SERVICE_JAR = "./chat-service/target/chat-service-0.0.1-SNAPSHOT.jar"
+    $FILE_SERVICE_JAR = "./file-service/target/file-service-0.0.1-SNAPSHOT.jar"
 
     # 启动微服务
     Start-Process java -ArgumentList "-jar", $USER_SERVICE_JAR -NoNewWindow
@@ -17,6 +18,7 @@ if (mvn clean package) {
     Start-Process java -ArgumentList "-jar", $PROJECT_SERVICE_JAR -NoNewWindow
     Start-Process java -ArgumentList "-jar", $MEETING_SERVICE_JAR -NoNewWindow
     Start-Process java -ArgumentList "-jar", $CHAT_SERVICE_JAR -NoNewWindow
+    Start-Process java -ArgumentList "-jar", $FILE_SERVICE_JAR -NoNewWindow
 }
 else {
     Write-Host "compile failed"
