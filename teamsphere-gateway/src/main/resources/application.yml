@@ -1,13 +1,13 @@
 nacos:
 #  address: 127.0.0.1
-  address: mse-8dddf2f0-p.nacos-ans.mse.aliyuncs.com
+  address: 8.217.40.165
 dubbo:
   application:
     logger: slf4j
     name: gateway-service
     qos-port: 22223
   registry:
-    address: nacos://mse-8dddf2f0-p.nacos-ans.mse.aliyuncs.com:8848
+    address: nacos://8.217.40.165:8848
   protocol:
     name: dubbo
     port: 20885

@@ -4,7 +4,7 @@ dubbo:
     name: schedule-service
     qos-port: 22225
   registry:
-    address: nacos://mse-8dddf2f0-p.nacos-ans.mse.aliyuncs.com:8848
+    address: nacos://8.217.40.165:8848
   protocol:
     name: dubbo
     port: 20883
