@@ -38,7 +38,7 @@ public class ChatController {
     }
 
     @PostMapping("/chat/group")
-    @Operation(summary = "获取聊天ws服务器API", responses = {
+    @Operation(summary = "创建聊天群组", responses = {
             @ApiResponse(responseCode = "200", description = "调用成功",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))),
             @ApiResponse(responseCode = "400", description = "调用失败",

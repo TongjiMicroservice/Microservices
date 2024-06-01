@@ -4,7 +4,8 @@ dubbo:
     name: chat-service
     qos-port: 22228
   registry:
-    address: nacos://${nacos_address:127.0.0.1}:8848
+#    address: nacos://${nacos_address:127.0.0.1}:8848
+    address: mse-8dddf2f0-p.nacos-ans.mse.aliyuncs.com:8848
   protocol:
     name: dubbo
     port: 20882
@@ -14,10 +15,10 @@ server:
   port: 8085
 spring:
   datasource:
-    url: jdbc:mariadb://123.60.177.179:3306/chat_service
-    username: remote0
-    password: ${mariadb}
-    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mysql://8.217.40.165:3306/chat_service
+    username: root
+    password: ${teamsphere_database}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     mongodb:
       host: 123.60.177.179
