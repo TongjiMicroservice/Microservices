@@ -14,13 +14,10 @@ import com.tongji.microservice.teamsphere.fileservice.entities.FileInfo;
 import com.tongji.microservice.teamsphere.fileservice.entities.Star;
 import com.tongji.microservice.teamsphere.fileservice.mapper.FileMapper;
 import com.tongji.microservice.teamsphere.fileservice.mapper.StarMapper;
-import com.tongji.microservice.teamsphere.fileservice.util.Loader;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -35,3 +35,7 @@ sa-token:
   token-style: uuid
   # 是否输出操作日志
   is-log: true
+
+oss:
+  endpoint: oss-cn-shanghai.aliyuncs.com
+  bucket-name: software-test-2024

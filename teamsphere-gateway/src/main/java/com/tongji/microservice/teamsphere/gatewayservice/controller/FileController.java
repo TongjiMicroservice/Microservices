@@ -1,7 +1,6 @@
 package com.tongji.microservice.teamsphere.gatewayservice.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.obs.services.model.PutObjectRequest;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileDataResponse;
@@ -14,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
@@ -55,9 +55,8 @@ public class FileController {
 //            return new CreateTaskResponse(APIResponse.notLoggedIn());
 //        }
         try {
-            InputStream i = new ByteArrayInputStream(file.getBytes());
-            PutObjectRequest putObjectRequest = new PutObjectRequest("test-micro", file.getOriginalFilename(), i);
-            Loader.getObsClient().putObject(putObjectRequest);
+            var i = new ByteArrayInputStream(file.getBytes());
+            Loader.getOssClient().putObject(Loader.getBucketName(), file.getOriginalFilename(),i);
             System.out.println("上传成功");
         } catch (Exception e) {
             e.printStackTrace();

@@ -45,6 +45,11 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.eclipse.jdt</groupId>
+                <artifactId>junit</artifactId>
+                <version>3.3.0-v20070606-0010</version>
+            </dependency>
+            <dependency>
                 <groupId>com.tongji.microservice</groupId>
                 <artifactId>teamsphere-api</artifactId>
                 <version>0.0.1-SNAPSHOT</version>

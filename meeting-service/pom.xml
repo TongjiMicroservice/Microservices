@@ -69,6 +69,13 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
         <dependency> <!--新增的飞书API调用-->
             <groupId>com.larksuite.oapi</groupId>
             <artifactId>oapi-sdk</artifactId>
