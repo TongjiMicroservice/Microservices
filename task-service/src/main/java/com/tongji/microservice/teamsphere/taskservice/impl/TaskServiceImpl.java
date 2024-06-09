@@ -41,6 +41,15 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public CreateTaskResponse createTask(String name, String description, int projectId, LocalDateTime deadline, int leader, int priority) {
         try {
+            if (priority<0||priority>2){
+                return new CreateTaskResponse(APIResponse.fail("优先级在0-2之间"));
+            }
+            if (!deadline.isAfter(LocalDateTime.now())){
+                return new CreateTaskResponse(APIResponse.fail("截止时间应该在现在之后"));
+            }
+            if (name.isEmpty() || description.isEmpty()){
+                return new CreateTaskResponse(APIResponse.fail("任务名称或描述不应为空"));
+            }
             var flat = taskMapper.insert(
                     new Task(name, description, projectId, deadline, leader, priority)
             );

@@ -1,9 +1,5 @@
 package com.tongji.microservice.teamsphere.fileservice.impl;
 
-import com.obs.services.exception.ObsException;
-import com.obs.services.model.GetObjectRequest;
-import com.obs.services.model.ObsObject;
-import com.obs.services.model.PutObjectRequest;
 import com.tongji.microservice.teamsphere.dto.APIResponse;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileData;
 import com.tongji.microservice.teamsphere.dto.fileservice.FileDataResponse;
